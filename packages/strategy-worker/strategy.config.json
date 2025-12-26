@@ -1,0 +1,11 @@
+{
+  "pollIntervalMs": 10000,
+  "pairs": [
+    {
+      "symbol": "ETH/USDC",
+      "sourceA": "DEX_A",
+      "sourceB": "DEX_B",
+      "minSpreadPercent": 0.5
+    }
+  ]
+}

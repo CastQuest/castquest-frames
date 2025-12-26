@@ -1,3 +1,8 @@
 {
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/systems/page": "app/systems/page.js",
+  "/brain/page": "app/brain/page.js",
+  "/mints/page": "app/mints/page.js",
+  "/quests/page": "app/quests/page.js",
+  "/frames/page": "app/frames/page.js"
 }
