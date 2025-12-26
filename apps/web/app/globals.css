@@ -1,0 +1,488 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
+}
+
+/* === CORE AESTHETIC ======================================================= */
+
+.cq-body {
+  min-height: 100vh;
+  background: #020617;
+  color: #e5e7eb;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated gradient + grid */
+
+.cq-bg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.cq-bg-grid {
+  position: absolute;
+  inset: -100px;
+  background-image: linear-gradient(
+      rgba(15, 23, 42, 0.9) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(15, 23, 42, 0.9) 1px,
+      transparent 1px
+    );
+  background-size: 40px 40px;
+  opacity: 0.5;
+  transform: translate3d(0, 0, 0);
+  animation: cq-grid-pan 30s linear infinite;
+}
+
+@keyframes cq-grid-pan {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-80px, -80px, 0);
+  }
+}
+
+.cq-bg-orbit {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(40px);
+  opacity: 0.7;
+  mix-blend-mode: screen;
+}
+
+.cq-bg-orbit--emerald {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle at 30% 30%, #22c55e, transparent 60%);
+  top: 10%;
+  left: 8%;
+  animation: cq-orbit-emerald 20s ease-in-out infinite alternate;
+}
+
+.cq-bg-orbit--violet {
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle at 70% 70%, #a855f7, transparent 65%);
+  bottom: -10%;
+  right: -6%;
+  animation: cq-orbit-violet 26s ease-in-out infinite alternate;
+}
+
+@keyframes cq-orbit-emerald {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(40px, -60px, 0);
+  }
+}
+
+@keyframes cq-orbit-violet {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-40px, 40px, 0);
+  }
+}
+
+/* === SHELL ================================================================ */
+
+.cq-shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 16px 32px;
+}
+
+@media (min-width: 768px) {
+  .cq-shell {
+    padding: 32px 24px 40px;
+  }
+}
+
+.cq-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: linear-gradient(
+      120deg,
+      rgba(15, 23, 42, 0.9),
+      rgba(15, 23, 42, 0.7)
+    ),
+    radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.18), transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(52, 211, 153, 0.22), transparent 65%);
+  box-shadow:
+    0 18px 45px rgba(15, 23, 42, 0.9),
+    0 0 0 1px rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(24px);
+}
+
+.cq-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cq-logo-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow:
+    0 0 18px rgba(34, 197, 94, 0.85),
+    0 0 6px rgba(34, 197, 94, 0.9);
+}
+
+.cq-logo-title {
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+}
+
+.cq-logo-sub {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.cq-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.cq-nav-item {
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #9ca3af;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.cq-nav-item:hover {
+  color: #e5e7eb;
+  border-color: rgba(148, 163, 184, 0.6);
+  background: rgba(15, 23, 42, 0.8);
+  box-shadow: 0 0 22px rgba(59, 130, 246, 0.4);
+}
+
+.cq-nav-item--active {
+  color: #e5e7eb;
+  border-color: rgba(52, 211, 153, 0.8);
+  background: radial-gradient(circle at 0% 0%, rgba(52, 211, 153, 0.16), transparent 65%);
+  box-shadow: 0 0 26px rgba(52, 211, 153, 0.6);
+}
+
+.cq-main {
+  margin-top: 24px;
+}
+
+/* === PANELS ============================================================== */
+
+.cq-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: 18px;
+}
+
+@media (max-width: 900px) {
+  .cq-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.cq-panel {
+  position: relative;
+  border-radius: 22px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: linear-gradient(
+      135deg,
+      rgba(15, 23, 42, 0.98),
+      rgba(15, 23, 42, 0.88)
+    );
+  box-shadow:
+    0 18px 45px rgba(15, 23, 42, 0.9),
+    0 0 0 1px rgba(15, 23, 42, 0.9);
+  padding: 16px 16px 18px;
+  overflow: hidden;
+}
+
+.cq-panel::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.18), transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.18), transparent 60%);
+  opacity: 0.5;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.cq-panel-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Hero strip */
+
+.cq-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+@media (min-width: 768px) {
+  .cq-hero {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.cq-hero-title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #f9fafb;
+}
+
+.cq-hero-sub {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.cq-hero-metrics {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cq-chip {
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  color: #e5e7eb;
+  background: radial-gradient(circle at 0% 0%, rgba(52, 211, 153, 0.16), transparent 70%);
+}
+
+/* Quest list */
+
+.cq-quest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.cq-quest-card {
+  position: relative;
+  border-radius: 14px;
+  border: 1px solid rgba(55, 65, 81, 0.9);
+  background: radial-gradient(circle at 0% 0%, rgba(52, 211, 153, 0.14), transparent 65%),
+    radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.18), transparent 70%),
+    rgba(15, 23, 42, 0.98);
+  padding: 10px 12px 11px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) auto;
+  gap: 8px;
+  cursor: pointer;
+  transition:
+    transform 0.14s ease,
+    box-shadow 0.14s ease,
+    border-color 0.14s ease;
+}
+
+.cq-quest-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(52, 211, 153, 0.8);
+  box-shadow:
+    0 14px 36px rgba(15, 23, 42, 0.9),
+    0 0 28px rgba(52, 211, 153, 0.5);
+}
+
+.cq-quest-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cq-quest-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cq-quest-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+.cq-quest-handle {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.cq-quest-body {
+  font-size: 12px;
+  color: #cbd5f5;
+}
+
+.cq-quest-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.cq-quest-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cq-quest-btn {
+  font-size: 10px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: rgba(15, 23, 42, 0.95);
+  color: #e5e7eb;
+  cursor: pointer;
+  transition:
+    background 0.14s ease,
+    border-color 0.14s ease,
+    box-shadow 0.14s ease,
+    color 0.14s ease;
+}
+
+.cq-quest-btn:hover {
+  background: radial-gradient(circle at 0% 0%, rgba(52, 211, 153, 0.2), transparent 70%);
+  border-color: rgba(52, 211, 153, 0.9);
+  box-shadow: 0 0 20px rgba(52, 211, 153, 0.6);
+}
+
+.cq-quest-meta {
+  font-size: 10px;
+  color: #9ca3af;
+  text-align: right;
+}
+
+/* Sidebar */
+
+.cq-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cq-sidebar-card {
+  position: relative;
+  border-radius: 18px;
+  border: 1px solid rgba(51, 65, 85, 0.95);
+  background: radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.26), transparent 60%),
+    rgba(15, 23, 42, 0.98);
+  padding: 12px 13px 13px;
+  box-shadow:
+    0 18px 45px rgba(15, 23, 42, 0.95),
+    0 0 0 1px rgba(15, 23, 42, 0.9);
+}
+
+.cq-sidebar-card--brain {
+  background: radial-gradient(circle at 0% 100%, rgba(147, 51, 234, 0.3), transparent 60%),
+    rgba(15, 23, 42, 0.98);
+}
+
+.cq-sidebar-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+.cq-sidebar-sub {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.cq-sidebar-pill-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.cq-sidebar-pill {
+  font-size: 10px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  color: #e5e7eb;
+}
+
+.cq-sidebar-button-primary {
+  margin-top: 10px;
+  width: 100%;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #22c55e, #a3e635);
+  border: none;
+  color: #020617;
+  cursor: pointer;
+  box-shadow:
+    0 12px 26px rgba(22, 163, 74, 0.8),
+    0 0 26px rgba(52, 211, 153, 0.9);
+  transition:
+    transform 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.cq-sidebar-button-primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 16px 34px rgba(22, 163, 74, 0.9),
+    0 0 32px rgba(52, 211, 153, 1);
+}
+
+.cq-sidebar-badge {
+  margin-top: 10px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #a5b4fc;
+}
