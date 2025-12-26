@@ -1,12 +1,7 @@
-﻿{
+{
   "name": "castquest-frames",
   "private": true,
   "version": "0.0.1",
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "infra/*"
-  ],
   "scripts": {
     "dev": "echo \"Use per-app dev scripts\"",
     "build": "echo \"Use per-app build scripts\"",
