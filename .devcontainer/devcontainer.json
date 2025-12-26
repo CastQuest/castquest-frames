@@ -6,10 +6,7 @@
     "ghcr.io/devcontainers/features/node:1": {
       "version": "20"
     },
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/pnpm:1": {
-      "version": "8"
-    }
+    "ghcr.io/devcontainers/features/github-cli:1": {}
   },
 
   "customizations": {
