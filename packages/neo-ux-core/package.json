@@ -1,0 +1,13 @@
+{
+  "name": "@castquest/neo-ux-core",
+  "version": "0.1.0",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "react": "^18.0.0"
+  }
+}

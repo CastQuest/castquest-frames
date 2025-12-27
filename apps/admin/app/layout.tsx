@@ -1,7 +1,7 @@
 // apps/admin/app/layout.tsx
 import type { ReactNode } from "react";
 import "./globals.css";
-import { ShellLayout } from "./components/ShellLayout";
+import ShellLayout from "./ShellLayout";
 
 export const metadata = {
   title: "CastQuest Operator Console",
