@@ -1,17 +1,16 @@
-"use client";
+import { ReactNode } from "react";
+import { neo } from "../theme";
 
-export function GlowBadge({
-  label,
-  color = "text-emerald-400"
-}: {
-  label: string;
-  color?: string;
-}) {
+interface GlowBadgeProps {
+  children: ReactNode;
+}
+
+export function GlowBadge({ children }: GlowBadgeProps) {
   return (
     <span
-      className={\`px-2 py-0.5 text-[10px] rounded-full font-semibold uppercase tracking-wide \${color}\`}
+      className={`px-2 py-0.5 text-[10px] rounded-full font-semibold uppercase tracking-wide ${neo.glow.idle}`}
     >
-      {label}
+      {children}
     </span>
   );
 }

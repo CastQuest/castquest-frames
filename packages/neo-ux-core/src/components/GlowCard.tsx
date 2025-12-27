@@ -1,9 +1,15 @@
-"use client";
+import { ReactNode } from "react";
 import { neo } from "../theme";
 
-export function GlowCard({ children }: { children: React.ReactNode }) {
+interface GlowCardProps {
+  children: ReactNode;
+}
+
+export function GlowCard({ children }: GlowCardProps) {
   return (
-    <div className={\`p-4 rounded-lg bg-neutral-900 border border-neutral-800 \${neo.glow.idle}\`}>
+    <div
+      className={`p-4 rounded-lg bg-neutral-900 border border-neutral-800 ${neo.glow.idle}`}
+    >
       {children}
     </div>
   );

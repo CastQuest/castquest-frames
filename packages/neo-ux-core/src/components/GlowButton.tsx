@@ -1,17 +1,15 @@
-"use client";
+import { ReactNode, ButtonHTMLAttributes } from "react";
 import { neo } from "../theme";
 
-export function GlowButton({
-  children,
-  onClick
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-}) {
+interface GlowButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode;
+}
+
+export function GlowButton({ children, ...props }: GlowButtonProps) {
   return (
     <button
-      onClick={onClick}
-      className={\`px-4 py-2 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-200 \${neo.glow.active}\`}
+      {...props}
+      className={`px-4 py-2 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-200 ${neo.glow.active}`}
     >
       {children}
     </button>
