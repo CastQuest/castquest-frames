@@ -1051,6 +1051,9 @@ COMMANDS:
     brain               - Run Smart Brain analysis
     integrity           - Check protocol integrity
     
+  Quick Start (Recommended):
+    fullstack           - Launch complete platform (Services + Frames)
+    
   Deployment:
     deploy [env]        - Deploy system (env: development|production)
     monitor             - Launch monitoring dashboard
@@ -1100,9 +1103,14 @@ COMMANDS:
     
   Utilities:
     logs                - Show recent logs
+    fullstack           - Quick-start full platform
     help                - Show this help menu
 
 EXAMPLES:
+  
+  # Quick start (recommended for first-time setup)
+  ./scripts/master.sh fullstack
+  # Or directly: ./scripts/full-stack-start.sh
   
   # Full deployment with monitoring
   ./scripts/master.sh deploy production
@@ -1169,6 +1177,11 @@ main() {
   case "$command" in
     health)
       check_system_health
+      ;;
+    fullstack)
+      banner "LAUNCHING FULL STACK"
+      log "Starting complete CastQuest platform..."
+      bash "$SCRIPTS_DIR/full-stack-start.sh"
       ;;
     heal)
       run_self_healing

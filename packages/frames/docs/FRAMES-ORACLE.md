@@ -60,6 +60,7 @@ The **CastQuest Frames Oracle** is a production-ready Farcaster Frames implement
 **Endpoint**: `/api/frames/tiny-signal?token=ADDRESS`
 
 **Display Elements**:
+
 - Status indicator (color-coded circle)
 - Token ticker (`$PIC`, `$VID`, etc.)
 - Current price (in ETH)
@@ -67,6 +68,7 @@ The **CastQuest Frames Oracle** is a production-ready Farcaster Frames implement
 - CastQuest branding
 
 **Color Coding**:
+
 ```javascript
 +10% or more     → Bright Green (#00FF00)
 +0.01% to +9.99% → Light Green (#88FF88)
@@ -76,11 +78,13 @@ The **CastQuest Frames Oracle** is a production-ready Farcaster Frames implement
 ```
 
 **Actions**:
+
 1. **View Details** → Opens `token-detail` frame
 2. **Refresh** → Reloads frame with latest data
 3. **Open CastQuest** → Links to web app
 
 **Use Cases**:
+
 - Quick price checks in timeline
 - Token discovery feeds
 - Automated bot posts
@@ -95,6 +99,7 @@ The **CastQuest Frames Oracle** is a production-ready Farcaster Frames implement
 **Endpoint**: `/api/frames/token-detail?token=ADDRESS`
 
 **Display Elements**:
+
 - Token header (ticker + name)
 - Large price display
 - 24h change percentage (color-coded)
@@ -105,12 +110,14 @@ The **CastQuest Frames Oracle** is a production-ready Farcaster Frames implement
 - Trading call-to-action
 
 **Actions**:
+
 1. **Buy** → Direct link to CastQuest buy interface
 2. **Sell** → Direct link to CastQuest sell interface
 3. **Explorer** → Opens token on Base block explorer
 4. **Back** → Returns to tiny signal frame
 
 **Use Cases**:
+
 - Pre-trade research
 - Due diligence
 - Sharing token details
@@ -125,6 +132,7 @@ The **CastQuest Frames Oracle** is a production-ready Farcaster Frames implement
 **Endpoint**: `/api/frames/cast-overview`
 
 **Display Elements**:
+
 - Protocol branding (purple gradient)
 - $CAST price and market cap
 - Protocol metrics:
@@ -134,12 +142,14 @@ The **CastQuest Frames Oracle** is a production-ready Farcaster Frames implement
   - Holder count
 
 **Actions**:
+
 1. **Buy $CAST** → Trading interface
 2. **View Fees** → Protocol fee dashboard
 3. **Governance** → DAO voting interface
 4. **Learn More** → About page
 
 **Use Cases**:
+
 - Protocol marketing
 - Community updates
 - Governance proposals
@@ -152,12 +162,12 @@ The **CastQuest Frames Oracle** is a production-ready Farcaster Frames implement
 All frames use Farcaster Frame Specification v2:
 
 ```html
-<meta property="fc:frame" content="vNext">
-<meta property="fc:frame:image" content="data:image/svg+xml;base64,...">
-<meta property="fc:frame:image:aspect_ratio" content="1.91:1">
-<meta property="fc:frame:button:1" content="Button Label">
-<meta property="fc:frame:button:1:action" content="post|link|mint">
-<meta property="fc:frame:button:1:target" content="https://...">
+<meta property="fc:frame" content="vNext" />
+<meta property="fc:frame:image" content="data:image/svg+xml;base64,..." />
+<meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+<meta property="fc:frame:button:1" content="Button Label" />
+<meta property="fc:frame:button:1:action" content="post|link|mint" />
+<meta property="fc:frame:button:1:target" content="https://..." />
 ```
 
 ### Image Generation
@@ -179,6 +189,7 @@ const imageUrl = svgToDataURL(svg);
 ```
 
 **SVG Advantages**:
+
 - Sharp rendering at any size
 - Programmatic generation
 - Small file size
@@ -189,7 +200,7 @@ const imageUrl = svgToDataURL(svg);
 Frames communicate with Core Services:
 
 ```typescript
-const API_URL = process.env.NEXT_PUBLIC_CORE_API_URL || 
+const API_URL = process.env.NEXT_PUBLIC_CORE_API_URL ||
                 'http://localhost:4000/api/v1';
 
 // Market data
@@ -237,6 +248,7 @@ Server starts on `http://localhost:3002`
 Visit `http://localhost:3002` for interactive demo with all frames
 
 **2. Direct Frame URLs**:
+
 ```bash
 # Tiny signal (replace ADDRESS)
 http://localhost:3002/api/frames/tiny-signal?token=0x1111...
@@ -249,6 +261,7 @@ http://localhost:3002/api/frames/cast-overview
 ```
 
 **3. Farcaster Validator**:
+
 ```bash
 # Get ngrok tunnel for external testing
 ngrok http 3002
@@ -309,11 +322,13 @@ NEXT_PUBLIC_CORE_API_URL=https://api.castquest.xyz/api/v1
 ### Deployment Platforms
 
 **Vercel** (Recommended):
+
 ```bash
 vercel deploy
 ```
 
 **Docker**:
+
 ```dockerfile
 FROM node:20-alpine
 WORKDIR /app
@@ -326,6 +341,7 @@ CMD ["pnpm", "start"]
 ```
 
 **Traditional Server**:
+
 ```bash
 # On server
 git clone <repo>
@@ -340,10 +356,11 @@ pm2 start "pnpm start" --name castquest-frames
 ### Input Validation
 
 All token addresses validated:
+
 ```typescript
 // Must be valid Ethereum address
 if (!/^0x[a-fA-F0-9]{40}$/.test(tokenAddress)) {
-  return error('Invalid token address');
+  return error("Invalid token address");
 }
 ```
 
@@ -365,13 +382,13 @@ if (!/^0x[a-fA-F0-9]{40}$/.test(tokenAddress)) {
 // next.config.js
 headers: [
   {
-    source: '/api/frames/:path*',
+    source: "/api/frames/:path*",
     headers: [
-      { key: 'Access-Control-Allow-Origin', value: '*' },
-      { key: 'Access-Control-Allow-Methods', value: 'GET, POST, OPTIONS' },
+      { key: "Access-Control-Allow-Origin", value: "*" },
+      { key: "Access-Control-Allow-Methods", value: "GET, POST, OPTIONS" },
     ],
   },
-]
+];
 ```
 
 ## Performance
@@ -423,6 +440,7 @@ headers: [
 ### Key Metrics
 
 Monitor:
+
 - Frame load times
 - API response times
 - Error rates by frame type
@@ -432,6 +450,7 @@ Monitor:
 ### Logging
 
 All operations logged:
+
 ```bash
 # View logs
 ./scripts/master.sh frames logs
@@ -445,6 +464,7 @@ tail -f logs/frames-*.log
 ### Common Issues
 
 **Frame not displaying**:
+
 ```bash
 # Check server is running
 ./scripts/master.sh frames status
@@ -457,16 +477,19 @@ curl http://localhost:4000/api/v1/health
 ```
 
 **Image not loading**:
+
 - Verify SVG generation (check logs)
 - Check image size (max 10MB)
 - Validate data URL encoding
 
 **Buttons not working**:
+
 - Verify meta tag syntax
 - Check target URLs
 - Test with Farcaster validator
 
 **API errors**:
+
 - Ensure Core Services running (port 4000)
 - Verify token address format
 - Check API logs
@@ -501,6 +524,7 @@ All frame URLs follow predictable patterns:
 ### URL Encoding
 
 Token addresses must be:
+
 - Lowercase or mixed case (checksummed)
 - 42 characters (0x + 40 hex)
 - URL-encoded if embedding
@@ -508,6 +532,7 @@ Token addresses must be:
 ### Deep Linking
 
 Frames support navigation:
+
 ```
 Timeline → Tiny Signal → View Details → Token Detail → Buy
                                                       → Sell
@@ -541,11 +566,12 @@ for (const token of hotTokens) {
 
 ```html
 <!-- Embed frame preview -->
-<iframe 
+<iframe
   src="/api/frames/token-detail?token=0x..."
-  width="1200" 
+  width="1200"
   height="630"
-  frameborder="0">
+  frameborder="0"
+>
 </iframe>
 ```
 
@@ -570,6 +596,7 @@ for (const token of hotTokens) {
 ## Contributing
 
 See [CONTRIBUTING.md](../../CONTRIBUTING.md) for:
+
 - Code style guidelines
 - Testing requirements
 - PR process
@@ -591,6 +618,7 @@ MIT - See [LICENSE](../../LICENSE)
 ## Quick Reference
 
 ### Commands
+
 ```bash
 frames start      # Start server (port 3002)
 frames stop       # Stop server
@@ -603,6 +631,7 @@ frames logs       # View logs
 ```
 
 ### Endpoints
+
 ```
 /api/frames/tiny-signal?token=ADDRESS   # Market signal
 /api/frames/token-detail?token=ADDRESS  # Full metrics
@@ -610,11 +639,13 @@ frames logs       # View logs
 ```
 
 ### Ports
+
 - **Frames**: 3002
 - **Core Services**: 4000
 - **Contracts RPC**: 8545 (if local testnet)
 
 ### Status Colors
+
 ```
 Green:   +10% or more
 Red:     -10% or worse

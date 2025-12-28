@@ -9,13 +9,13 @@ CastQuest is a decentralized media tokenization platform built on Base, consisti
 │                     FRONTEND LAYER                           │
 │  • apps/web - Main web application (Next.js)                │
 │  • apps/admin - Admin dashboard (Next.js)                   │
-│  • Farcaster Frames - Social media integration              │
+│  • packages/frames - Farcaster Frames (3 types) ✅          │
 └──────────────────┬──────────────────────────────────────────┘
                    │
 ┌──────────────────▼──────────────────────────────────────────┐
 │                  SDK & API LAYER                             │
 │  • @castquest/sdk - TypeScript SDK                          │
-│  • @castquest/core-services - REST API (39 endpoints)      │
+│  • @castquest/core-services - REST API (39 endpoints) ✅   │
 │    - Users & Auth (JWT)                                     │
 │    - Wallet Management (EVM)                                │
 │    - Media Registry Mirror                                  │
@@ -25,7 +25,7 @@ CastQuest is a decentralized media tokenization platform built on Base, consisti
                    │
 ┌──────────────────▼──────────────────────────────────────────┐
 │               BLOCKCHAIN LAYER                               │
-│  • @castquest/contracts - Solidity smart contracts         │
+│  • @castquest/contracts - Solidity smart contracts ✅       │
 │    - CASTToken (ERC-20)                                     │
 │    - MediaTokenFactory                                      │
 │    - MediaRegistry                                          │
@@ -44,9 +44,59 @@ CastQuest is a decentralized media tokenization platform built on Base, consisti
 
 ### **Core Packages**
 
+#### **@castquest/frames** ✨ NEW
+
+Farcaster Frames implementation - **100% Complete** (v1.2.0-frames)
+
+**Location**: `packages/frames/`  
+**Port**: 3002  
+**Status**: Production Ready ✅
+
+**Frame Types**:
+
+- **Tiny Market Signal** (`/api/frames/tiny-signal?token=ADDRESS`)
+  - Compact price display with color-coded status
+  - 24h percentage change
+  - Actions: View Details, Refresh, Open CastQuest
+- **Token Detail** (`/api/frames/token-detail?token=ADDRESS`)
+  - Full metrics (price, volume, market cap, holders)
+  - Risk flags and status
+  - Actions: Buy, Sell, Explorer, Back
+- **CAST Protocol Overview** (`/api/frames/cast-overview`)
+  - Protocol token stats
+  - 24h fees and volume
+  - Actions: Buy $CAST, View Fees, Governance, Learn More
+
+**Technical Stack**:
+
+- Next.js 14 + React 18
+- Farcaster Frame Specification v2
+- SVG image generation (timeline-optimized 1.91:1)
+- Core Services API integration
+- Production caching (1-5 minutes)
+
+**Color Coding**:
+
+- Green (#00FF00): +10% or more
+- Red (#FF0000): -10% or worse
+- Neutral (#888888): Between -10% and +10%
+
+**Master Commands**:
+
+```bash
+./scripts/master.sh frames start    # Start server
+./scripts/master.sh frames health   # Run diagnostics
+./scripts/master.sh frames status   # Check status
+./scripts/master.sh frames logs     # View logs
+```
+
+**Documentation**: `packages/frames/docs/FRAMES-ORACLE.md`
+
+---
+
 #### **@castquest/core-services**
 
-Backend API layer - **100% Complete**
+Backend API layer - **100% Complete** (v1.1.0-oracles)
 
 - **Location**: `packages/core-services/`
 - **Port**: 4000
@@ -403,31 +453,59 @@ Automated validation and deployment:
 
 ## 📚 Documentation
 
-- **Core Services**: [packages/core-services/README.md](../packages/core-services/README.md)
-- **API Reference**: [packages/core-services/docs/API.md](../packages/core-services/docs/API.md)
-- **Architecture**: [packages/core-services/docs/ARCHITECTURE.md](../packages/core-services/docs/ARCHITECTURE.md)
-- **Contracts**: [packages/contracts/README.md](../packages/contracts/README.md)
+### **Core Documentation**
+
+- **System Overview**: [docs/SYSTEM-OVERVIEW.md](./SYSTEM-OVERVIEW.md) ← You are here
 - **Contributing**: [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **Protocol History**: [protocol-history.md](../protocol-history.md)
+
+### **Package Documentation**
+
+#### Frames Oracle ✨
+
+- **Complete Guide**: [packages/frames/docs/FRAMES-ORACLE.md](../packages/frames/docs/FRAMES-ORACLE.md) (650 lines)
+- **Quick Reference**: [packages/frames/README.md](../packages/frames/README.md) (280 lines)
+- Topics: Architecture, Frame types, Testing, Deployment, Security, Integration
+
+#### Core Services
+
+- **README**: [packages/core-services/README.md](../packages/core-services/README.md)
+- **API Reference**: [packages/core-services/docs/API.md](../packages/core-services/docs/API.md) (39 endpoints)
+- **Architecture**: [packages/core-services/docs/ARCHITECTURE.md](../packages/core-services/docs/ARCHITECTURE.md)
+
+#### Smart Contracts
+
+- **README**: [packages/contracts/README.md](../packages/contracts/README.md)
+- Topics: Solidity contracts, Foundry setup, Testing, Deployment scripts
 
 ## 🧪 Testing Strategy
 
 ### Unit Tests
 
-- Core Services: Vitest with mocked database
-- Contracts: Foundry with comprehensive scenarios
+- **Core Services**: Vitest with mocked database
+- **Contracts**: Foundry with comprehensive scenarios (36 tests)
+- **Frames**: TypeScript type checking + ESLint
 - Coverage target: 80%+
 
 ### Integration Tests
 
-- API endpoint testing
+- API endpoint testing (39 endpoints)
 - Contract deployment flows
+- Frame rendering and button actions
 - End-to-end user journeys
 
 ### Performance Tests
 
-- Load testing for APIs
-- Gas optimization for contracts
+- Load testing for APIs (rate limiting at 100 req/min)
+- Gas optimization for contracts (200 optimizer runs)
+- Frame generation speed (< 100ms target)
 - Database query optimization
+
+### Frame Testing
+
+- **Local**: Demo page at `http://localhost:3002`
+- **Validator**: Farcaster Frame Validator
+- **Integration**: Core Services API dependency testing
 
 ## 🚢 Deployment
 
