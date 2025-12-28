@@ -1,6 +1,6 @@
-import { Router, Request, Response } from 'express';
-import { RiskService } from './service';
+import { Request, Response, Router } from 'express';
 import { z } from 'zod';
+import { RiskService } from './service';
 
 export const riskRoutes = Router();
 const riskService = new RiskService();

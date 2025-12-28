@@ -1,6 +1,6 @@
-import { Router, Request, Response } from 'express';
-import { MediaService } from './service';
+import { Request, Response, Router } from 'express';
 import { z } from 'zod';
+import { MediaService } from './service';
 
 export const mediaRoutes = Router();
 const mediaService = new MediaService();

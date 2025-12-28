@@ -1,7 +1,21 @@
 ﻿// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.23;
 
 import {Errors} from "../libs/Errors.sol";
+
+contract CastQuestRegistry {
+    mapping(address => bool) public isRegistered;
+    
+    event Registered(address indexed entity);
+    
+    function register(address entity) external {
+        require(entity != address(0), Errors.InvalidAddress);
+        require(!isRegistered[entity], Errors.AlreadyExists);
+        
+        isRegistered[entity] = true;
+        emit Registered(entity);
+    }
+}
 
 contract CastQuestRegistry {
     address public owner;

@@ -466,6 +466,87 @@ manage_core_services() {
       success "Core Services tests complete"
       ;;
       
+    test:watch)
+      log "Starting Core Services test watcher..."
+      cd "$ROOT_DIR/packages/core-services"
+      pnpm test:watch
+      ;;
+      
+    lint)
+      log "Linting Core Services..."
+      cd "$ROOT_DIR/packages/core-services"
+      pnpm lint
+      success "Linting complete"
+      ;;
+      
+    typecheck)
+      log "Type checking Core Services..."
+      cd "$ROOT_DIR/packages/core-services"
+      pnpm typecheck
+      success "Type check complete"
+      ;;
+      
+    db:migrate)
+      log "Running database migrations..."
+      cd "$ROOT_DIR/packages/core-services"
+      pnpm db:migrate
+      success "Migrations complete"
+      ;;
+      
+    db:seed)
+      log "Seeding database..."
+      cd "$ROOT_DIR/packages/core-services"
+      pnpm db:seed
+      success "Database seeded"
+      ;;
+      
+    db:reset)
+      warn "This will DESTROY all data in the database!"
+      read -p "Are you sure? (yes/no): " confirm
+      if [ "$confirm" = "yes" ]; then
+        log "Resetting database..."
+        cd "$ROOT_DIR/packages/core-services"
+        pnpm db:reset
+        success "Database reset complete"
+      else
+        log "Database reset cancelled"
+      fi
+      ;;
+      
+    db:studio)
+      log "Opening Drizzle Studio..."
+      cd "$ROOT_DIR/packages/core-services"
+      pnpm db:studio
+      ;;
+      
+    api:test)
+      log "Testing Core Services API..."
+      
+      if ! lsof -ti:4000 &> /dev/null; then
+        error "Core Services not running - start with: ./scripts/master.sh services start"
+        return 1
+      fi
+      
+      echo ""
+      log "=== Health Check ==="
+      curl -s http://localhost:4000/health | jq . || error "Health endpoint failed"
+      
+      echo ""
+      log "=== API Endpoints ==="
+      success "Users: http://localhost:4000/api/v1/users"
+      success "Wallets: http://localhost:4000/api/v1/wallets"
+      success "Media: http://localhost:4000/api/v1/media"
+      success "Markets: http://localhost:4000/api/v1/markets"
+      success "Admin: http://localhost:4000/api/v1/admin (requires API key)"
+      
+      echo ""
+      log "=== Quick Test ==="
+      log "Testing GET /api/v1/media..."
+      curl -s "http://localhost:4000/api/v1/media?limit=5" | jq '.success' && success "Media endpoint working" || error "Media endpoint failed"
+      
+      echo ""
+      ;;
+      
     health)
       log "Core Services health diagnostics..."
       echo ""
@@ -508,9 +589,62 @@ manage_core_services() {
       check_phase2_completion
       ;;
       
+    logs)
+      log "Tailing Core Services logs..."
+      tail -f "$ROOT_DIR/logs/core-services.log"
+      ;;
+      
+    full-check)
+      log "Running full Core Services validation..."
+      echo ""
+      
+      step "1. Structure check"
+      manage_core_services health
+      
+      echo ""
+      step "2. Type checking"
+      cd "$ROOT_DIR/packages/core-services"
+      pnpm typecheck || warn "Type check warnings"
+      
+      echo ""
+      step "3. Linting"
+      pnpm lint || warn "Linting warnings"
+      
+      echo ""
+      step "4. Running tests"
+      pnpm test || warn "Test warnings"
+      
+      echo ""
+      step "5. Build verification"
+      pnpm build || error "Build failed"
+      
+      echo ""
+      success "Full validation complete!"
+      ;;
+      
     *)
       error "Unknown Core Services action: $action"
-      log "Available actions: start, stop, restart, status, build, test, health, phase2"
+      echo ""
+      log "Available actions:"
+      log "  start           - Start Core Services server"
+      log "  stop            - Stop Core Services server"
+      log "  restart         - Restart Core Services server"
+      log "  status          - Check server status"
+      log "  build           - Build TypeScript code"
+      log "  test            - Run test suite"
+      log "  test:watch      - Run tests in watch mode"
+      log "  lint            - Run ESLint"
+      log "  typecheck       - TypeScript type checking"
+      log "  health          - Check package health"
+      log "  db:migrate      - Run database migrations"
+      log "  db:seed         - Seed database with test data"
+      log "  db:reset        - Reset database (DESTRUCTIVE)"
+      log "  db:studio       - Open Drizzle Studio"
+      log "  api:test        - Test API endpoints"
+      log "  logs            - Tail server logs"
+      log "  full-check      - Run complete validation"
+      log "  phase2          - Check Phase 2 completion"
+      echo ""
       return 1
       ;;
   esac
@@ -548,6 +682,111 @@ monitor_system() {
     git status --short
     echo ""
   fi
+}
+
+################################################################################
+# Contracts Management
+################################################################################
+
+manage_contracts() {
+  local action="${1:-status}"
+  
+  step "Managing Smart Contracts: $action"
+  
+  case "$action" in
+    build)
+      log "Building contracts..."
+      cd "$ROOT_DIR/packages/contracts"
+      
+      if ! command -v forge &> /dev/null; then
+        error "Foundry not installed - run: curl -L https://foundry.paradigm.xyz | bash && foundryup"
+        return 1
+      fi
+      
+      forge build
+      success "Contracts built successfully"
+      ;;
+      
+    test)
+      log "Running contract tests..."
+      cd "$ROOT_DIR/packages/contracts"
+      
+      if ! command -v forge &> /dev/null; then
+        error "Foundry not installed"
+        return 1
+      fi
+      
+      forge test -vv
+      success "Contract tests complete"
+      ;;
+      
+    coverage)
+      log "Running test coverage..."
+      cd "$ROOT_DIR/packages/contracts"
+      forge coverage
+      success "Coverage report generated"
+      ;;
+      
+    gas)
+      log "Running gas report..."
+      cd "$ROOT_DIR/packages/contracts"
+      forge test --gas-report
+      success "Gas report generated"
+      ;;
+      
+    clean)
+      log "Cleaning build artifacts..."
+      cd "$ROOT_DIR/packages/contracts"
+      forge clean
+      success "Artifacts cleaned"
+      ;;
+      
+    status)
+      log "Checking contracts status..."
+      echo ""
+      
+      if [ ! -d "$ROOT_DIR/packages/contracts" ]; then
+        error "Contracts package not found"
+        return 1
+      fi
+      
+      log "=== Contracts Package ==="
+      [ -f "$ROOT_DIR/packages/contracts/foundry.toml" ] && success "foundry.toml ✓" || error "foundry.toml missing"
+      [ -d "$ROOT_DIR/packages/contracts/contracts" ] && success "contracts/ ✓" || error "contracts/ missing"
+      [ -d "$ROOT_DIR/packages/contracts/test" ] && success "test/ ✓" || error "test/ missing"
+      [ -d "$ROOT_DIR/packages/contracts/script" ] && success "script/ ✓" || error "script/ missing"
+      [ -d "$ROOT_DIR/packages/contracts/lib" ] && success "dependencies ✓" || warn "dependencies missing (run: forge install)"
+      
+      echo ""
+      log "=== Foundry Status ==="
+      if command -v forge &> /dev/null; then
+        local forge_version=$(forge --version | head -1)
+        success "Foundry: $forge_version"
+      else
+        warn "Foundry not installed"
+      fi
+      
+      echo ""
+      log "=== Contract Files ==="
+      if [ -d "$ROOT_DIR/packages/contracts/contracts" ]; then
+        local contract_count=$(find "$ROOT_DIR/packages/contracts/contracts" -name "*.sol" 2>/dev/null | wc -l)
+        success "Contracts: $contract_count files"
+      fi
+      
+      if [ -d "$ROOT_DIR/packages/contracts/test" ]; then
+        local test_count=$(find "$ROOT_DIR/packages/contracts/test" -name "*.t.sol" 2>/dev/null | wc -l)
+        success "Tests: $test_count files"
+      fi
+      
+      echo ""
+      ;;
+      
+    *)
+      error "Unknown contracts action: $action"
+      log "Available actions: build, test, coverage, gas, clean, status"
+      return 1
+      ;;
+  esac
 }
 
 ################################################################################
@@ -651,6 +890,14 @@ COMMANDS:
     services health     - Full health diagnostics
     services phase2     - Check Phase 2 completion status
     
+  Smart Contracts:
+    contracts build     - Build smart contracts with Foundry
+    contracts test      - Run contract tests
+    contracts coverage  - Generate test coverage report
+    contracts gas       - Generate gas usage report
+    contracts clean     - Clean build artifacts
+    contracts status    - Check contracts package status
+    
   Git Operations:
     git status          - Show git status
     git commit [msg]    - Commit all changes
@@ -680,9 +927,24 @@ EXAMPLES:
   ./scripts/master.sh workers status
   
   # Core Services management
-  ./scripts/master.sh services start
-  ./scripts/master.sh services health
-  ./scripts/master.sh services phase2
+  ./scripts/master.sh services start        # Start API server (port 4000)
+  ./scripts/master.sh services stop         # Stop API server
+  ./scripts/master.sh services restart      # Restart API server
+  ./scripts/master.sh services status       # Server status
+  ./scripts/master.sh services health       # Health diagnostics (39 endpoints)
+  ./scripts/master.sh services build        # Build TypeScript
+  ./scripts/master.sh services test         # Run test suite
+  ./scripts/master.sh services lint         # ESLint check
+  ./scripts/master.sh services typecheck    # TypeScript validation
+  ./scripts/master.sh services db:migrate   # Database migrations
+  ./scripts/master.sh services db:seed      # Seed test data
+  ./scripts/master.sh services db:studio    # Drizzle Studio GUI
+  ./scripts/master.sh services api:test     # Test live API endpoints
+  ./scripts/master.sh services full-check   # Complete validation
+  
+  # Smart Contracts
+  ./scripts/master.sh contracts build
+  ./scripts/master.sh contracts test
 
 LOGS:
   All operations are logged to: $LOG_FILE
@@ -724,6 +986,9 @@ main() {
       ;;
     services)
       manage_core_services "$@"
+      ;;
+    contracts)
+      manage_contracts "$@"
       ;;
     monitor)
       monitor_system

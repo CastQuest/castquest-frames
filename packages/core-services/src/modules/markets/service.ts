@@ -1,7 +1,7 @@
-import { eq, and, desc, gte, lte, sql } from 'drizzle-orm';
+import { and, desc, eq, gte, lte, sql } from 'drizzle-orm';
 import { db } from '../../lib/db';
 import { marketSignals, pricePoints, trades } from '../../lib/db/schema';
-import { MarketSignal, PricePoint, Trade, MarketStatus } from '../../types';
+import { MarketSignal, MarketStatus, PricePoint, Trade } from '../../types';
 
 export class MarketsService {
   /**

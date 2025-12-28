@@ -1,7 +1,8 @@
-﻿// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.23;
 
 library Errors {
     string public constant NotAuthorized = "NOT_AUTHORIZED";
-    string public constant ZeroAddress = "ZERO_ADDRESS";
+    string public constant InvalidAddress = "INVALID_ADDRESS";
+    string public constant AlreadyExists = "ALREADY_EXISTS";
 }

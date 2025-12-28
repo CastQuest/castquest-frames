@@ -1,6 +1,6 @@
 # Change Summary
 
-**Timestamp**: 2025-12-28T09:38:59+00:00
+**Timestamp**: 2025-12-28T10:03:21+00:00
 **Branch**: master
 
 ## Files Modified
@@ -8,13 +8,25 @@
 ```
 .smartbrain/last-change-summary.md
 docs/SMART-BRAIN-MONITORING.md
+packages/core-services/src/modules/markets/routes.ts
+packages/core-services/src/modules/markets/service.ts
+packages/core-services/src/modules/media/routes.ts
+packages/core-services/src/modules/media/service.ts
+packages/core-services/src/modules/risk/routes.ts
+packages/core-services/src/modules/risk/service.ts
 ```
 
 ## Change Details
 
- .smartbrain/last-change-summary.md |  44 ++---
- docs/SMART-BRAIN-MONITORING.md     | 365 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 380 insertions(+), 29 deletions(-)
+ .smartbrain/last-change-summary.md                 |  28 +--
+ docs/SMART-BRAIN-MONITORING.md                     |  44 +++-
+ .../core-services/src/modules/markets/routes.ts    | 264 ++++++++++++++++++-
+ .../core-services/src/modules/markets/service.ts   | 278 +++++++++++++++++++++
+ packages/core-services/src/modules/media/routes.ts | 213 +++++++++++++++-
+ .../core-services/src/modules/media/service.ts     | 211 ++++++++++++++++
+ packages/core-services/src/modules/risk/routes.ts  | 252 ++++++++++++++++++-
+ packages/core-services/src/modules/risk/service.ts | 260 +++++++++++++++++++
+ 8 files changed, 1504 insertions(+), 46 deletions(-)
 
 ## Validation Report
 

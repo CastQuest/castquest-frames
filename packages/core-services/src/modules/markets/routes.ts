@@ -1,6 +1,6 @@
-import { Router, Request, Response } from 'express';
-import { MarketsService } from './service';
+import { Request, Response, Router } from 'express';
 import { z } from 'zod';
+import { MarketsService } from './service';
 
 export const marketRoutes = Router();
 const marketsService = new MarketsService();

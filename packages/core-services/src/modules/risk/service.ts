@@ -1,6 +1,6 @@
-import { eq, and, desc, gte, sql } from 'drizzle-orm';
+import { desc, eq, gte, sql } from 'drizzle-orm';
 import { db } from '../../lib/db';
-import { riskAssessments, mediaMetadata } from '../../lib/db/schema';
+import { mediaMetadata, riskAssessments } from '../../lib/db/schema';
 import { RiskAssessment } from '../../types';
 
 export class RiskService {

@@ -1,4 +1,4 @@
-import { eq, and, desc, ilike, or } from 'drizzle-orm';
+import { desc, eq, ilike, or } from 'drizzle-orm';
 import { db } from '../../lib/db';
 import { mediaMetadata } from '../../lib/db/schema';
 import { MediaMetadata, MediaType, TokenStatus } from '../../types';
