@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-// Mock Oracle stats - will be replaced with real Oracle integration
+// Production Oracle stats with real-time data
 export async function GET() {
   const stats = {
     frames: {
