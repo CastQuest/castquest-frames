@@ -163,12 +163,14 @@ CastQuest Ecosystem
 ## Validation Rules
 
 ### Architecture Safety (Critical)
+
 - ✅ Protected paths cannot be deleted
 - ✅ Core contracts are immutable without review
 - ✅ SDK interfaces maintain backwards compatibility
 - ✅ Permission system cannot be bypassed
 
 Protected Paths:
+
 - `packages/sdk/src/core/**`
 - `packages/contracts/contracts/CAST.sol`
 - `packages/contracts/contracts/MediaTokenFactory.sol`
@@ -176,18 +178,21 @@ Protected Paths:
 - `.smartbrain/**`
 
 ### Protocol Integrity (Critical)
+
 - ✅ Fee calculations remain consistent
 - ✅ CAST value accrual is preserved
 - ✅ Market mechanics are not compromised
 - ✅ Token creation flow is validated
 
 ### Security Scan (High)
+
 - ✅ No hardcoded secrets or private keys
 - ✅ No SQL injection vulnerabilities
 - ✅ No unprotected admin routes
 - ✅ Authentication required for sensitive endpoints
 
 ### Documentation (Medium)
+
 - ✅ New functions have inline comments
 - ✅ New components have usage examples
 - ✅ API changes are documented
@@ -230,6 +235,7 @@ Configuration is stored in `.smartbrain/config.json`:
 ## State Tracking
 
 The Smart Brain maintains state in:
+
 - `.smartbrain/state.json` - Current state (JSON)
 - `.smartbrain/state.log` - Event log (append-only)
 - `.smartbrain/last-change-summary.md` - Latest change documentation
@@ -259,24 +265,28 @@ Zero-risk deployment protocol
 ## Protocol Design Principles
 
 ### 1. Multi-Repo Coherence
+
 - Each repo has a clear boundary
 - Interfaces are well-defined
 - Dependencies are explicit
 - Changes propagate cleanly
 
 ### 2. Zero-Risk Deployment
+
 - All changes validated before commit
 - Core architecture is protected
 - Rollback is automatic on failure
 - State is always recoverable
 
 ### 3. Codespace Optimization
+
 - Fast bootstrap (<2 minutes)
 - Clear folder structures
 - Consistent naming patterns
 - Minimal friction for contributors
 
 ### 4. Extensibility
+
 - Easy to add new tokens
 - Simple game template integration
 - Pluggable frame types
@@ -340,6 +350,7 @@ vim packages/contracts/contracts/MarketPlace.sol
 ## Behavior Guidelines
 
 ### What Smart Brain Does:
+
 ✅ Validates architecture safety automatically  
 ✅ Protects core contracts from breaking changes  
 ✅ Generates documentation for every commit  
@@ -348,6 +359,7 @@ vim packages/contracts/contracts/MarketPlace.sol
 ✅ Integrates with master.sh orchestrator
 
 ### What Smart Brain Doesn't Do:
+
 ❌ Make code changes for you  
 ❌ Override critical security violations  
 ❌ Push without validation passing  
@@ -423,25 +435,29 @@ rm -f .smartbrain/state.json .smartbrain/state.log
 ## Best Practices
 
 1. **Always validate before pushing**
+
    ```bash
    .smartbrain/brain.sh validate
    ```
 
 2. **Use auto-deploy for routine changes**
+
    ```bash
    .smartbrain/brain.sh auto
    ```
 
 3. **Use manual workflow for sensitive changes**
+
    ```bash
    # Review first
    git diff
-   
+
    # Then deploy
    .smartbrain/brain.sh deploy
    ```
 
 4. **Check logs after deployment**
+
    ```bash
    tail -f logs/brain-*.log
    ```
@@ -461,6 +477,6 @@ rm -f .smartbrain/state.json .smartbrain/state.log
 ---
 
 **CastQuest Smart Brain v1.0.0**  
-*Protocol Architect & AI Agent Coordinator*  
-*Zero-risk deployments with architectural protection*  
+_Protocol Architect & AI Agent Coordinator_  
+_Zero-risk deployments with architectural protection_  
 ✅ **Production Ready**
