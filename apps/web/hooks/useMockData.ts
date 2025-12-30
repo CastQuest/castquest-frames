@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import webContent from "../data/web-content.json";
+import type { Frame, Quest, Media, Stats, WebContent } from "../types";
 
 /**
  * useMockFrames Hook
@@ -29,7 +30,7 @@ import webContent from "../data/web-content.json";
  *    - Example: useWebSocket('/api/frames/subscribe')
  */
 export function useMockFrames() {
-  const [frames, setFrames] = useState(webContent.frames as any);
+  const [frames, setFrames] = useState<Frame[]>((webContent as WebContent).frames);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -38,7 +39,7 @@ export function useMockFrames() {
     setLoading(true);
     // In production: fetch('/api/frames')
     setTimeout(() => {
-      setFrames(webContent.frames as any);
+      setFrames((webContent as WebContent).frames);
       setLoading(false);
     }, 300);
   }, []);
@@ -47,7 +48,7 @@ export function useMockFrames() {
     setLoading(true);
     // In production: refetch from API
     setTimeout(() => {
-      setFrames(webContent.frames as any);
+      setFrames((webContent as WebContent).frames);
       setLoading(false);
     }, 300);
   };
@@ -87,7 +88,7 @@ export function useMockFrames() {
  *    - Example: const { claimReward } = useRewardClaim()
  */
 export function useMockQuests() {
-  const [quests, setQuests] = useState(webContent.quests as any);
+  const [quests, setQuests] = useState<Quest[]>((webContent as WebContent).quests);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -95,7 +96,7 @@ export function useMockQuests() {
     setLoading(true);
     // In production: fetch('/api/quests')
     setTimeout(() => {
-      setQuests(webContent.quests as any);
+      setQuests((webContent as WebContent).quests);
       setLoading(false);
     }, 300);
   }, []);
@@ -141,14 +142,14 @@ export function useMockQuests() {
  *    - Example: const { metadata } = useNFTMetadata(tokenId)
  */
 export function useMockMedia() {
-  const [media, setMedia] = useState(webContent.media as any);
+  const [media, setMedia] = useState<Media[]>((webContent as WebContent).media);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     // In production: fetch('/api/media')
     setTimeout(() => {
-      setMedia(webContent.media as any);
+      setMedia((webContent as WebContent).media);
       setLoading(false);
     }, 300);
   }, []);
@@ -176,14 +177,14 @@ export function useMockMedia() {
  *    - Example: const { tvl } = useTVL()
  */
 export function useMockStats() {
-  const [stats, setStats] = useState(webContent.stats as any);
+  const [stats, setStats] = useState<Stats>((webContent as WebContent).stats);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     // In production: fetch('/api/stats')
     setTimeout(() => {
-      setStats(webContent.stats as any);
+      setStats((webContent as WebContent).stats);
       setLoading(false);
     }, 300);
   }, []);
