@@ -10,6 +10,9 @@ coverage
 .next
 out
 
+# TypeScript build artifacts
+*.tsbuildinfo
+
 # Temporary files
 *.tmp
 *.log
