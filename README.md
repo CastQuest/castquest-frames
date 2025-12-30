@@ -1,4 +1,9 @@
-﻿# CAST QUEST Frames
+# CAST QUEST Frames
+
+[![CI](https://github.com/CastQuest/castquest-frames/actions/workflows/ci.yml/badge.svg)](https://github.com/CastQuest/castquest-frames/actions/workflows/ci.yml)
+[![Deploy](https://github.com/CastQuest/castquest-frames/actions/workflows/deploy.yml/badge.svg)](https://github.com/CastQuest/castquest-frames/actions/workflows/deploy.yml)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org/)
+[![pnpm Version](https://img.shields.io/badge/pnpm-%3E%3D9.0.0-blue)](https://pnpm.io/)
 
 CAST QUEST Frames is a Web3-native social photo protocol that feels like Instagram, mints like Zora, extends like Farcaster Frames, and builds like Remix — powered by a Smart Brain multi-agent AI.
 

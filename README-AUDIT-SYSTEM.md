@@ -1,5 +1,8 @@
 # 🧠 Smart Brain Oracle Audit System
 
+[![CI](https://github.com/CastQuest/castquest-frames/actions/workflows/ci.yml/badge.svg)](https://github.com/CastQuest/castquest-frames/actions/workflows/ci.yml)
+[![Deploy](https://github.com/CastQuest/castquest-frames/actions/workflows/deploy.yml/badge.svg)](https://github.com/CastQuest/castquest-frames/actions/workflows/deploy.yml)
+
 ## Overview
 
 The CastQuest audit system provides comprehensive smart contract auditing with self-healing capabilities, integrated into the master orchestrator.
@@ -16,20 +19,46 @@ Comprehensive audit script that performs:
 - Gas usage analysis
 - Automated report generation
 
-### 2. **contracts.sh** - Enhanced Contracts Workflow
+### 2. **healer.sh** - Enhanced Self-Healing System
+Comprehensive auto-healing script with 8 major steps:
+- Package export integrity verification
+- Import path validation
+- Workspace integrity checks
+- Key package rebuilding
+- TypeScript configuration validation
+- Git repository integrity
+- Security & dependency audits
+- Environment configuration validation
+
+### 3. **contracts.sh** - Enhanced Contracts Workflow
 Updated build script with:
 - Self-healing dependency auto-repair
 - Automatic audit integration
 - Color-coded status output
 - Smart Brain analysis trigger
 
-### 3. **master.sh Integration**
-New `audit` command added to master orchestrator:
-```bash
-./scripts/master.sh audit
-```
+### 4. **master.sh Integration**
+Enhanced commands in master orchestrator:
+- `audit` - Run Smart Brain Oracle audit
+- `heal` - Execute comprehensive self-healing
+- `ci` - Run local CI/CD simulation (NEW)
 
 Audit also runs automatically during `deploy production` workflow.
+
+### 5. **CI/CD Workflows** (NEW)
+Enhanced GitHub Actions workflows with:
+
+#### ci.yml - Multi-Stage CI Pipeline
+- **Lint & Type Check** - Code quality validation
+- **Build** - Compile all packages with artifact upload
+- **Test** - Run test suite with results upload
+- **Security** - Dependency vulnerability scanning
+- **Health Check** - Overall pipeline status validation
+
+#### deploy.yml - Production Deployment
+- **Pre-Deploy Audit** - Security and system health checks
+- **Build Application** - Compile for production
+- **Deploy to Production** - Docker image building and deployment
 
 ## Usage
 
@@ -38,10 +67,29 @@ Audit also runs automatically during `deploy production` workflow.
 ./scripts/audit.sh
 ```
 
+### Run Self-Healing
+```bash
+./scripts/healer.sh
+# Or via master orchestrator:
+./scripts/master.sh heal
+```
+
 ### Run via Master Orchestrator
 ```bash
 ./scripts/master.sh audit
 ```
+
+### Run Local CI/CD Simulation (NEW)
+```bash
+./scripts/master.sh ci
+```
+Simulates the full CI/CD pipeline locally:
+1. System health check
+2. Dependency installation
+3. Linting
+4. Type checking
+5. Building
+6. Testing
 
 ### Run Contracts Workflow (includes audit)
 ```bash
@@ -56,10 +104,14 @@ The audit runs at step 9 of the deployment process.
 
 ## Features
 
-### Self-Healing
+### Self-Healing (Enhanced)
 - Automatically detects missing Foundry dependencies
 - Auto-installs OpenZeppelin contracts and forge-std if missing
 - Repairs broken dependency states
+- Validates package exports and import paths
+- Rebuilds key packages automatically
+- Runs security audits on dependencies
+- Validates TypeScript and workspace configuration
 
 ### Audit Checks
 1. ✅ Foundry installation and version
@@ -73,6 +125,27 @@ The audit runs at step 9 of the deployment process.
 9. ✅ Compilation success (Solc 0.8.23)
 10. ✅ Test suite execution
 11. ✅ Gas usage analysis
+
+### CI/CD Integration (NEW)
+- Multi-stage pipeline with separate jobs for lint, build, test, security
+- Artifact upload for build outputs and test results
+- Security vulnerability scanning with pnpm audit
+- Health check aggregation across all pipeline stages
+- Pre-deploy audit for production deployments
+
+### Local CI Simulation (NEW)
+Run the full CI/CD pipeline locally before pushing:
+```bash
+./scripts/master.sh ci
+```
+Includes:
+- System health verification
+- Dependency installation
+- Linting
+- Type checking
+- Building all packages
+- Running test suite
+- Detailed summary report
 
 ### Reports Generated
 
@@ -152,6 +225,14 @@ contracts.sh
 
 ### Master Orchestrator
 ```bash
+# System health and integrity
+./scripts/master.sh health
+./scripts/master.sh heal
+./scripts/master.sh integrity
+
+# CI/CD simulation (NEW)
+./scripts/master.sh ci
+
 # Full audit
 ./scripts/master.sh audit
 
@@ -169,8 +250,20 @@ contracts.sh
 # Audit only
 ./scripts/audit.sh
 
+# Self-healing only
+./scripts/healer.sh
+
 # Contracts with audit
 ./scripts/contracts.sh
+```
+
+### CI/CD Workflows
+```bash
+# Triggered automatically on push/PR to main/master
+# Can also be triggered manually via GitHub Actions UI
+
+# Local simulation
+./scripts/master.sh ci
 ```
 
 ## Files Created
