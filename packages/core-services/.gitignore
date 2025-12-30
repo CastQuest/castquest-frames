@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+logs
+*.log
+.env
+.env.local
+.env.production
+*.sqlite
+*.db
+coverage
+.DS_Store

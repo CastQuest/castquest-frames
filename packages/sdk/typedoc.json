@@ -1,0 +1,19 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "out": "../../docs-site/sdk/api",
+  "plugin": ["typedoc-plugin-markdown"],
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeProtected": false,
+  "excludeExternals": true,
+  "hideGenerator": true,
+  "gitRevision": "main",
+  "theme": "markdown",
+  "entryDocument": "index.md",
+  "publicPath": "/sdk/api/",
+  "disableSources": false,
+  "includeVersion": true,
+  "categorizeByGroup": true,
+  "categoryOrder": ["Client", "Types", "Schema", "*"]
+}

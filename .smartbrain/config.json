@@ -1,0 +1,175 @@
+{
+  "version": "1.0.0",
+  "identity": {
+    "name": "CastQuest Smart Brain (Oracle Brain DB)",
+    "role": "Protocol Architect & AI Agent Coordinator",
+    "capabilities": [
+      "Protocol design and evolution",
+      "Multi-repo orchestration",
+      "Code validation and risk analysis",
+      "Automatic documentation generation",
+      "Intelligent commit and deployment"
+    ]
+  },
+  "coreArchitecture": {
+    "protectedPaths": [
+      "packages/sdk/src/core/**",
+      "packages/contracts/contracts/CAST.sol",
+      "packages/contracts/contracts/MediaTokenFactory.sol",
+      "apps/admin/app/api/permissions/**",
+      ".smartbrain/**"
+    ],
+    "validationRules": {
+      "noDirectDeletion": true,
+      "requireTests": false,
+      "enforceTypeScript": true,
+      "blockHardcodedSecrets": true
+    }
+  },
+  "automation": {
+    "autoValidate": true,
+    "autoDocument": true,
+    "autoCommit": true,
+    "autoTag": true,
+    "autoPush": true,
+    "commitMessageTemplate": "{type}: {description}\n\n{details}\n\n{validation}",
+    "tagPattern": "v{major}.{minor}.{patch}-{feature}"
+  },
+  "repositories": {
+    "contracts": {
+      "path": "packages/contracts",
+      "type": "solidity",
+      "contracts": ["CAST.sol", "MediaTokenFactory.sol", "MarketPlace.sol"],
+      "networks": ["base", "base-sepolia"]
+    },
+    "core": {
+      "path": "packages/sdk",
+      "type": "typescript",
+      "modules": ["oracle", "brain", "workers", "permissions"]
+    },
+    "frames": {
+      "path": "castquest-constellation/castquest-frames",
+      "type": "react",
+      "frameTypes": ["price", "trade", "game", "media"]
+    },
+    "builder": {
+      "path": "apps/web",
+      "type": "nextjs",
+      "features": ["media-upload", "token-creation", "frame-generation"]
+    },
+    "admin": {
+      "path": "apps/admin",
+      "type": "nextjs",
+      "features": ["permissions", "fees", "monitoring", "risk-management"]
+    }
+  },
+  "protocol": {
+    "tokens": {
+      "CAST": {
+        "type": "main-protocol-token",
+        "valueAccrual": "protocol-fees",
+        "address": "TBD"
+      },
+      "MediaTokens": {
+        "type": "per-upload-erc20",
+        "pattern": "$PIC, $VID, $AUDIO",
+        "factory": "MediaTokenFactory.sol"
+      }
+    },
+    "markets": {
+      "type": "bonding-curve",
+      "feeRecipient": "CAST-holders",
+      "protocolFeePercent": 2.5
+    },
+    "frames": {
+      "platforms": ["farcaster", "web"],
+      "actions": ["Buy", "Sell", "View", "Trade"],
+      "displays": ["price", "percentChange", "volume", "holders"]
+    }
+  },
+  "aiLayer": {
+    "capabilities": [
+      "Media analysis and classification",
+      "Token naming and ticker generation",
+      "Description writing",
+      "Frame spec generation",
+      "Game template selection",
+      "Risk and spam detection"
+    ],
+    "integrations": {
+      "oracle": "OracleDBService",
+      "brain": "SmartBrainEngine",
+      "workers": "AutonomousWorkerSystem"
+    }
+  },
+  "changeValidation": {
+    "rules": [
+      {
+        "id": "architecture-safety",
+        "description": "Verify change doesn't break core architecture",
+        "severity": "critical",
+        "checks": [
+          "No deletion of core contracts",
+          "No breaking changes to SDK interfaces",
+          "No unauthorized permission changes"
+        ]
+      },
+      {
+        "id": "protocol-integrity",
+        "description": "Ensure protocol rules are maintained",
+        "severity": "critical",
+        "checks": [
+          "Fee calculations remain consistent",
+          "CAST value accrual is preserved",
+          "Market mechanics are not compromised"
+        ]
+      },
+      {
+        "id": "security-scan",
+        "description": "Scan for security vulnerabilities",
+        "severity": "high",
+        "checks": [
+          "No hardcoded private keys or secrets",
+          "No SQL injection vulnerabilities",
+          "No unprotected admin routes"
+        ]
+      },
+      {
+        "id": "documentation-complete",
+        "description": "Changes are documented",
+        "severity": "medium",
+        "checks": [
+          "New functions have comments",
+          "New components have usage examples",
+          "API changes are documented"
+        ]
+      }
+    ]
+  },
+  "documentation": {
+    "autoGenerate": true,
+    "formats": ["inline-comments", "README", "API-docs"],
+    "locations": {
+      "contracts": "packages/contracts/docs",
+      "sdk": "docs/sdk",
+      "api": "docs/api",
+      "architecture": "docs/architecture.md"
+    }
+  },
+  "deployment": {
+    "strategy": "zero-risk",
+    "steps": [
+      "validate-changes",
+      "run-safety-checks",
+      "generate-documentation",
+      "commit-with-validation-report",
+      "tag-with-semantic-version",
+      "push-to-master"
+    ],
+    "rollback": {
+      "enabled": true,
+      "automatic": true,
+      "triggers": ["test-failure", "architecture-violation"]
+    }
+  }
+}

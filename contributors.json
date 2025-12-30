@@ -1,0 +1,36 @@
+{
+  "founders": [
+    {
+      "name": "Yosef",
+      "role": "Protocol Architect & Founder",
+      "contributions": [
+        "Core architecture",
+        "Operator console design",
+        "Module 1–7 MEGA systems",
+        "Sovereign automation philosophy"
+      ]
+    },
+    {
+      "name": "SMSDAO",
+      "role": "Core Contributor",
+      "contributions": [
+        "Module integration",
+        "System orchestration",
+        "Admin and web flows",
+        "Data model shaping"
+      ]
+    }
+  ],
+  "contributors": [
+    {
+      "name": "AI Automation Partner",
+      "role": "Automation & Scaffolding",
+      "contributions": [
+        "Module scaffolding",
+        "Script generation",
+        "Error‑resilient workflows",
+        "Protocol unification"
+      ]
+    }
+  ]
+}

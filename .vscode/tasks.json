@@ -1,0 +1,83 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Smart Brain: Auto-Deploy",
+      "type": "shell",
+      "command": "${workspaceFolder}/.smartbrain/brain.sh",
+      "args": ["auto"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "focus": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Smart Brain: Validate",
+      "type": "shell",
+      "command": "${workspaceFolder}/.smartbrain/brain.sh",
+      "args": ["validate"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Smart Brain: Watch Mode",
+      "type": "shell",
+      "command": "${workspaceFolder}/.smartbrain/brain.sh",
+      "args": ["watch"],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Master: Deploy Production",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/master.sh",
+      "args": ["deploy", "production"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Master: Health Check",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/master.sh",
+      "args": ["health"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Full Workflow: Brain + Master Deploy",
+      "dependsOn": [
+        "Smart Brain: Auto-Deploy",
+        "Master: Deploy Production"
+      ],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
