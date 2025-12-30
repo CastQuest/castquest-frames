@@ -1,0 +1,20 @@
+{
+  "name": "@castquest/monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev:admin": "pnpm --filter @castquest/admin dev",
+    "dev:web": "pnpm --filter @castquest/web dev",
+    "docs:dev": "pnpm --filter @castquest/docs-site dev",
+    "docs:build": "pnpm run docs:generate && pnpm --filter @castquest/docs-site build",
+    "docs:preview": "pnpm --filter @castquest/docs-site preview",
+    "docs:generate": "pnpm run docs:sdk && pnpm run docs:api",
+    "docs:sdk": "pnpm --filter @castquest/sdk docs",
+    "docs:api": "node docs-site/scripts/generate-openapi-docs.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "packageManager": "pnpm@8.0.0"
+}

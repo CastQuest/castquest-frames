@@ -1,0 +1,20 @@
+{
+  "name": "@castquest/docs-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview",
+    "generate-api-docs": "node scripts/generate-openapi-docs.js"
+  },
+  "dependencies": {
+    "vitepress": "^1.0.0",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "swagger-ui-dist": "^5.10.0"
+  }
+}

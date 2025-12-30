@@ -1,0 +1,40 @@
+{
+  "castquest.smartBrain.enabled": true,
+  "castquest.smartBrain.autoValidate": true,
+  "castquest.smartBrain.autoCommit": false,
+  "castquest.smartBrain.autoPush": false,
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.hg/store/**": true,
+    "**/logs/**": true
+  },
+  "files.associations": {
+    "*.sh": "shellscript",
+    ".smartbrain/**": "json"
+  },
+  "terminal.integrated.env.linux": {
+    "SMART_BRAIN_ENABLED": "true",
+    "SMART_BRAIN_VERSION": "1.0.0"
+  },
+  "tasks.autoDetect": "on",
+  "tasks.showDecorations": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "typescript.suggest.autoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "git.enableSmartCommit": false,
+  "git.confirmSync": false,
+  "git.postCommitCommand": "none",
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.next": true,
+    "**/logs": true
+  }
+}

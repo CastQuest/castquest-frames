@@ -1,0 +1,47 @@
+﻿{
+  "id": "frame-mint-001",
+  "version": "1.0.0",
+  "author": {
+    "address": "0xCREATOR",
+    "handle": "@creator"
+  },
+  "type": "mint",
+  "ui": {
+    "layout": "card",
+    "components": [
+      { "type": "text", "value": "My first CAST QUEST mint" },
+      { "type": "button", "label": "Mint", "actionId": "mint" }
+    ],
+    "themeRef": "default"
+  },
+  "actions": [
+    {
+      "id": "mint",
+      "label": "Mint",
+      "kind": "transaction",
+      "target": {
+        "contractAddress": "0xMINT_MODULE_ADDRESS",
+        "selector": "mint(bytes32,uint256)"
+      },
+      "params": {
+        "frameId": { "type": "string", "const": "frame-mint-001" },
+        "quantity": { "type": "number", "min": 1, "max": 10 }
+      },
+      "requiresSignature": true,
+      "guards": [],
+      "effects": []
+    }
+  ],
+  "dataSchema": {
+    "type": "object",
+    "properties": {
+      "mintedCount": { "type": "number" }
+    }
+  },
+  "permissions": {
+    "read": ["public"],
+    "write": ["author"],
+    "sign": ["user"],
+    "onchain": ["user"]
+  }
+}

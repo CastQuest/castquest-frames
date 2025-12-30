@@ -1,0 +1,15 @@
+﻿node_modules
+dist
+.env
+.env.*
+pnpm-lock.yaml
+.DS_Store
+coverage
+
+# Next.js build artifacts
+.next
+out
+
+# Temporary files
+*.tmp
+*.log

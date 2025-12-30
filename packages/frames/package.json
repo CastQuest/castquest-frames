@@ -1,0 +1,42 @@
+{
+  "name": "@castquest/frames",
+  "version": "1.0.0",
+  "description": "CastQuest Farcaster frames - Timeline-native market signals and token details",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "next dev -p 3002",
+    "build": "next build",
+    "start": "next start -p 3002",
+    "lint": "eslint . --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "frames.js": "^0.11.0",
+    "@coinbase/onchainkit": "^0.17.0",
+    "viem": "^2.21.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.1.0",
+    "@typescript-eslint/eslint-plugin": "^6.18.0",
+    "@typescript-eslint/parser": "^6.18.0"
+  },
+  "keywords": [
+    "castquest",
+    "farcaster",
+    "frames",
+    "market-signals",
+    "web3"
+  ],
+  "author": "CastQuest",
+  "license": "MIT"
+}

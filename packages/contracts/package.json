@@ -1,0 +1,26 @@
+{
+  "name": "@castquest/contracts",
+  "version": "1.0.0",
+  "description": "CastQuest Protocol Smart Contracts",
+  "scripts": {
+    "install": "forge install",
+    "build": "forge build",
+    "test": "forge test -vv",
+    "test:coverage": "forge coverage",
+    "test:gas": "forge test --gas-report",
+    "lint": "forge fmt --check",
+    "format": "forge fmt",
+    "clean": "forge clean",
+    "deploy:local": "forge script script/Deploy.s.sol --rpc-url localhost --broadcast",
+    "deploy:sepolia": "forge script script/Deploy.s.sol --rpc-url sepolia --broadcast --verify"
+  },
+  "keywords": [
+    "solidity",
+    "ethereum",
+    "smart-contracts",
+    "foundry",
+    "castquest"
+  ],
+  "author": "CastQuest",
+  "license": "MIT"
+}
