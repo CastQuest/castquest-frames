@@ -1,22 +1,6 @@
 import { neo } from "@castquest/neo-ux-core";
 import { StatusBadge, TokenBadge, IntegrationBadge, EngagementStats } from "./Badges";
-
-interface Frame {
-  id: string;
-  title: string;
-  description: string;
-  mediaType: string;
-  mediaUrl: string;
-  status: "live" | "active" | "draft";
-  casts: number;
-  recasts: number;
-  likes: number;
-  tokenTicker: string;
-  tokenPrice: string;
-  tags: string[];
-  integrations: string[];
-  createdAt: string;
-}
+import type { Frame, Quest, Media } from "../types";
 
 interface FrameCardProps {
   frame: Frame;
@@ -97,20 +81,6 @@ export function FrameCard({ frame, onCast, onView }: FrameCardProps) {
       </div>
     </div>
   );
-}
-
-interface Quest {
-  id: string;
-  title: string;
-  description: string;
-  difficulty: "beginner" | "easy" | "intermediate" | "advanced";
-  status: "active" | "upcoming" | "completed";
-  reward: string;
-  participants: number;
-  completed: number;
-  steps: number;
-  estimatedTime: string;
-  tags: string[];
 }
 
 interface QuestCardProps {
@@ -213,17 +183,6 @@ export function QuestCard({ quest, onStart }: QuestCardProps) {
       </button>
     </div>
   );
-}
-
-interface Media {
-  id: string;
-  title: string;
-  type: string;
-  url: string;
-  thumbnail: string;
-  duration?: string;
-  views: number;
-  tags: string[];
 }
 
 interface MediaCardProps {
