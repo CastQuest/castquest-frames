@@ -9,6 +9,8 @@ jobs:
   audit:
     name: Pre-Deploy Audit
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout repository
@@ -43,6 +45,8 @@ jobs:
     name: Build Application
     runs-on: ubuntu-latest
     needs: audit
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout repository
@@ -79,6 +83,9 @@ jobs:
     name: Deploy to Production
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      contents: read
+      packages: write
     
     steps:
       - name: Checkout repository
