@@ -80,8 +80,8 @@ broken_imports=0
 
 # Check for common import issues in TypeScript files
 if command -v grep &> /dev/null; then
-  # Look for potential broken imports
-  find packages apps -name "*.ts" -o -name "*.tsx" 2>/dev/null | while read -r file; do
+  # Look for potential broken imports (limit depth to avoid node_modules)
+  find packages apps -type f -maxdepth 3 \( -name "*.ts" -o -name "*.tsx" \) 2>/dev/null | while read -r file; do
     if grep -q "from ['\"]@castquest/[^'\"]*['\"]" "$file" 2>/dev/null; then
       log "Found imports in: $(basename "$file")"
     fi

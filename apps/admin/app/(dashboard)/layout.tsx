@@ -183,7 +183,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       )}
 
       {/* Main Content Area */}
-      <main className={`pt-16 pb-16 transition-all duration-300 ${sidebarOpen ? "lg:pl-64" : "lg:pl-64"}`}>
+      <main className={`pt-16 pb-16 transition-all duration-300 lg:pl-64`}>
         <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Content with glowing cards */}
           <div className={`rounded-lg ${neo.colors.bg.secondary} border ${neo.colors.border.glow} p-6 ${neo.glow.idle}`}>

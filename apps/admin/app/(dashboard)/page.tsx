@@ -4,6 +4,7 @@ import { neo } from "@castquest/neo-ux-core";
 import { Activity, TrendingUp, Users, Zap } from "lucide-react";
 
 export default function DashboardPage() {
+  // Demo data - replace with actual API calls in production
   const stats = [
     { name: "Total Users", value: "12,543", change: "+12.3%", icon: Users, color: neo.glow.success },
     { name: "Active Quests", value: "89", change: "+4.1%", icon: Activity, color: neo.glow.active },
@@ -49,6 +50,7 @@ export default function DashboardPage() {
           Recent Activity
         </h2>
         <div className="space-y-4">
+          {/* Demo activity data - replace with actual API calls in production */}
           {[
             { user: "Alice", action: "completed Quest #42", time: "2 min ago" },
             { user: "Bob", action: "minted new Frame", time: "5 min ago" },
