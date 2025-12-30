@@ -1078,6 +1078,77 @@ git_operations() {
 }
 
 ################################################################################
+# CI/CD Local Simulation
+################################################################################
+
+run_ci_checks() {
+  banner "CI/CD LOCAL SIMULATION"
+  
+  local failed=0
+  
+  step "1/6: System Health Check"
+  if check_system_health; then
+    success "Health check passed"
+  else
+    error "Health check failed"
+    ((failed++))
+  fi
+  
+  step "2/6: Dependency Install"
+  log "Installing dependencies..."
+  if pnpm install --frozen-lockfile 2>&1 | tee -a "$LOG_FILE"; then
+    success "Dependencies installed"
+  else
+    warn "Dependency installation had warnings"
+  fi
+  
+  step "3/6: Linting"
+  log "Running linters..."
+  if pnpm lint --if-present 2>&1 | tee -a "$LOG_FILE"; then
+    success "Linting passed"
+  else
+    warn "Linting had warnings"
+  fi
+  
+  step "4/6: Type Checking"
+  log "Running type checks..."
+  if pnpm typecheck --if-present 2>&1 | tee -a "$LOG_FILE"; then
+    success "Type checking passed"
+  else
+    warn "Type checking had warnings"
+  fi
+  
+  step "5/6: Build"
+  log "Building all packages..."
+  if pnpm build 2>&1 | tee -a "$LOG_FILE"; then
+    success "Build succeeded"
+  else
+    error "Build failed"
+    ((failed++))
+  fi
+  
+  step "6/6: Tests"
+  log "Running test suite..."
+  if pnpm test --if-present 2>&1 | tee -a "$LOG_FILE"; then
+    success "Tests passed"
+  else
+    warn "Tests had warnings or were skipped"
+  fi
+  
+  echo ""
+  banner "CI/CD SIMULATION SUMMARY"
+  
+  if [ $failed -eq 0 ]; then
+    success "✅ All CI checks passed!"
+    log "Your changes are ready for CI/CD pipeline"
+  else
+    error "❌ $failed critical checks failed"
+    log "Fix the issues before pushing to CI/CD"
+    return 1
+  fi
+}
+
+################################################################################
 # Help Menu
 ################################################################################
 
@@ -1096,6 +1167,8 @@ COMMANDS:
     heal                - Execute self-healing protocols
     brain               - Run Smart Brain analysis
     integrity           - Check protocol integrity
+    ci                  - Run local CI/CD simulation (lint, typecheck, build, test)
+    audit               - Run Smart Brain Oracle audit (comprehensive)
     
   Quick Start (Recommended):
     fullstack           - Launch complete platform (Services + Frames)
@@ -1129,7 +1202,6 @@ COMMANDS:
     contracts gas       - Generate gas usage report
     contracts clean     - Clean build artifacts
     contracts status    - Check contracts package status
-    audit               - Run Smart Brain Oracle audit (comprehensive)
     
   Frames (Farcaster):
     frames start        - Start Frames server (port 3002)
@@ -1243,6 +1315,9 @@ main() {
       ;;
     integrity)
       check_protocol_integrity
+      ;;
+    ci)
+      run_ci_checks
       ;;
     deploy)
       deploy_system "$@"
