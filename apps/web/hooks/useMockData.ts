@@ -2,6 +2,18 @@ import { useState, useEffect } from "react";
 import webContent from "../data/web-content.json";
 
 /**
+ * Type definitions for mock data
+ */
+interface Stats {
+  totalFrames: number;
+  liveFrames: number;
+  activeQuests: number;
+  totalParticipants: number;
+  totalRewards: string;
+  averageEngagement: string;
+}
+
+/**
  * useMockFrames Hook
  * 
  * Returns mock frame data for the WebFront UI.
@@ -176,14 +188,14 @@ export function useMockMedia() {
  *    - Example: const { tvl } = useTVL()
  */
 export function useMockStats() {
-  const [stats, setStats] = useState(webContent.stats as any);
+  const [stats, setStats] = useState<Stats>(webContent.stats as Stats);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     // In production: fetch('/api/stats')
     setTimeout(() => {
-      setStats(webContent.stats as any);
+      setStats(webContent.stats as Stats);
       setLoading(false);
     }, 300);
   }, []);
