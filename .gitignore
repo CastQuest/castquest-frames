@@ -13,3 +13,4 @@ out
 # Temporary files
 *.tmp
 *.log
+apps/web/.eslintrc.json
