@@ -2,6 +2,7 @@
 pragma solidity ^0.8.23;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import {Errors} from "../libs/Errors.sol";
 
 /**
  * @title MediaRegistry
@@ -73,9 +74,10 @@ contract MediaRegistry is AccessControl {
         external
         onlyRole(FACTORY_ROLE)
     {
-        require(!_mediaRegistry[mediaId].exists, "MediaRegistry: already exists");
-        require(tokenAddress != address(0), "MediaRegistry: zero token address");
-        require(owner != address(0), "MediaRegistry: zero owner");
+        require(bytes(mediaId).length > 0, Errors.EMPTY_STRING);
+        require(!_mediaRegistry[mediaId].exists, Errors.ALREADY_EXISTS);
+        require(tokenAddress != address(0), Errors.ZERO_ADDRESS);
+        require(owner != address(0), Errors.ZERO_ADDRESS);
 
         MediaInfo storage info = _mediaRegistry[mediaId];
         info.tokenAddress = tokenAddress;
@@ -96,7 +98,8 @@ contract MediaRegistry is AccessControl {
      * @param flags Array of risk flags
      */
     function setRiskFlags(string calldata mediaId, RiskFlag[] calldata flags) external onlyRole(OPERATOR_ROLE) {
-        require(_mediaRegistry[mediaId].exists, "MediaRegistry: not found");
+        require(_mediaRegistry[mediaId].exists, Errors.NOT_FOUND);
+        // Note: Empty array is allowed to clear all risk flags
 
         _mediaRegistry[mediaId].riskFlags = flags;
 
@@ -109,7 +112,8 @@ contract MediaRegistry is AccessControl {
      * @param newURI New metadata URI
      */
     function updateMetadataURI(string calldata mediaId, string calldata newURI) external onlyRole(OPERATOR_ROLE) {
-        require(_mediaRegistry[mediaId].exists, "MediaRegistry: not found");
+        require(_mediaRegistry[mediaId].exists, Errors.NOT_FOUND);
+        require(bytes(newURI).length > 0, Errors.EMPTY_STRING);
 
         _mediaRegistry[mediaId].metadataURI = newURI;
 
@@ -122,7 +126,7 @@ contract MediaRegistry is AccessControl {
      * @return info Media information struct
      */
     function getMediaInfo(string calldata mediaId) external view returns (MediaInfo memory info) {
-        require(_mediaRegistry[mediaId].exists, "MediaRegistry: not found");
+        require(_mediaRegistry[mediaId].exists, Errors.NOT_FOUND);
         return _mediaRegistry[mediaId];
     }
 
@@ -141,7 +145,7 @@ contract MediaRegistry is AccessControl {
      * @return tokenAddress Token address
      */
     function getTokenAddress(string calldata mediaId) external view returns (address tokenAddress) {
-        require(_mediaRegistry[mediaId].exists, "MediaRegistry: not found");
+        require(_mediaRegistry[mediaId].exists, Errors.NOT_FOUND);
         return _mediaRegistry[mediaId].tokenAddress;
     }
 
@@ -159,7 +163,7 @@ contract MediaRegistry is AccessControl {
      * @return mediaId Media identifier
      */
     function getMediaIdAt(uint256 index) external view returns (string memory mediaId) {
-        require(index < _allMediaIds.length, "MediaRegistry: index out of bounds");
+        require(index < _allMediaIds.length, Errors.INVALID_AMOUNT);
         return _allMediaIds[index];
     }
 }

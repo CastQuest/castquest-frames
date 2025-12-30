@@ -4,6 +4,7 @@ pragma solidity ^0.8.23;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import {Errors} from "../libs/Errors.sol";
 
 /**
  * @title FeeRouter
@@ -39,7 +40,12 @@ contract FeeRouter is Ownable {
     /// @notice Emitted when treasury is updated
     event TreasuryUpdated(address oldTreasury, address newTreasury);
 
-    constructor(address _castToken, address _treasury, address initialOwner) Ownable(initialOwner) {
+    /// @notice Emitted when market is updated
+    event MarketUpdated(address oldMarket, address newMarket);
+
+    constructor(address _castToken, address _treasury) Ownable(msg.sender) {
+        require(_castToken != address(0), Errors.ZERO_ADDRESS);
+        require(_treasury != address(0), Errors.ZERO_ADDRESS);
         castToken = _castToken;
         treasury = _treasury;
     }
@@ -57,11 +63,11 @@ contract FeeRouter is Ownable {
      */
     function distributeFees() external {
         uint256 balance = address(this).balance;
-        require(balance > 0, "FeeRouter: no fees to distribute");
-        require(treasury != address(0), "FeeRouter: treasury not set");
+        require(balance > 0, Errors.NO_FEES);
+        require(treasury != address(0), Errors.TREASURY_NOT_SET);
 
         (bool success,) = treasury.call{value: balance}("");
-        require(success, "FeeRouter: transfer failed");
+        require(success, Errors.TRANSFER_FAILED);
 
         emit FeesDistributed(treasury, balance);
     }
@@ -71,7 +77,7 @@ contract FeeRouter is Ownable {
      * @param newTreasury New treasury address
      */
     function setTreasury(address newTreasury) external onlyOwner {
-        require(newTreasury != address(0), "FeeRouter: zero address");
+        require(newTreasury != address(0), Errors.ZERO_ADDRESS);
         address oldTreasury = treasury;
         treasury = newTreasury;
         emit TreasuryUpdated(oldTreasury, newTreasury);
@@ -82,7 +88,10 @@ contract FeeRouter is Ownable {
      * @param newMarket New market address
      */
     function setMarket(address newMarket) external onlyOwner {
+        require(newMarket != address(0), Errors.ZERO_ADDRESS);
+        address oldMarket = market;
         market = newMarket;
+        emit MarketUpdated(oldMarket, newMarket);
     }
 
     /**
@@ -90,10 +99,10 @@ contract FeeRouter is Ownable {
      * @param to Recipient address
      */
     function emergencyWithdraw(address payable to) external onlyOwner {
-        require(to != address(0), "FeeRouter: zero address");
+        require(to != address(0), Errors.ZERO_ADDRESS);
         uint256 balance = address(this).balance;
         (bool success,) = to.call{value: balance}("");
-        require(success, "FeeRouter: transfer failed");
+        require(success, Errors.TRANSFER_FAILED);
     }
 
     /**
@@ -102,7 +111,7 @@ contract FeeRouter is Ownable {
      * @param to Recipient address
      */
     function emergencyWithdrawTokens(address token, address to) external onlyOwner {
-        require(to != address(0), "FeeRouter: zero address");
+        require(to != address(0), Errors.ZERO_ADDRESS);
         uint256 balance = IERC20(token).balanceOf(address(this));
         IERC20(token).safeTransfer(to, balance);
     }

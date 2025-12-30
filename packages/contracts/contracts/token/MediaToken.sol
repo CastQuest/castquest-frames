@@ -2,6 +2,7 @@
 pragma solidity ^0.8.23;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Errors} from "../libs/Errors.sol";
 
 /**
  * @title MediaToken
@@ -35,6 +36,11 @@ contract MediaToken is ERC20 {
         address _owner,
         uint256 _totalSupply
     ) ERC20(_name, _symbol) {
+        require(bytes(_mediaId).length > 0, Errors.EMPTY_STRING);
+        require(bytes(_symbol).length > 0, Errors.EMPTY_STRING);
+        require(_owner != address(0), Errors.ZERO_ADDRESS);
+        require(_totalSupply > 0, Errors.ZERO_AMOUNT);
+        
         mediaId = _mediaId;
         metadataURI = _metadataURI;
         owner = _owner;
@@ -49,7 +55,8 @@ contract MediaToken is ERC20 {
      * @param newURI New metadata URI
      */
     function updateMetadataURI(string memory newURI) external {
-        require(msg.sender == factory, "MediaToken: only factory");
+        require(msg.sender == factory, Errors.ONLY_FACTORY);
+        require(bytes(newURI).length > 0, Errors.EMPTY_STRING);
         metadataURI = newURI;
     }
 }

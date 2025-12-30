@@ -3,6 +3,7 @@ pragma solidity ^0.8.23;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import {Errors} from "../libs/Errors.sol";
 
 /**
  * @title CASTToken
@@ -31,7 +32,9 @@ contract CASTToken is ERC20, Ownable {
      * @param amount Amount to mint (in wei units)
      */
     function mint(address to, uint256 amount) external onlyOwner {
-        require(totalSupply() + amount <= MAX_SUPPLY, "CASTToken: exceeds max supply");
+        require(to != address(0), Errors.ZERO_ADDRESS);
+        require(amount > 0, Errors.ZERO_AMOUNT);
+        require(totalSupply() + amount <= MAX_SUPPLY, Errors.EXCEEDS_MAX_SUPPLY);
         _mint(to, amount);
         emit Minted(to, amount);
     }

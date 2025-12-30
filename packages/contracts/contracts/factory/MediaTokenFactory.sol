@@ -5,6 +5,7 @@ import "../token/MediaToken.sol";
 import "../registry/MediaRegistry.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
+import {Errors} from "../libs/Errors.sol";
 
 /**
  * @title MediaTokenFactory
@@ -63,6 +64,8 @@ contract MediaTokenFactory is Ownable, Pausable {
     constructor(address _registry, address initialOwner, address _feeRecipient)
         Ownable(initialOwner)
     {
+        require(_registry != address(0), Errors.ZERO_ADDRESS);
+        require(_feeRecipient != address(0), Errors.ZERO_ADDRESS);
         registry = MediaRegistry(_registry);
         feeRecipient = _feeRecipient;
         creationFee = 0.001 ether; // 0.001 ETH default
@@ -79,16 +82,16 @@ contract MediaTokenFactory is Ownable, Pausable {
         whenNotPaused
         returns (address token)
     {
-        require(msg.value >= creationFee, "MediaTokenFactory: insufficient fee");
-        require(bytes(config.mediaId).length > 0, "MediaTokenFactory: empty mediaId");
-        require(bytes(config.symbol).length > 0, "MediaTokenFactory: empty symbol");
-        require(config.owner != address(0), "MediaTokenFactory: zero owner");
+        require(msg.value >= creationFee, Errors.INSUFFICIENT_FEE);
+        require(bytes(config.mediaId).length > 0, Errors.EMPTY_STRING);
+        require(bytes(config.symbol).length > 0, Errors.EMPTY_STRING);
+        require(config.owner != address(0), Errors.ZERO_ADDRESS);
 
         uint256 supply = config.totalSupply > 0 ? config.totalSupply : DEFAULT_SUPPLY;
-        require(supply >= MIN_SUPPLY && supply <= MAX_SUPPLY, "MediaTokenFactory: invalid supply");
+        require(supply >= MIN_SUPPLY && supply <= MAX_SUPPLY, Errors.INVALID_SUPPLY);
 
         // Check mediaId not already used
-        require(!registry.mediaExists(config.mediaId), "MediaTokenFactory: mediaId exists");
+        require(!registry.mediaExists(config.mediaId), Errors.MEDIA_EXISTS);
 
         // Deploy new MediaToken
         MediaToken newToken = new MediaToken(
@@ -110,7 +113,7 @@ contract MediaTokenFactory is Ownable, Pausable {
         // Send fee to recipient
         if (msg.value > 0 && feeRecipient != address(0)) {
             (bool success,) = feeRecipient.call{value: msg.value}("");
-            require(success, "MediaTokenFactory: fee transfer failed");
+            require(success, Errors.TRANSFER_FAILED);
         }
 
         return token;
@@ -131,7 +134,7 @@ contract MediaTokenFactory is Ownable, Pausable {
      * @param newRecipient New recipient address
      */
     function setFeeRecipient(address newRecipient) external onlyOwner {
-        require(newRecipient != address(0), "MediaTokenFactory: zero address");
+        require(newRecipient != address(0), Errors.ZERO_ADDRESS);
         address oldRecipient = feeRecipient;
         feeRecipient = newRecipient;
         emit FeeRecipientUpdated(oldRecipient, newRecipient);

@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {Errors} from "../libs/Errors.sol";
 
 /**
  * @title MediaMarket
@@ -54,7 +55,11 @@ contract MediaMarket is Ownable, Pausable, ReentrancyGuard {
     /// @notice Emitted when protocol fee is updated
     event ProtocolFeeUpdated(uint256 oldFee, uint256 newFee);
 
+    /// @notice Emitted when fee recipient is updated
+    event FeeRecipientUpdated(address oldRecipient, address newRecipient);
+
     constructor(address initialOwner, address _feeRecipient) Ownable(initialOwner) {
+        require(_feeRecipient != address(0), Errors.ZERO_ADDRESS);
         feeRecipient = _feeRecipient;
     }
 
@@ -64,9 +69,10 @@ contract MediaMarket is Ownable, Pausable, ReentrancyGuard {
      * @param tokenAmount Amount of tokens to add
      */
     function addLiquidity(address token, uint256 tokenAmount) external payable onlyOwner {
-        require(msg.value > 0, "MediaMarket: zero ETH");
-        require(tokenAmount > 0, "MediaMarket: zero tokens");
-        require(k[token] == 0, "MediaMarket: liquidity exists");
+        require(token != address(0), Errors.ZERO_ADDRESS);
+        require(msg.value > 0, Errors.ZERO_AMOUNT);
+        require(tokenAmount > 0, Errors.ZERO_AMOUNT);
+        require(k[token] == 0, Errors.LIQUIDITY_EXISTS);
 
         // Transfer tokens from sender
         IERC20(token).safeTransferFrom(msg.sender, address(this), tokenAmount);
@@ -85,8 +91,9 @@ contract MediaMarket is Ownable, Pausable, ReentrancyGuard {
      * @param minTokenAmount Minimum tokens to receive (slippage protection)
      */
     function buyTokens(address token, uint256 minTokenAmount) external payable whenNotPaused nonReentrant {
-        require(msg.value > 0, "MediaMarket: zero ETH");
-        require(k[token] > 0, "MediaMarket: no liquidity");
+        require(token != address(0), Errors.ZERO_ADDRESS);
+        require(msg.value > 0, Errors.ZERO_AMOUNT);
+        require(k[token] > 0, Errors.NO_LIQUIDITY);
 
         // Calculate fee
         uint256 fee = (msg.value * protocolFeeBps) / 10_000;
@@ -97,8 +104,8 @@ contract MediaMarket is Ownable, Pausable, ReentrancyGuard {
         uint256 newTokenReserve = k[token] / newEthReserve;
         uint256 tokenAmount = tokenReserves[token] - newTokenReserve;
 
-        require(tokenAmount >= minTokenAmount, "MediaMarket: slippage exceeded");
-        require(tokenAmount <= tokenReserves[token], "MediaMarket: insufficient liquidity");
+        require(tokenAmount >= minTokenAmount, Errors.SLIPPAGE_EXCEEDED);
+        require(tokenAmount <= tokenReserves[token], Errors.INSUFFICIENT_LIQUIDITY);
 
         // Update reserves
         ethReserves[token] = newEthReserve;
@@ -110,7 +117,7 @@ contract MediaMarket is Ownable, Pausable, ReentrancyGuard {
         // Send fee to recipient
         if (fee > 0 && feeRecipient != address(0)) {
             (bool success,) = feeRecipient.call{value: fee}("");
-            require(success, "MediaMarket: fee transfer failed");
+            require(success, Errors.TRANSFER_FAILED);
             emit FeesCollected(feeRecipient, fee);
         }
 
@@ -128,8 +135,9 @@ contract MediaMarket is Ownable, Pausable, ReentrancyGuard {
         whenNotPaused
         nonReentrant
     {
-        require(tokenAmount > 0, "MediaMarket: zero tokens");
-        require(k[token] > 0, "MediaMarket: no liquidity");
+        require(token != address(0), Errors.ZERO_ADDRESS);
+        require(tokenAmount > 0, Errors.ZERO_AMOUNT);
+        require(k[token] > 0, Errors.NO_LIQUIDITY);
 
         // Transfer tokens from seller
         IERC20(token).safeTransferFrom(msg.sender, address(this), tokenAmount);
@@ -143,8 +151,8 @@ contract MediaMarket is Ownable, Pausable, ReentrancyGuard {
         uint256 fee = (ethAmount * protocolFeeBps) / 10_000;
         uint256 ethAfterFee = ethAmount - fee;
 
-        require(ethAfterFee >= minEthAmount, "MediaMarket: slippage exceeded");
-        require(ethAfterFee <= address(this).balance, "MediaMarket: insufficient ETH");
+        require(ethAfterFee >= minEthAmount, Errors.SLIPPAGE_EXCEEDED);
+        require(ethAfterFee <= address(this).balance, Errors.INSUFFICIENT_BALANCE);
 
         // Update reserves
         ethReserves[token] = newEthReserve;
@@ -152,12 +160,12 @@ contract MediaMarket is Ownable, Pausable, ReentrancyGuard {
 
         // Transfer ETH to seller
         (bool success,) = msg.sender.call{value: ethAfterFee}("");
-        require(success, "MediaMarket: ETH transfer failed");
+        require(success, Errors.TRANSFER_FAILED);
 
         // Send fee to recipient
         if (fee > 0 && feeRecipient != address(0)) {
             (bool feeSuccess,) = feeRecipient.call{value: fee}("");
-            require(feeSuccess, "MediaMarket: fee transfer failed");
+            require(feeSuccess, Errors.TRANSFER_FAILED);
             emit FeesCollected(feeRecipient, fee);
         }
 
@@ -172,7 +180,8 @@ contract MediaMarket is Ownable, Pausable, ReentrancyGuard {
      * @return fee Protocol fee
      */
     function getQuoteBuy(address token, uint256 ethAmount) external view returns (uint256 tokenAmount, uint256 fee) {
-        require(k[token] > 0, "MediaMarket: no liquidity");
+        require(token != address(0), Errors.ZERO_ADDRESS);
+        require(k[token] > 0, Errors.NO_LIQUIDITY);
 
         fee = (ethAmount * protocolFeeBps) / 10_000;
         uint256 ethAfterFee = ethAmount - fee;
@@ -190,7 +199,8 @@ contract MediaMarket is Ownable, Pausable, ReentrancyGuard {
      * @return fee Protocol fee
      */
     function getQuoteSell(address token, uint256 tokenAmount) external view returns (uint256 ethAmount, uint256 fee) {
-        require(k[token] > 0, "MediaMarket: no liquidity");
+        require(token != address(0), Errors.ZERO_ADDRESS);
+        require(k[token] > 0, Errors.NO_LIQUIDITY);
 
         uint256 newTokenReserve = tokenReserves[token] + tokenAmount;
         uint256 newEthReserve = k[token] / newTokenReserve;
@@ -205,7 +215,7 @@ contract MediaMarket is Ownable, Pausable, ReentrancyGuard {
      * @param newFeeBps New fee in basis points
      */
     function setProtocolFee(uint256 newFeeBps) external onlyOwner {
-        require(newFeeBps <= 1000, "MediaMarket: fee too high"); // Max 10%
+        require(newFeeBps <= 1000, Errors.FEE_TOO_HIGH); // Max 10%
         uint256 oldFee = protocolFeeBps;
         protocolFeeBps = newFeeBps;
         emit ProtocolFeeUpdated(oldFee, newFeeBps);
@@ -216,8 +226,10 @@ contract MediaMarket is Ownable, Pausable, ReentrancyGuard {
      * @param newRecipient New recipient address
      */
     function setFeeRecipient(address newRecipient) external onlyOwner {
-        require(newRecipient != address(0), "MediaMarket: zero address");
+        require(newRecipient != address(0), Errors.ZERO_ADDRESS);
+        address oldRecipient = feeRecipient;
         feeRecipient = newRecipient;
+        emit FeeRecipientUpdated(oldRecipient, newRecipient);
     }
 
     /**
