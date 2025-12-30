@@ -13,3 +13,6 @@ out
 # Temporary files
 *.tmp
 *.log
+
+# TypeScript build info
+*.tsbuildinfo
