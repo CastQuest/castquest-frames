@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import webContent from "../data/web-content.json";
-import type { Frame, Quest, Media, Stats } from "../types";
+import type { Frame, Quest, Media, Stats, WebContent } from "../types";
+
+// Type assertion for the imported JSON data
+const typedWebContent = webContent as WebContent;
 
 /**
  * useMockFrames Hook
@@ -30,7 +33,7 @@ import type { Frame, Quest, Media, Stats } from "../types";
  *    - Example: useWebSocket('/api/frames/subscribe')
  */
 export function useMockFrames() {
-  const [frames, setFrames] = useState<Frame[]>(webContent.frames as Frame[]);
+  const [frames, setFrames] = useState<Frame[]>(typedWebContent.frames);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -39,7 +42,7 @@ export function useMockFrames() {
     setLoading(true);
     // In production: fetch('/api/frames')
     setTimeout(() => {
-      setFrames(webContent.frames as Frame[]);
+      setFrames(typedWebContent.frames);
       setLoading(false);
     }, 300);
   }, []);
@@ -48,7 +51,7 @@ export function useMockFrames() {
     setLoading(true);
     // In production: refetch from API
     setTimeout(() => {
-      setFrames(webContent.frames as Frame[]);
+      setFrames(typedWebContent.frames);
       setLoading(false);
     }, 300);
   };
@@ -88,7 +91,7 @@ export function useMockFrames() {
  *    - Example: const { claimReward } = useRewardClaim()
  */
 export function useMockQuests() {
-  const [quests, setQuests] = useState<Quest[]>(webContent.quests as Quest[]);
+  const [quests, setQuests] = useState<Quest[]>(typedWebContent.quests);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -96,7 +99,7 @@ export function useMockQuests() {
     setLoading(true);
     // In production: fetch('/api/quests')
     setTimeout(() => {
-      setQuests(webContent.quests as Quest[]);
+      setQuests(typedWebContent.quests);
       setLoading(false);
     }, 300);
   }, []);
@@ -142,14 +145,14 @@ export function useMockQuests() {
  *    - Example: const { metadata } = useNFTMetadata(tokenId)
  */
 export function useMockMedia() {
-  const [media, setMedia] = useState<Media[]>(webContent.media as Media[]);
+  const [media, setMedia] = useState<Media[]>(typedWebContent.media);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     // In production: fetch('/api/media')
     setTimeout(() => {
-      setMedia(webContent.media as Media[]);
+      setMedia(typedWebContent.media);
       setLoading(false);
     }, 300);
   }, []);
@@ -177,14 +180,14 @@ export function useMockMedia() {
  *    - Example: const { tvl } = useTVL()
  */
 export function useMockStats() {
-  const [stats, setStats] = useState<Stats>(webContent.stats as Stats);
+  const [stats, setStats] = useState<Stats>(typedWebContent.stats);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     // In production: fetch('/api/stats')
     setTimeout(() => {
-      setStats(webContent.stats as Stats);
+      setStats(typedWebContent.stats);
       setLoading(false);
     }, 300);
   }, []);
