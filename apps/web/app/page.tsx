@@ -75,7 +75,7 @@ export default function WebFrontMega() {
               <DashboardStat 
                 label="Active Quests" 
                 value={stats?.activeQuests.toString() || "0"} 
-                trend="stable"
+                trend="neutral"
               />
               <DashboardStat 
                 label="Total Participants" 

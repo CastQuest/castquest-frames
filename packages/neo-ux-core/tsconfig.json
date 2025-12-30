@@ -12,7 +12,9 @@
     "isolatedModules": true,
     "lib": ["ES2020", "DOM"],
     "types": ["react", "react-dom"],
-    "outDir": "dist"
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true
   },
   "include": ["src"]
 }

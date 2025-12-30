@@ -29,3 +29,7 @@
 export { FramesClient } from './client/FramesClient';
 export * from './types/frames';
 export * from './schema/validator';
+export * from './permissions/PermissionsService';
+export * from './brain/SmartBrainEngine';
+export * from './oracle/OracleDBService';
+export * from './workers/AutonomousWorkerSystem';

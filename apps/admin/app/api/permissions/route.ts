@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import {
   permissionsService,
   ROLES,
-} from "@castquest/sdk/permissions/PermissionsService";
+} from "@castquest/sdk";
 
 // GET /api/permissions - Get all roles and permissions
 export async function GET(request: Request) {
