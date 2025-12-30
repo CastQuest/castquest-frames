@@ -1,6 +1,58 @@
 import { useState, useEffect } from "react";
 import webContent from "../data/web-content.json";
 
+// Type definitions for mock data structures
+export interface Frame {
+  id: string;
+  title: string;
+  description: string;
+  mediaType: "image" | "video" | "interactive" | "audio";
+  mediaUrl: string;
+  status: "live" | "active" | "draft";
+  casts: number;
+  recasts: number;
+  likes: number;
+  tokenTicker: string;
+  tokenPrice: string;
+  tags: string[];
+  integrations: string[];
+  createdAt: string;
+}
+
+export interface Quest {
+  id: string;
+  title: string;
+  description: string;
+  difficulty: "beginner" | "easy" | "intermediate" | "advanced";
+  status: "active" | "upcoming" | "completed";
+  reward: string;
+  participants: number;
+  completed: number;
+  steps: number;
+  estimatedTime: string;
+  tags: string[];
+}
+
+export interface Media {
+  id: string;
+  title: string;
+  type: "video" | "interactive" | "image-gallery";
+  url: string;
+  thumbnail: string;
+  duration?: string;
+  views: number;
+  tags: string[];
+}
+
+export interface Stats {
+  totalFrames: number;
+  liveFrames: number;
+  activeQuests: number;
+  totalParticipants: number;
+  totalRewards: string;
+  averageEngagement: string;
+}
+
 /**
  * useMockFrames Hook
  * 
@@ -29,7 +81,7 @@ import webContent from "../data/web-content.json";
  *    - Example: useWebSocket('/api/frames/subscribe')
  */
 export function useMockFrames() {
-  const [frames, setFrames] = useState(webContent.frames as any);
+  const [frames, setFrames] = useState<Frame[]>(webContent.frames as Frame[]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -38,7 +90,7 @@ export function useMockFrames() {
     setLoading(true);
     // In production: fetch('/api/frames')
     setTimeout(() => {
-      setFrames(webContent.frames as any);
+      setFrames(webContent.frames as Frame[]);
       setLoading(false);
     }, 300);
   }, []);
@@ -47,7 +99,7 @@ export function useMockFrames() {
     setLoading(true);
     // In production: refetch from API
     setTimeout(() => {
-      setFrames(webContent.frames as any);
+      setFrames(webContent.frames as Frame[]);
       setLoading(false);
     }, 300);
   };
@@ -87,7 +139,7 @@ export function useMockFrames() {
  *    - Example: const { claimReward } = useRewardClaim()
  */
 export function useMockQuests() {
-  const [quests, setQuests] = useState(webContent.quests as any);
+  const [quests, setQuests] = useState<Quest[]>(webContent.quests as Quest[]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -95,7 +147,7 @@ export function useMockQuests() {
     setLoading(true);
     // In production: fetch('/api/quests')
     setTimeout(() => {
-      setQuests(webContent.quests as any);
+      setQuests(webContent.quests as Quest[]);
       setLoading(false);
     }, 300);
   }, []);
@@ -141,14 +193,14 @@ export function useMockQuests() {
  *    - Example: const { metadata } = useNFTMetadata(tokenId)
  */
 export function useMockMedia() {
-  const [media, setMedia] = useState(webContent.media as any);
+  const [media, setMedia] = useState<Media[]>(webContent.media as Media[]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     // In production: fetch('/api/media')
     setTimeout(() => {
-      setMedia(webContent.media as any);
+      setMedia(webContent.media as Media[]);
       setLoading(false);
     }, 300);
   }, []);
@@ -176,14 +228,14 @@ export function useMockMedia() {
  *    - Example: const { tvl } = useTVL()
  */
 export function useMockStats() {
-  const [stats, setStats] = useState(webContent.stats as any);
+  const [stats, setStats] = useState<Stats>(webContent.stats as Stats);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     // In production: fetch('/api/stats')
     setTimeout(() => {
-      setStats(webContent.stats as any);
+      setStats(webContent.stats as Stats);
       setLoading(false);
     }, 300);
   }, []);
