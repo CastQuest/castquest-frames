@@ -1,59 +1,22 @@
-<!-- docs-site/index.md -->
----
-layout: home
+# CastQuest Documentation
 
-hero:
-  name: "CastQuest Protocol"
-  text: "Sovereign Frames & Onchain Quests"
-  tagline: Build composable, transparent, and operator-controlled experiences on Farcaster
-  actions:
-    - theme: brand
-      text: Get Started
-      link: /guide/getting-started
-    - theme: alt
-      text: View on GitHub
-      link: https://github.com/CastQuest/castquest-frames
-    - theme: alt
-      text: Read Whitepaper
-      link: /whitepaper/vision
+Welcome to the CastQuest protocol docs. This space describes how media, frames, mints, quests, the Strategy Worker, and the Smart Brain Runtime Engine work together.
 
-features:
-  - icon: 🔓
-    title: Sovereignty First
-    details: Run everything locally. Inspect all flows. No hidden magic or vendor lock-in.
-  
-  - icon: 📊
-    title: Transparent by Design
-    details: JSON data surfaces, clear logs, explicit flows. See everything that happens.
-  
-  - icon: 🧩
-    title: Modular Architecture
-    details: Self-contained modules (M4-M8) that are script-installable and composable.
-  
-  - icon: 🎨
-    title: Expressive Media
-    details: Rich visual frames, dynamic quests, and customizable templates.
-  
-  - icon: 🤖
-    title: Smart Brain
-    details: AI-powered suggestions, validation, and autonomous operations.
-  
-  - icon: ⚡
-    title: Strategy Worker
-    details: Autonomous background processing with transparent event logs.
----
+## Navigation
 
-## Quick Start
+- [Architecture](./architecture.md)
+- [Smart Brain](./sdk/smart-brain.md)
+- [Modules](./modules.md)
+- [Flows](./flows.md)
+- [Contributor Cards](./contributor-cards.md)
+- [Contributing](./CONTRIBUTING.md)
 
-```bash
-# Clone the repository
-git clone https://github.com/CastQuest/castquest-frames.git
-cd castquest-frames
+## What is CastQuest?
 
-# Install dependencies
-pnpm install
+CastQuest is a sovereign, media-first protocol that turns:
 
-# Start the admin dashboard
-pnpm --filter @castquest/admin dev
+**Media → Templates → Frames → Render → Mints → Quests → Strategy → Onchain**
 
-# Visit http://localhost:3001
+into an operator-controlled automation spine.
+
+Use these docs to understand the pipeline, extend the protocol, and build new automation and onchain behaviors.

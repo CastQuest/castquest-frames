@@ -1,0 +1,52 @@
+{
+  "roles": [
+    {
+      "id": "super_admin",
+      "name": "Super Administrator",
+      "permissions": ["system.admin"]
+    },
+    {
+      "id": "operator",
+      "name": "Operator",
+      "permissions": [
+        "frames.read", "frames.write",
+        "quests.read", "quests.write",
+        "mints.read", "mints.write",
+        "workers.read", "workers.control",
+        "brain.read", "brain.control",
+        "dashboard.read", "dashboard.admin"
+      ]
+    },
+    {
+      "id": "developer",
+      "name": "Developer",
+      "permissions": [
+        "frames.read", "frames.write",
+        "quests.read", "quests.write",
+        "workers.read",
+        "brain.read",
+        "dashboard.read"
+      ]
+    },
+    {
+      "id": "viewer",
+      "name": "Viewer",
+      "permissions": [
+        "frames.read",
+        "quests.read",
+        "mints.read",
+        "workers.read",
+        "brain.read",
+        "dashboard.read"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "admin",
+      "username": "admin",
+      "email": "admin@castquest.xyz",
+      "roles": ["super_admin"]
+    }
+  ]
+}

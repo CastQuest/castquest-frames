@@ -5,7 +5,7 @@ This folder contains the core documentation for the CastQuest Protocol.
 ## Key Files
 
 - **architecture.md** — High-level protocol flow, module pipeline, interaction graph.
-- **smart-brain.md** — Smart Brain Runtime Engine, frame schema, SDK usage.
+- **sdk/smart-brain.md** — Smart Brain Runtime Engine, frame schema, SDK usage.
 - **modules.md** — Per-module breakdown (M4, M5B, M6, M7, M8).
 - **flows.md** — End-to-end flows through the protocol.
 - **contributor-cards.md** — Recognition and context for contributors.
