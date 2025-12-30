@@ -325,6 +325,8 @@ console.log('Optimization suggestions:', optimized.suggestions);`,
                 <a
                   href="/docs/openapi.yaml"
                   download
+                  aria-label="Download OpenAPI specification YAML file"
+                  title="Download OpenAPI specification YAML file"
                   className={`inline-block px-4 py-2 rounded-lg border ${neo.colors.border.glow} ${neo.colors.text.accent} font-semibold hover:bg-emerald-500/10 transition-all`}
                 >
                   Download OpenAPI Spec
