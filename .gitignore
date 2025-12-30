@@ -13,3 +13,7 @@ out
 # Temporary files
 *.tmp
 *.log
+*.tsbuildinfo
+
+# ESLint config (auto-generated)
+.eslintrc.json
