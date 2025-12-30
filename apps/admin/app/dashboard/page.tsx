@@ -157,12 +157,12 @@ export default function AdminDashboardSupercharged() {
       {/* Protocol Stats - KEEPING ALL LABELS */}
       <DashboardSection title="📊 Protocol Stats (Real-time from Oracle)">
         <DashboardGrid>
-          <DashboardStat label="Total Frames" value={stats?.frames.total.toString() || "128"} trend={`${stats?.frames.active || 95} active`} />
-          <DashboardStat label="Active Quests" value={stats?.quests.active.toString() || "19"} trend={`${stats?.quests.pending || 12} pending`} />
-          <DashboardStat label="Pending Mints" value={stats?.mints.pending.toString() || "42"} trend={`${stats?.mints.completed || 208} completed`} />
+          <DashboardStat label="Total Frames" value={stats?.frames.total.toString() || "128"} subtitle={`${stats?.frames.active || 95} active`} />
+          <DashboardStat label="Active Quests" value={stats?.quests.active.toString() || "19"} subtitle={`${stats?.quests.pending || 12} pending`} />
+          <DashboardStat label="Pending Mints" value={stats?.mints.pending.toString() || "42"} subtitle={`${stats?.mints.completed || 208} completed`} />
           <DashboardStat label="Total Mints" value={stats?.mints.total.toString() || "250"} />
-          <DashboardStat label="Active Workers" value={stats?.workers.active.toString() || "3"} trend={`${stats?.workers.idle || 2} idle`} />
-          <DashboardStat label="Brain Patterns" value={stats?.brain.patterns.toString() || "34"} trend={`${stats?.brain.events || 1523} events`} />
+          <DashboardStat label="Active Workers" value={stats?.workers.active.toString() || "3"} subtitle={`${stats?.workers.idle || 2} idle`} />
+          <DashboardStat label="Brain Patterns" value={stats?.brain.patterns.toString() || "34"} subtitle={`${stats?.brain.events || 1523} events`} />
         </DashboardGrid>
       </DashboardSection>
 
@@ -185,7 +185,11 @@ export default function AdminDashboardSupercharged() {
             <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-neutral-200">Worker Status</h3>
-                <WorkerPulse active={workerRunning} />
+                <WorkerPulse>
+                  <span className={workerRunning ? "text-emerald-400" : "text-neutral-500"}>
+                    {workerRunning ? "Active" : "Idle"}
+                  </span>
+                </WorkerPulse>
               </div>
               <div className="space-y-3 text-xs">
                 <div>
@@ -254,22 +258,22 @@ export default function AdminDashboardSupercharged() {
       {/* Quick Links & Notes */}
       <div className="grid gap-4 md:grid-cols-2">
         <QuickLinks links={[
-          { label: "Media", href: "/media", icon: "📁" },
-          { label: "Templates", href: "/frame-templates", icon: "📋" },
-          { label: "Frames", href: "/frames", icon: "🖼️" },
-          { label: "Mints", href: "/mints", icon: "💎" },
-          { label: "Quests", href: "/quests", icon: "🎯" },
-          { label: "Brain Console", href: "/brain", icon: "🧠" },
-          { label: "Worker Console", href: "/worker", icon: "⚡" },
-          { label: "Permissions", href: "/permissions", icon: "🔐" },
+          { id: "1", label: "Media", href: "/media" },
+          { id: "2", label: "Templates", href: "/frame-templates" },
+          { id: "3", label: "Frames", href: "/frames" },
+          { id: "4", label: "Mints", href: "/mints" },
+          { id: "5", label: "Quests", href: "/quests" },
+          { id: "6", label: "Brain Console", href: "/brain" },
+          { id: "7", label: "Worker Console", href: "/worker" },
+          { id: "8", label: "Permissions", href: "/permissions" },
         ]} />
         <OperatorNotes notes={[
-          "✅ Oracle DB with parallel sync (5s)",
-          "✅ Brain deep thinking (4 workers)",
-          "✅ Real-time stats & patterns",
-          "✅ Permissions & role system",
-          "✅ All 11 components monitored",
-          "⚡ Hackathon 2026 ready",
+          { id: "1", content: "✅ Oracle DB with parallel sync (5s)", timestamp: new Date().toISOString() },
+          { id: "2", content: "✅ Brain deep thinking (4 workers)", timestamp: new Date().toISOString() },
+          { id: "3", content: "✅ Real-time stats & patterns", timestamp: new Date().toISOString() },
+          { id: "4", content: "✅ Permissions & role system", timestamp: new Date().toISOString() },
+          { id: "5", content: "✅ All 11 components monitored", timestamp: new Date().toISOString() },
+          { id: "6", content: "⚡ Hackathon 2026 ready", timestamp: new Date().toISOString() },
         ]} />
       </div>
 

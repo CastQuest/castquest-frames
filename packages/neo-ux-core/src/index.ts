@@ -12,6 +12,7 @@ export * from "./components/GlowAlert";
 export * from "./dashboard/DashboardWidgets";
 export * from "./dashboard/StatsPanel";
 export * from "./dashboard/DashboardComponents";
+export * from "./dashboard/AdminComponents";
 
 // Brain
 export * from "./brain/BrainActivityGraph";
