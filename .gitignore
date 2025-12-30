@@ -13,3 +13,7 @@ out
 # Temporary files
 *.tmp
 *.log
+*.backup
+
+# Generated reports
+AUDIT-REPORT.md
