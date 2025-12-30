@@ -341,7 +341,8 @@ export class OracleDBService extends EventEmitter {
       total: mints.length, 
       pending: mints.filter((m: any) => m.status === 'pending').length,
       completed: mints.filter((m: any) => m.status === 'completed').length 
-    };Production Oracle query execution with connection pooling
+    };
+    // Production Oracle query execution with connection pooling
       // const connection = await this.pool.getConnection();
       // try {
       //   const result = await connection.execute(query, params || [], {

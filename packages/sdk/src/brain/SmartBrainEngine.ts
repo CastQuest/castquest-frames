@@ -44,7 +44,7 @@ export interface Decision {
 export interface BrainMetrics {
   thoughtsProcessed: number;
   patternsDiscovered: number;
-  decisionsM ade: number;
+  decisionsMade: number;
   averageConfidence: number;
   processingSpeed: number; // thoughts per second
   oracleQueries: number;

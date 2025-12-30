@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "CastQuest Protocol Smart Contracts",
   "scripts": {
-    "install": "forge install",
+    "postinstall": "echo 'Skipping forge install - run manually if needed'",
     "build": "forge build",
     "test": "forge test -vv",
     "test:coverage": "forge coverage",

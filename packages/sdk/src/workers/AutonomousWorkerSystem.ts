@@ -26,7 +26,7 @@ export interface Worker {
   status: "idle" | "busy" | "error";
   currentTask?: string;
   tasksCompleted: number;
-  tasksF failed: number;
+  tasksFailed: number;
   averageExecutionTime: number;
 }
 
