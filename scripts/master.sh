@@ -356,20 +356,28 @@ deploy_system() {
   step "8. Building packages"
   pnpm build || warn "Build completed with warnings"
   
+  step "9. Smart Brain Oracle Audit"
+  if [ -f "$SCRIPTS_DIR/audit.sh" ]; then
+    bash "$SCRIPTS_DIR/audit.sh" || warn "Audit completed with warnings"
+    success "Smart Brain audit complete"
+  else
+    warn "audit.sh not found - skipping audit"
+  fi
+  
   if [ "$environment" = "production" ]; then
-    step "9. Production deployment"
+    step "10. Production deployment"
     if [ -f "$SCRIPTS_DIR/hackathon-deploy.sh" ]; then
       bash "$SCRIPTS_DIR/hackathon-deploy.sh"
       success "Production deployment complete"
     fi
   else
-    step "9. Starting development servers"
+    step "10. Starting development servers"
     manage_core_services start
     pnpm dev &
     success "Development servers starting"
   fi
   
-  step "10. Starting worker system"
+  step "11. Starting worker system"
   manage_workers start
   
   success "Deployment complete for $environment"
@@ -1096,6 +1104,7 @@ COMMANDS:
     contracts gas       - Generate gas usage report
     contracts clean     - Clean build artifacts
     contracts status    - Check contracts package status
+    audit               - Run Smart Brain Oracle audit (comprehensive)
     
   Frames (Farcaster):
     frames start        - Start Frames server (port 3002)
@@ -1213,6 +1222,15 @@ main() {
       ;;
     contracts)
       manage_contracts "$@"
+      ;;
+    audit)
+      # Run Smart Brain Oracle audit
+      if [ -f "$SCRIPTS_DIR/audit.sh" ]; then
+        bash "$SCRIPTS_DIR/audit.sh"
+      else
+        error "audit.sh not found at $SCRIPTS_DIR/audit.sh"
+        exit 1
+      fi
       ;;
     frames)
       manage_frames "$@"
