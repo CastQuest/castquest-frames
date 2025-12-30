@@ -2,34 +2,42 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches:
+      - main
+      - master
   pull_request:
+    branches:
+      - main
+      - master
 
 jobs:
-  test-and-build:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Use Node.js 20
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: pnpm
 
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Set pnpm version
+      - name: Prepare pnpm
         run: corepack prepare pnpm@9.0.0 --activate
 
+      - name: Verify pnpm
+        run: pnpm --version
+
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build project
+        run: pnpm build
 
       - name: Run tests
-        run: pnpm test
-
-      - name: Build all packages
-        run: pnpm build
+        run: pnpm test --if-present

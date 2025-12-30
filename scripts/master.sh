@@ -1031,6 +1031,31 @@ git_operations() {
       git push origin --tags
       success "Pushed to origin/$branch with tags"
       ;;
+    commit-tag-push)
+      local commit_message="${2:-Auto-commit by master.sh}"
+      local tag_name="${3:-}"
+      local tag_message="${4:-Release tag}"
+      
+      # Commit changes
+      git add -A
+      if git commit -m "$commit_message"; then
+        success "Changes committed: $commit_message"
+      else
+        log "Nothing to commit"
+      fi
+      
+      # Create tag if provided
+      if [ -n "$tag_name" ]; then
+        git tag -a "$tag_name" -m "$tag_message"
+        success "Tag created: $tag_name"
+      fi
+      
+      # Push everything
+      local branch=$(git branch --show-current)
+      git push origin "$branch"
+      git push origin --tags
+      success "Pushed to origin/$branch with tags"
+      ;;
     full)
       git add -A
       git commit -m "${2:-Auto-commit by master.sh}" || log "Nothing to commit"
@@ -1143,6 +1168,11 @@ EXAMPLES:
   ./scripts/master.sh integrity
   
   # Git workflow
+  ./scripts/master.sh git status
+  ./scripts/master.sh git commit "commit message"
+  ./scripts/master.sh git tag "v1.0.0" "Release message"
+  ./scripts/master.sh git push
+  ./scripts/master.sh git commit-tag-push "commit message" "v1.0.0" "Release message"
   ./scripts/master.sh git full "feat: Add new feature"
   
   # Worker management
