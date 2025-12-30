@@ -30,7 +30,7 @@ export interface Quest {
   title: string;
   description: string;
   difficulty: "beginner" | "easy" | "intermediate" | "advanced";
-  status: "active" | "upcoming" | "completed" | "expired";
+  status: "active" | "upcoming" | "completed";
   reward: string;
   participants: number;
   completed: number;
