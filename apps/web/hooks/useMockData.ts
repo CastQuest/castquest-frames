@@ -30,7 +30,7 @@ import type { Frame, Quest, Media, Stats } from "../types";
  *    - Example: useWebSocket('/api/frames/subscribe')
  */
 export function useMockFrames() {
-  const [frames, setFrames] = useState<Frame[]>(webContent.frames as Frame[]);
+  const [frames, setFrames] = useState(webContent.frames as Frame[]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -88,7 +88,7 @@ export function useMockFrames() {
  *    - Example: const { claimReward } = useRewardClaim()
  */
 export function useMockQuests() {
-  const [quests, setQuests] = useState<Quest[]>(webContent.quests as Quest[]);
+  const [quests, setQuests] = useState(webContent.quests as Quest[]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -142,7 +142,7 @@ export function useMockQuests() {
  *    - Example: const { metadata } = useNFTMetadata(tokenId)
  */
 export function useMockMedia() {
-  const [media, setMedia] = useState<Media[]>(webContent.media as Media[]);
+  const [media, setMedia] = useState(webContent.media as Media[]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -177,7 +177,7 @@ export function useMockMedia() {
  *    - Example: const { tvl } = useTVL()
  */
 export function useMockStats() {
-  const [stats, setStats] = useState<Stats>(webContent.stats as Stats);
+  const [stats, setStats] = useState(webContent.stats as Stats);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
