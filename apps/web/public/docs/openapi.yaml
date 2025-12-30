@@ -1,0 +1,551 @@
+openapi: 3.0.3
+info:
+  title: CastQuest API
+  version: 1.0.0
+  description: |
+    Comprehensive API for the CastQuest decentralized protocol universe.
+    Integrates Farcaster frames, on-chain minting, AI agents, and media management.
+  contact:
+    name: CastQuest Team
+    url: https://castquest.io
+
+servers:
+  - url: https://api.castquest.io/v1
+    description: Production API
+  - url: https://staging-api.castquest.io/v1
+    description: Staging API
+
+tags:
+  - name: Frames
+    description: Farcaster frame creation and management
+  - name: Permissions
+    description: RBAC and access control
+  - name: AI
+    description: SmartBrain AI agent interactions
+  - name: Oracle
+    description: On-chain data and treasury queries
+  - name: Markets
+    description: NFT marketplace and trading
+  - name: Media
+    description: Media asset management
+
+paths:
+  /frames:
+    get:
+      tags: [Frames]
+      summary: List all frames
+      description: Retrieve a paginated list of Farcaster frames
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, published, archived]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  frames:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Frame'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+    post:
+      tags: [Frames]
+      summary: Create a new frame
+      description: Create a new Farcaster frame with validation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFrameRequest'
+      responses:
+        '201':
+          description: Frame created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Frame'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /frames/{frameId}:
+    get:
+      tags: [Frames]
+      summary: Get frame by ID
+      parameters:
+        - name: frameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Frame'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    put:
+      tags: [Frames]
+      summary: Update frame
+      parameters:
+        - name: frameId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFrameRequest'
+      responses:
+        '200':
+          description: Frame updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Frame'
+
+  /frames/{frameId}/validate:
+    post:
+      tags: [Frames]
+      summary: Validate frame structure
+      description: Validate frame metadata and image requirements
+      parameters:
+        - name: frameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  errors:
+                    type: array
+                    items:
+                      type: string
+
+  /permissions/users/{userId}/roles:
+    get:
+      tags: [Permissions]
+      summary: Get user roles
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User roles retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  roles:
+                    type: array
+                    items:
+                      type: string
+                      enum: [user, admin, developer, moderator]
+    
+    post:
+      tags: [Permissions]
+      summary: Assign role to user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  enum: [user, admin, developer, moderator]
+      responses:
+        '200':
+          description: Role assigned successfully
+
+  /ai/agents:
+    post:
+      tags: [AI]
+      summary: Create AI interaction
+      description: Interact with SmartBrain AI agents
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prompt:
+                  type: string
+                context:
+                  type: object
+                agentType:
+                  type: string
+                  enum: [builder, analyzer, optimizer]
+      responses:
+        '200':
+          description: AI response generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                  confidence:
+                    type: number
+                  suggestions:
+                    type: array
+                    items:
+                      type: string
+
+  /oracle/treasury:
+    get:
+      tags: [Oracle]
+      summary: Get treasury data
+      description: Query on-chain treasury balances and stats
+      parameters:
+        - name: chain
+          in: query
+          schema:
+            type: string
+            enum: [ethereum, base, solana, zora]
+      responses:
+        '200':
+          description: Treasury data retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalValue:
+                    type: string
+                  balances:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        chain:
+                          type: string
+                        token:
+                          type: string
+                        amount:
+                          type: string
+                        usdValue:
+                          type: string
+
+  /oracle/contracts/{address}:
+    get:
+      tags: [Oracle]
+      summary: Get contract information
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: chain
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Contract info retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contract'
+
+  /markets/nfts:
+    get:
+      tags: [Markets]
+      summary: List NFT marketplace items
+      responses:
+        '200':
+          description: Marketplace items retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NFTItem'
+
+  /markets/mint:
+    post:
+      tags: [Markets]
+      summary: Mint NFT on-chain
+      description: Mint a new NFT to specified chain
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chain:
+                  type: string
+                  enum: [ethereum, base, solana, zora]
+                metadata:
+                  type: object
+                recipient:
+                  type: string
+      responses:
+        '201':
+          description: NFT minted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionHash:
+                    type: string
+                  tokenId:
+                    type: string
+                  contractAddress:
+                    type: string
+
+  /media/assets:
+    get:
+      tags: [Media]
+      summary: List media assets
+      responses:
+        '200':
+          description: Media assets retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assets:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MediaAsset'
+    
+    post:
+      tags: [Media]
+      summary: Upload media asset
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                metadata:
+                  type: object
+      responses:
+        '201':
+          description: Asset uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaAsset'
+
+components:
+  schemas:
+    Frame:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        buttons:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              action:
+                type: string
+        status:
+          type: string
+          enum: [draft, published, archived]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateFrameRequest:
+      type: object
+      required: [title, imageUrl]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        buttons:
+          type: array
+          items:
+            type: object
+
+    UpdateFrameRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        buttons:
+          type: array
+          items:
+            type: object
+        status:
+          type: string
+
+    Contract:
+      type: object
+      properties:
+        address:
+          type: string
+        chain:
+          type: string
+        name:
+          type: string
+        functions:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              signature:
+                type: string
+              description:
+                type: string
+
+    NFTItem:
+      type: object
+      properties:
+        id:
+          type: string
+        tokenId:
+          type: string
+        contractAddress:
+          type: string
+        chain:
+          type: string
+        metadata:
+          type: object
+        price:
+          type: string
+        currency:
+          type: string
+
+    MediaAsset:
+      type: object
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+        type:
+          type: string
+        size:
+          type: integer
+        metadata:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []

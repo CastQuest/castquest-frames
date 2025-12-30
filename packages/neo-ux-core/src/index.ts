@@ -9,6 +9,7 @@ export * from "./components/GlowPanel";
 
 // Dashboard
 export * from "./dashboard/DashboardWidgets";
+export * from "./dashboard/DashboardComponents";
 
 // Brain
 export * from "./brain/BrainActivityGraph";
