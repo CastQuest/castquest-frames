@@ -13,6 +13,10 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "@castquest/neo-ux-core": "workspace:*",
-    "@castquest/sdk": "workspace:*"
+    "@castquest/sdk": "workspace:*",
+    "@tanstack/react-table": "^8.10.7",
+    "recharts": "^2.10.3",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.2.0"
   }
 }
