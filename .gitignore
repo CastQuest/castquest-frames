@@ -2,13 +2,24 @@
 dist
 .env
 .env.*
-pnpm-lock.yaml
+.env.local
 .DS_Store
 coverage
 
 # Next.js build artifacts
 .next
 out
+
+# Expo / React Native
+.expo
+.expo-shared
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
 
 # Temporary files
 *.tmp
@@ -17,3 +28,10 @@ out
 
 # Generated reports
 AUDIT-REPORT.md
+
+# Turbo
+.turbo
+
+# Supabase
+supabase/.branches
+supabase/.temp
