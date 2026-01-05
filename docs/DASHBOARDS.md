@@ -120,11 +120,15 @@ pnpm dev -- -p 3010
 #### Option 2: Run Both Simultaneously
 
 ```bash
-# From root directory
-pnpm run dev:all
-
-# Or using the self-healing script
+# From root directory using the self-healing script
 ./scripts/self-healing-ui.sh
+
+# Or manually in separate terminals:
+# Terminal 1: User Dashboard
+cd apps/web && pnpm dev
+
+# Terminal 2: Admin Dashboard
+cd apps/admin && pnpm dev -- -p 3010
 ```
 
 #### Option 3: Production Build
@@ -578,6 +582,8 @@ redis-cli ping
 
 ## 🚀 Deployment Instructions
 
+> **📖 For comprehensive deployment guides including Docker, AWS, and advanced configurations, see [DEPLOYMENT.md](./DEPLOYMENT.md)**
+
 ### Vercel Deployment (Recommended)
 
 #### User Dashboard
@@ -978,9 +984,10 @@ pnpm prisma migrate dev
 pnpm prisma db seed
 
 # 3. Start development servers
-pnpm dev:all
+# Use self-healing script (recommended)
+./scripts/self-healing-ui.sh
 
-# Or individually
+# Or start individually
 pnpm dev:user    # Port 3000
 pnpm dev:admin   # Port 3010
 ```
