@@ -32,7 +32,7 @@ import {
   Download,
   ExternalLink,
   Star,
-  Fire,
+  Flame,
   Gift,
   Trophy,
   Clock,
@@ -473,7 +473,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Fire className="w-5 h-5 text-orange-400" />
+                      <Flame className="w-5 h-5 text-orange-400" />
                       <div className="flex-1">
                         <div className="text-white text-sm font-medium">7 Day Streak</div>
                         <div className="text-slate-400 text-xs">Keep it up!</div>
@@ -831,7 +831,7 @@ export default function DashboardPage() {
 
                 <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-6">
                   <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                    <Fire className="w-5 h-5 text-orange-400" />
+                    <Flame className="w-5 h-5 text-orange-400" />
                     Trending Topics
                   </h3>
                   <div className="space-y-3">
