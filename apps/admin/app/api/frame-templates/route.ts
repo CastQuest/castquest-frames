@@ -12,7 +12,8 @@ export async function GET() {
     console.error('Failed to load frame templates:', error);
     return NextResponse.json({ 
       success: false, 
-      data: [] 
-    });
+      data: [],
+      error: 'Failed to load frame templates'
+    }, { status: 500 });
   }
 }
