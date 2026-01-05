@@ -1,593 +1,978 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { 
-  Menu, X, Home, Compass, Gift, Wallet, Settings, LogOut, 
-  Search, Bell, User, ChevronRight, Lock, Play, CheckCircle,
-  Award, Zap, Flame, TrendingUp, Clock, Users
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Sparkles,
+  BarChart3,
+  Users,
+  ShoppingBag,
+  Zap,
+  TrendingUp,
+  Eye,
+  Heart,
+  MessageSquare,
+  Share2,
+  Award,
+  Crown,
+  Rocket,
+  Target,
+  DollarSign,
+  Settings,
+  Plus,
+  Filter,
+  Search,
+  ArrowUpRight,
+  Lightbulb,
+  Wand2,
+  Image,
+  Video,
+  Code,
+  Palette,
+  Download,
+  ExternalLink,
+  Star,
+  Fire,
+  Gift,
+  Trophy,
+  Clock,
+  ChevronRight,
+  Bell,
+  TrendingDown,
 } from 'lucide-react';
 
-export default function CastQuestUserDashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [currentPage, setCurrentPage] = useState('home');
-  const [userStats, setUserStats] = useState({
-    level: 8,
-    xp: 2450,
-    xpMax: 5000,
-    coins: 12500,
-    gems: 842,
-    streakDays: 14
-  });
+interface Frame {
+  id: string;
+  name: string;
+  thumbnail: string;
+  views: number;
+  likes: number;
+  comments: number;
+  shares: number;
+  revenue: number;
+  status: 'active' | 'draft' | 'archived';
+  createdAt: string;
+}
 
-  const [frames, setFrames] = useState([
-    {
-      id: 1,
-      name: 'Dragon\'s Quest',
-      progress: 75,
-      difficulty: 'Hard',
-      reward: 500,
-      completed: false,
-      image: '🐉'
-    },
-    {
-      id: 2,
-      name: 'Forest Explorer',
-      progress: 45,
-      difficulty: 'Medium',
-      reward: 300,
-      completed: false,
-      image: '🌲'
-    },
-    {
-      id: 3,
-      name: 'Treasure Hunt',
-      progress: 100,
-      difficulty: 'Easy',
-      reward: 150,
-      completed: true,
-      image: '💎'
-    },
-    {
-      id: 4,
-      name: 'Sky Walker',
-      progress: 60,
-      difficulty: 'Hard',
-      reward: 600,
-      completed: false,
-      image: '☁️'
-    }
-  ]);
+interface Stat {
+  label: string;
+  value: string;
+  change: number;
+  icon: any;
+  trend: 'up' | 'down';
+}
 
-  const [quests, setQuests] = useState([
-    {
-      id: 1,
-      title: 'Daily Login',
-      description: 'Log in to CastQuest',
-      reward: 50,
-      xp: 100,
-      completed: true,
-      category: 'daily'
-    },
-    {
-      id: 2,
-      title: 'Complete 3 Frames',
-      description: 'Finish any 3 quest frames',
-      reward: 200,
-      xp: 500,
-      completed: false,
-      category: 'weekly'
-    },
-    {
-      id: 3,
-      title: 'Reach Level 10',
-      description: 'Gain enough XP to level up',
-      reward: 500,
-      xp: 1000,
-      completed: false,
-      category: 'milestone'
-    },
-    {
-      id: 4,
-      title: 'Mint Collector',
-      description: 'Collect 10 NFT Mints',
-      reward: 300,
-      xp: 600,
-      completed: false,
-      category: 'daily'
-    }
-  ]);
+interface Template {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  rating: number;
+  downloads: number;
+  thumbnail: string;
+  featured: boolean;
+}
 
-  const [mints, setMints] = useState([
-    { id: 1, name: 'Legendary Dragon', rarity: 'Legendary', date: '2024-01-03', value: 2500 },
-    { id: 2, name: 'Golden Sword', rarity: 'Rare', date: '2024-01-02', value: 800 },
-    { id: 3, name: 'Forest Crown', rarity: 'Uncommon', date: '2024-01-01', value: 300 },
-    { id: 4, name: 'Crystal Orb', rarity: 'Rare', date: '2023-12-28', value: 650 }
-  ]);
+interface CommunityPost {
+  id: string;
+  author: string;
+  avatar: string;
+  content: string;
+  likes: number;
+  comments: number;
+  timestamp: string;
+  badges: string[];
+}
 
-  const [leaderboard, setLeaderboard] = useState([
-    { rank: 1, username: 'DragonSlayer', level: 15, xp: 45000, coins: 50000 },
-    { rank: 2, username: 'SkyWalker', level: 14, xp: 42000, coins: 48000 },
-    { rank: 3, username: 'YourName', level: 8, xp: 2450, coins: 12500 },
-    { rank: 4, username: 'TreasureHunt', level: 12, xp: 38000, coins: 42000 },
-    { rank: 5, username: 'MintCollector', level: 11, xp: 35000, coins: 40000 }
-  ]);
+export default function DashboardPage() {
+  const [activeTab, setActiveTab] = useState<'overview' | 'ai-builder' | 'analytics' | 'community' | 'marketplace'>('overview');
+  const [frames, setFrames] = useState<Frame[]>([]);
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState('all');
 
+  // Mock data initialization
   useEffect(() => {
-    const interval = setInterval(() => {
-      setUserStats(prev => ({
-        ...prev,
-        coins: prev.coins + Math.floor(Math.random() * 50),
-        xp: Math.min(prev.xpMax, prev.xp + Math.floor(Math.random() * 30))
-      }));
-    }, 5000);
-    return () => clearInterval(interval);
+    setFrames([
+      {
+        id: '1',
+        name: 'Interactive Poll Frame',
+        thumbnail: '/frames/poll.jpg',
+        views: 12500,
+        likes: 890,
+        comments: 156,
+        shares: 234,
+        revenue: 450.50,
+        status: 'active',
+        createdAt: '2026-01-01',
+      },
+      {
+        id: '2',
+        name: 'NFT Showcase',
+        thumbnail: '/frames/nft.jpg',
+        views: 8900,
+        likes: 670,
+        comments: 89,
+        shares: 145,
+        revenue: 320.75,
+        status: 'active',
+        createdAt: '2025-12-28',
+      },
+      {
+        id: '3',
+        name: 'Quiz Challenge',
+        thumbnail: '/frames/quiz.jpg',
+        views: 6700,
+        likes: 450,
+        comments: 67,
+        shares: 89,
+        revenue: 180.25,
+        status: 'draft',
+        createdAt: '2025-12-25',
+      },
+    ]);
+
+    setTemplates([
+      {
+        id: '1',
+        name: 'Gamer Profile Card',
+        category: 'Social',
+        price: 49,
+        rating: 4.8,
+        downloads: 1234,
+        thumbnail: '/templates/gamer.jpg',
+        featured: true,
+      },
+      {
+        id: '2',
+        name: 'Token Launch Frame',
+        category: 'DeFi',
+        price: 99,
+        rating: 4.9,
+        downloads: 856,
+        thumbnail: '/templates/token.jpg',
+        featured: true,
+      },
+      {
+        id: '3',
+        name: 'Event RSVP',
+        category: 'Events',
+        price: 29,
+        rating: 4.7,
+        downloads: 2341,
+        thumbnail: '/templates/event.jpg',
+        featured: false,
+      },
+      {
+        id: '4',
+        name: 'Music Player',
+        category: 'Entertainment',
+        price: 39,
+        rating: 4.6,
+        downloads: 1890,
+        thumbnail: '/templates/music.jpg',
+        featured: false,
+      },
+    ]);
+
+    setCommunityPosts([
+      {
+        id: '1',
+        author: 'CryptoCreator',
+        avatar: '/avatars/user1.jpg',
+        content: 'Just launched my first interactive frame! The AI builder made it so easy. Check it out! 🚀',
+        likes: 234,
+        comments: 45,
+        timestamp: '2h ago',
+        badges: ['Early Adopter', 'Top Creator'],
+      },
+      {
+        id: '2',
+        author: 'FrameMaster',
+        avatar: '/avatars/user2.jpg',
+        content: 'Pro tip: Use the analytics dashboard to optimize your frame engagement. Increased my CTR by 40%! 📊',
+        likes: 189,
+        comments: 32,
+        timestamp: '5h ago',
+        badges: ['Expert', 'Verified'],
+      },
+      {
+        id: '3',
+        author: 'NFTArtist',
+        avatar: '/avatars/user3.jpg',
+        content: 'My NFT gallery frame just hit 10k views! Thanks to the CastQuest community for all the support 🎨✨',
+        likes: 567,
+        comments: 78,
+        timestamp: '1d ago',
+        badges: ['Top Seller', 'Artist'],
+      },
+    ]);
   }, []);
 
-  const completeQuest = (questId: number) => {
-    setQuests(quests.map(q => 
-      q.id === questId ? { ...q, completed: true } : q
-    ));
-  };
+  const stats: Stat[] = [
+    {
+      label: 'Total Views',
+      value: '28.1K',
+      change: 12.5,
+      icon: Eye,
+      trend: 'up',
+    },
+    {
+      label: 'Engagement Rate',
+      value: '8.4%',
+      change: 3.2,
+      icon: Heart,
+      trend: 'up',
+    },
+    {
+      label: 'Total Revenue',
+      value: '$951.50',
+      change: 18.7,
+      icon: DollarSign,
+      trend: 'up',
+    },
+    {
+      label: 'Active Frames',
+      value: '12',
+      change: 2,
+      icon: Zap,
+      trend: 'up',
+    },
+  ];
 
-  const completeFrame = (frameId: number) => {
-    setFrames(frames.map(f => 
-      f.id === frameId ? { ...f, completed: true, progress: 100 } : f
-    ));
-  };
-
-  // Home Page Component
-  const HomePage = () => (
-    <div className="space-y-6">
-      {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-purple-600 to-cyan-600 rounded-xl p-8 text-white shadow-lg shadow-purple-500/20">
-        <h2 className="text-3xl font-bold mb-2">Welcome Back, Adventurer! 👋</h2>
-        <p className="text-purple-100">You&apos;re on a {userStats.streakDays} day streak! Keep it up!</p>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white/5 border border-purple-500/30 rounded-lg p-4 hover:border-purple-500/50 transition-all">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-400">Level</p>
-              <p className="text-3xl font-bold text-purple-400">{userStats.level}</p>
-            </div>
-            <Award className="w-8 h-8 text-purple-400" />
-          </div>
-        </div>
-
-        <div className="bg-white/5 border border-cyan-500/30 rounded-lg p-4 hover:border-cyan-500/50 transition-all">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-400">Coins</p>
-              <p className="text-3xl font-bold text-cyan-400">{userStats.coins.toLocaleString()}</p>
-            </div>
-            <Wallet className="w-8 h-8 text-cyan-400" />
-          </div>
-        </div>
-
-        <div className="bg-white/5 border border-pink-500/30 rounded-lg p-4 hover:border-pink-500/50 transition-all">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-400">Gems</p>
-              <p className="text-3xl font-bold text-pink-400">{userStats.gems}</p>
-            </div>
-            <Gift className="w-8 h-8 text-pink-400" />
-          </div>
-        </div>
-
-        <div className="bg-white/5 border border-orange-500/30 rounded-lg p-4 hover:border-orange-500/50 transition-all">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-400">Streak</p>
-              <p className="text-3xl font-bold text-orange-400">{userStats.streakDays}</p>
-            </div>
-            <Flame className="w-8 h-8 text-orange-400" />
-          </div>
-        </div>
-      </div>
-
-      {/* XP Progress */}
-      <div className="bg-white/5 border border-purple-500/30 rounded-lg p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-lg">Experience Progress</h3>
-          <span className="text-sm text-gray-400">{userStats.xp} / {userStats.xpMax} XP</span>
-        </div>
-        <div className="w-full bg-black/40 rounded-full h-4 overflow-hidden">
-          <div 
-            className="bg-gradient-to-r from-purple-500 to-cyan-500 h-4 rounded-full transition-all duration-500 shadow-lg shadow-purple-500/50"
-            style={{ width: `${(userStats.xp / userStats.xpMax) * 100}%` }}
-          />
-        </div>
-        <p className="text-sm text-gray-400 mt-2">{userStats.xpMax - userStats.xp} XP to next level</p>
-      </div>
-
-      {/* Featured Frames */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold">Featured Frames</h3>
-          <button 
-            onClick={() => setCurrentPage('frames')}
-            className="text-purple-400 hover:text-purple-300 text-sm flex items-center gap-1 transition-colors"
-          >
-            View All <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {frames.slice(0, 2).map(frame => (
-            <div key={frame.id} className="bg-white/5 border border-cyan-500/30 rounded-lg p-4 hover:bg-white/10 hover:border-cyan-500/50 transition-all">
-              <div className="flex items-start justify-between mb-3">
-                <span className="text-4xl">{frame.image}</span>
-                <span className={`text-xs px-2 py-1 rounded ${
-                  frame.difficulty === 'Hard' ? 'bg-red-500/20 text-red-300 border border-red-500/30' :
-                  frame.difficulty === 'Medium' ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30' :
-                  'bg-green-500/20 text-green-300 border border-green-500/30'
-                }`}>
-                  {frame.difficulty}
-                </span>
-              </div>
-              <h4 className="font-semibold mb-2">{frame.name}</h4>
-              <div className="w-full bg-black/40 rounded-full h-2 mb-2 overflow-hidden">
-                <div 
-                  className="bg-gradient-to-r from-cyan-500 to-purple-500 h-2 rounded-full transition-all shadow-lg shadow-cyan-500/50"
-                  style={{ width: `${frame.progress}%` }}
-                />
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-400">{frame.progress}%</span>
-                <button 
-                  onClick={() => completeFrame(frame.id)}
-                  className="px-3 py-1 rounded bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/50 transition-all"
-                >
-                  {frame.progress === 100 ? '✓ Done' : 'Play'}
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Quick Quest Action */}
-      <div className="bg-gradient-to-r from-cyan-600 to-purple-600 rounded-lg p-6 text-white shadow-lg shadow-cyan-500/20">
-        <h3 className="font-bold mb-2">Daily Quest Ready!</h3>
-        <p className="text-sm mb-4">Complete your daily login quest to earn coins and XP</p>
-        <button className="w-full bg-white/20 hover:bg-white/30 border border-white/30 rounded-lg py-2 font-semibold transition-all">
-          Claim Reward →
-        </button>
-      </div>
-    </div>
-  );
-
-  // Frames Page Component
-  const FramesPage = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Quest Frames</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {frames.map(frame => (
-          <div key={frame.id} className="bg-white/5 border border-purple-500/30 rounded-lg p-6 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20">
-            <div className="text-6xl mb-4 text-center">{frame.image}</div>
-            <h3 className="text-xl font-bold mb-2">{frame.name}</h3>
-            
-            <div className="flex items-center gap-2 mb-4">
-              <span className={`text-xs px-2 py-1 rounded font-semibold ${
-                frame.difficulty === 'Hard' ? 'bg-red-500/20 text-red-300 border border-red-500/30' :
-                frame.difficulty === 'Medium' ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30' :
-                'bg-green-500/20 text-green-300 border border-green-500/30'
-              }`}>
-                {frame.difficulty}
-              </span>
-              <span className="text-xs text-gray-400">⭐ {frame.reward} coins</span>
-            </div>
-
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-400">Progress</span>
-                <span className="font-semibold">{frame.progress}%</span>
-              </div>
-              <div className="w-full bg-black/40 rounded-full h-3 overflow-hidden">
-                <div 
-                  className="bg-gradient-to-r from-purple-500 to-cyan-500 h-3 rounded-full transition-all shadow-lg shadow-purple-500/50"
-                  style={{ width: `${frame.progress}%` }}
-                />
-              </div>
-            </div>
-
-            <button 
-              onClick={() => completeFrame(frame.id)}
-              className={`w-full py-2 rounded-lg font-semibold border transition-all ${
-                frame.completed 
-                  ? 'bg-green-500/20 border-green-500/50 text-green-300' 
-                  : 'bg-purple-500/20 hover:bg-purple-500/30 border-purple-500/50 text-purple-300'
-              }`}
-            >
-              {frame.completed ? '✓ Completed' : `${frame.progress === 100 ? 'Claim' : 'Continue'}`}
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // Quests Page Component
-  const QuestsPage = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Quests & Challenges</h2>
-      
-      <div className="space-y-3">
-        {quests.map(quest => (
-          <div key={quest.id} className="bg-white/5 border border-cyan-500/30 rounded-lg p-4 hover:bg-white/10 hover:border-cyan-500/50 transition-all">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2 flex-wrap">
-                  <h3 className="font-semibold text-lg">{quest.title}</h3>
-                  <span className={`text-xs px-2 py-1 rounded font-semibold ${
-                    quest.category === 'daily' ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' :
-                    quest.category === 'weekly' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' :
-                    'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
-                  }`}>
-                    {quest.category.charAt(0).toUpperCase() + quest.category.slice(1)}
-                  </span>
-                </div>
-                <p className="text-sm text-gray-400">{quest.description}</p>
-                <div className="flex items-center gap-4 mt-3">
-                  <span className="text-sm flex items-center gap-1">
-                    <Wallet className="w-4 h-4 text-cyan-400" />
-                    <span className="text-cyan-400">+{quest.reward}</span>
-                  </span>
-                  <span className="text-sm flex items-center gap-1">
-                    <Zap className="w-4 h-4 text-purple-400" />
-                    <span className="text-purple-400">+{quest.xp} XP</span>
-                  </span>
-                </div>
-              </div>
-              <button 
-                onClick={() => completeQuest(quest.id)}
-                disabled={quest.completed}
-                className={`px-6 py-2 rounded-lg font-semibold border transition-all whitespace-nowrap ${
-                  quest.completed
-                    ? 'bg-green-500/20 border-green-500/50 text-green-300 cursor-not-allowed'
-                    : 'bg-cyan-500/20 hover:bg-cyan-500/30 border-cyan-500/50 text-cyan-300'
-                }`}
-              >
-                {quest.completed ? '✓ Done' : 'Claim'}
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // Mints Page Component
-  const MintsPage = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold">My NFT Mints</h2>
-      
-      <div className="bg-white/5 border border-cyan-500/30 rounded-lg p-4 mb-6">
-        <p className="text-sm text-gray-400">Total Value: <span className="text-cyan-400 font-semibold">4,250 coins</span></p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {mints.map(mint => (
-          <div key={mint.id} className="bg-white/5 border border-purple-500/30 rounded-lg p-6 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/20">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h3 className="font-bold text-lg">{mint.name}</h3>
-                <p className="text-sm text-gray-400">{mint.date}</p>
-              </div>
-              <span className={`text-xs px-3 py-1 rounded font-bold ${
-                mint.rarity === 'Legendary' ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30' :
-                mint.rarity === 'Rare' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' :
-                'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-              }`}>
-                {mint.rarity}
-              </span>
-            </div>
-            <div className="w-full h-24 bg-gradient-to-br from-purple-500/20 to-cyan-500/20 rounded-lg mb-4 flex items-center justify-center border border-purple-500/30">
-              <span className="text-4xl">✨</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-lg font-bold text-cyan-400">{mint.value} coins</span>
-              <button className="px-4 py-2 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-purple-300 text-sm font-semibold transition-all">
-                View
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // Leaderboard Page Component
-  const LeaderboardPage = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Global Leaderboard</h2>
-      
-      <div className="space-y-2">
-        {leaderboard.map(player => (
-          <div 
-            key={player.rank} 
-            className={`rounded-lg p-4 border transition-all ${
-              player.rank === 3
-                ? 'bg-purple-500/20 border-purple-500/50 shadow-lg shadow-purple-500/20'
-                : 'bg-white/5 border-cyan-500/30 hover:bg-white/10'
-            }`}
-          >
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4 flex-1 min-w-0">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
-                  player.rank === 1 ? 'bg-yellow-500/30 text-yellow-300 shadow-lg shadow-yellow-500/30' :
-                  player.rank === 2 ? 'bg-gray-400/30 text-gray-300' :
-                  player.rank === 3 ? 'bg-orange-500/30 text-orange-300' :
-                  'bg-cyan-500/20 text-cyan-300'
-                }`}>
-                  {player.rank}
-                </div>
-                <div className="min-w-0">
-                  <p className="font-semibold truncate">{player.username}</p>
-                  <p className="text-sm text-gray-400">Level {player.level}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 md:gap-8">
-                <div className="text-right">
-                  <p className="text-sm text-gray-400">XP</p>
-                  <p className="font-bold text-cyan-400">{player.xp.toLocaleString()}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-400">Coins</p>
-                  <p className="font-bold text-purple-400">{player.coins.toLocaleString()}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // Settings Page Component
-  const SettingsPage = () => (
-    <div className="space-y-6 max-w-2xl">
-      <h2 className="text-2xl font-bold">Settings</h2>
-      
-      <div className="bg-white/5 border border-cyan-500/30 rounded-lg divide-y divide-white/10">
-        <div className="p-4">
-          <h3 className="font-semibold mb-2">Account</h3>
-          <button className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors">Edit Profile</button>
-        </div>
-        <div className="p-4">
-          <h3 className="font-semibold mb-2">Notifications</h3>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-400">Quest Updates</span>
-            <input type="checkbox" defaultChecked className="w-4 h-4" />
-          </div>
-        </div>
-        <div className="p-4">
-          <h3 className="font-semibold mb-2">Privacy</h3>
-          <button className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors">Privacy Settings</button>
-        </div>
-        <div className="p-4">
-          <h3 className="font-semibold mb-2">Security</h3>
-          <button className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center gap-2 transition-colors">
-            <Lock className="w-4 h-4" /> Change Password
-          </button>
-        </div>
-      </div>
-
-      <button className="w-full py-3 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 text-red-300 font-semibold transition-all">
-        Sign Out
-      </button>
-    </div>
-  );
+  const aiFeatures = [
+    {
+      icon: Wand2,
+      title: 'AI Frame Generator',
+      description: 'Describe your frame and let AI create it',
+      color: 'from-purple-500 to-pink-500',
+    },
+    {
+      icon: Palette,
+      title: 'Smart Design',
+      description: 'AI-powered color schemes and layouts',
+      color: 'from-blue-500 to-cyan-500',
+    },
+    {
+      icon: Lightbulb,
+      title: 'Content Ideas',
+      description: 'Get AI suggestions for engaging content',
+      color: 'from-orange-500 to-yellow-500',
+    },
+    {
+      icon: Code,
+      title: 'Code Assistant',
+      description: 'AI helps with custom interactions',
+      color: 'from-green-500 to-emerald-500',
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-black text-white" style={{
-      backgroundImage: 'linear-gradient(135deg, #0a0a0a 0%, #1a0033 50%, #0a0a1a 100%)',
-      boxShadow: 'inset 0 0 100px rgba(0, 255, 150, 0.05)'
-    }}>
-      <div className="flex h-screen">
-        {/* Sidebar */}
-        <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-black/80 backdrop-blur border-r border-cyan-500/20 transform transition-transform duration-300 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 lg:relative`}>
-          <div className="p-6 border-b border-cyan-500/20">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center font-bold shadow-lg shadow-cyan-500/30">
-                CQ
-              </div>
-              <h1 className="text-xl font-bold">CastQuest</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+      {/* Animated Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-pulse delay-500" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent mb-2">
+                Creator Dashboard
+              </h1>
+              <p className="text-slate-400">Welcome back, @SMSDAO! Ready to create something amazing?</p>
+            </div>
+            <div className="flex gap-3">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-4 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-300 hover:bg-slate-700/50 transition-all flex items-center gap-2"
+              >
+                <Bell className="w-4 h-4" />
+                <span className="hidden sm:inline">Notifications</span>
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg text-white hover:from-purple-500 hover:to-pink-500 transition-all flex items-center gap-2 shadow-lg shadow-purple-500/25"
+              >
+                <Plus className="w-4 h-4" />
+                <span className="hidden sm:inline">Create Frame</span>
+              </motion.button>
             </div>
           </div>
 
-          <nav className="p-6 space-y-4">
+          {/* Navigation Tabs */}
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-purple-500/20">
             {[
-              { id: 'home', label: 'Home', icon: Home },
-              { id: 'frames', label: 'Quest Frames', icon: Compass },
-              { id: 'quests', label: 'Quests', icon: Play },
-              { id: 'mints', label: 'My Mints', icon: Gift },
-              { id: 'leaderboard', label: 'Leaderboard', icon: TrendingUp },
-              { id: 'settings', label: 'Settings', icon: Settings }
-            ].map(item => (
-              <button
-                key={item.id}
-                onClick={() => setCurrentPage(item.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                  currentPage === item.id
-                    ? 'bg-cyan-500/20 border border-cyan-500/50 text-cyan-300 shadow-lg shadow-cyan-500/20'
-                    : 'text-gray-400 hover:text-cyan-300 hover:bg-white/5'
+              { id: 'overview', label: 'Overview', icon: BarChart3 },
+              { id: 'ai-builder', label: 'AI Builder', icon: Sparkles },
+              { id: 'analytics', label: 'Analytics', icon: TrendingUp },
+              { id: 'community', label: 'Community', icon: Users },
+              { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag },
+            ].map((tab) => (
+              <motion.button
+                key={tab.id}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/25'
+                    : 'bg-slate-800/50 border border-slate-700 text-slate-300 hover:bg-slate-700/50'
                 }`}
               >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </button>
+                <tab.icon className="w-4 h-4" />
+                {tab.label}
+              </motion.button>
             ))}
-          </nav>
-
-          <div className="absolute bottom-6 left-6 right-6">
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:text-red-300 hover:bg-red-500/10 transition-all">
-              <LogOut className="w-5 h-5" />
-              <span className="font-medium">Sign Out</span>
-            </button>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Top Bar */}
-          <div className="border-b border-cyan-500/20 bg-black/40 backdrop-blur sticky top-0 z-40">
-            <div className="px-6 py-4 flex items-center justify-between">
-              <button 
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden text-cyan-400 hover:text-cyan-300 transition-colors"
+        {/* Stats Overview */}
+        {activeTab === 'overview' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {stats.map((stat, index) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="relative group"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-xl blur-xl group-hover:blur-2xl transition-all" />
+                  <div className="relative bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-6 hover:border-purple-500/50 transition-all">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-2 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg">
+                        <stat.icon className="w-6 h-6 text-purple-400" />
+                      </div>
+                      <div className={`flex items-center gap-1 text-sm ${
+                        stat.trend === 'up' ? 'text-green-400' : 'text-red-400'
+                      }`}>
+                        {stat.trend === 'up' ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+                        {stat.change}%
+                      </div>
+                    </div>
+                    <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
+                    <div className="text-slate-400 text-sm">{stat.label}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="lg:col-span-2"
               >
-                {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
+                <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                      <Rocket className="w-6 h-6 text-purple-400" />
+                      Your Frames
+                    </h2>
+                    <div className="flex gap-2">
+                      <button className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition-all">
+                        <Filter className="w-4 h-4" />
+                      </button>
+                      <button className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition-all">
+                        <Search className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    {frames.map((frame, index) => (
+                      <motion.div
+                        key={frame.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="group bg-slate-800/50 border border-slate-700 rounded-lg p-4 hover:border-purple-500/50 transition-all cursor-pointer"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Image className="w-8 h-8 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="text-white font-semibold truncate">{frame.name}</h3>
+                              <span className={`px-2 py-1 rounded text-xs ${
+                                frame.status === 'active' 
+                                  ? 'bg-green-500/20 text-green-400' 
+                                  : frame.status === 'draft'
+                                  ? 'bg-yellow-500/20 text-yellow-400'
+                                  : 'bg-slate-500/20 text-slate-400'
+                              }`}>
+                                {frame.status}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-4 text-sm text-slate-400">
+                              <span className="flex items-center gap-1">
+                                <Eye className="w-4 h-4" />
+                                {frame.views.toLocaleString()}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Heart className="w-4 h-4" />
+                                {frame.likes.toLocaleString()}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <MessageSquare className="w-4 h-4" />
+                                {frame.comments}
+                              </span>
+                              <span className="flex items-center gap-1 text-green-400">
+                                <DollarSign className="w-4 h-4" />
+                                {frame.revenue.toFixed(2)}
+                              </span>
+                            </div>
+                          </div>
+                          <button className="p-2 bg-purple-600 hover:bg-purple-500 rounded-lg text-white transition-all opacity-0 group-hover:opacity-100">
+                            <ExternalLink className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
 
-              <div className="flex-1 max-w-md mx-4 hidden md:block">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                  <input 
-                    type="text" 
-                    placeholder="Search frames, quests..." 
-                    className="w-full bg-white/5 border border-cyan-500/30 rounded-lg pl-10 pr-4 py-2 text-sm placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition-colors"
-                  />
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="space-y-6"
+              >
+                {/* Achievement Card */}
+                <div className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 backdrop-blur-xl border border-purple-500/50 rounded-xl p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-yellow-500/20 rounded-lg">
+                      <Trophy className="w-6 h-6 text-yellow-400" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white">Achievements</h3>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Crown className="w-5 h-5 text-yellow-400" />
+                      <div className="flex-1">
+                        <div className="text-white text-sm font-medium">Top Creator</div>
+                        <div className="text-slate-400 text-xs">Rank #234</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Fire className="w-5 h-5 text-orange-400" />
+                      <div className="flex-1">
+                        <div className="text-white text-sm font-medium">7 Day Streak</div>
+                        <div className="text-slate-400 text-xs">Keep it up!</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Award className="w-5 h-5 text-purple-400" />
+                      <div className="flex-1">
+                        <div className="text-white text-sm font-medium">15 Badges Earned</div>
+                        <div className="text-slate-400 text-xs">View all</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Stats */}
+                <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-6">
+                  <h3 className="text-xl font-bold text-white mb-4">Quick Stats</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400 text-sm">Avg. Frame Score</span>
+                      <span className="text-white font-semibold">8.6/10</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400 text-sm">Total Interactions</span>
+                      <span className="text-white font-semibold">45.2K</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400 text-sm">Conversion Rate</span>
+                      <span className="text-green-400 font-semibold">12.3%</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* AI Builder Tab */}
+        {activeTab === 'ai-builder' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {aiFeatures.map((feature, index) => (
+                <motion.div
+                  key={feature.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group relative cursor-pointer"
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-r ${feature.color} opacity-20 rounded-xl blur-xl group-hover:blur-2xl transition-all`} />
+                  <div className="relative bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-6 hover:border-purple-500/50 transition-all">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className={`p-3 bg-gradient-to-br ${feature.color} rounded-lg`}>
+                        <feature.icon className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-white">{feature.title}</h3>
+                        <p className="text-slate-400 text-sm">{feature.description}</p>
+                      </div>
+                    </div>
+                    <button className="w-full py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-white transition-all flex items-center justify-center gap-2">
+                      Try Now
+                      <ArrowUpRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* AI Frame Generator */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-8"
+            >
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center p-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full mb-4">
+                  <Sparkles className="w-12 h-12 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-white mb-2">AI Frame Generator</h2>
+                <p className="text-slate-400">Describe your frame idea and let AI bring it to life</p>
+              </div>
+              
+              <div className="max-w-3xl mx-auto">
+                <textarea
+                  placeholder="E.g., 'Create an interactive poll frame for choosing the next community event with a futuristic purple theme and emoji reactions...'"
+                  className="w-full h-40 bg-slate-800/50 border border-slate-700 rounded-lg p-4 text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition-all resize-none"
+                />
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex gap-2">
+                    <button className="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition-all flex items-center gap-2">
+                      <Image className="w-4 h-4" />
+                      Add Image
+                    </button>
+                    <button className="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition-all flex items-center gap-2">
+                      <Video className="w-4 h-4" />
+                      Add Video
+                    </button>
+                  </div>
+                  <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-lg text-white font-semibold transition-all flex items-center gap-2 shadow-lg shadow-purple-500/25">
+                    <Sparkles className="w-5 h-5" />
+                    Generate Frame
+                  </button>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <button className="relative p-2 rounded-lg hover:bg-white/10 transition-colors">
-                  <Bell className="w-5 h-5 text-gray-400" />
-                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                </button>
-                <button className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center font-bold shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-shadow">
-                  U
-                </button>
+              <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                    10K+
+                  </div>
+                  <div className="text-slate-400">Frames Generated</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                    98%
+                  </div>
+                  <div className="text-slate-400">Satisfaction Rate</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                    &lt;30s
+                  </div>
+                  <div className="text-slate-400">Avg. Generation Time</div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* Analytics Tab */}
+        {activeTab === 'analytics' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-white font-semibold">Engagement Trend</h3>
+                  <TrendingUp className="w-5 h-5 text-green-400" />
+                </div>
+                <div className="text-3xl font-bold text-white mb-2">+24.5%</div>
+                <div className="text-sm text-slate-400">vs last week</div>
+                <div className="mt-4 h-24 flex items-end gap-1">
+                  {[40, 65, 45, 80, 55, 85, 70].map((height, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 bg-gradient-to-t from-purple-600 to-pink-600 rounded-t"
+                      style={{ height: `${height}%` }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-white font-semibold">Top Performing</h3>
+                  <Star className="w-5 h-5 text-yellow-400" />
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400 text-sm">Interactive Poll</span>
+                    <span className="text-white font-semibold">12.5K</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400 text-sm">NFT Showcase</span>
+                    <span className="text-white font-semibold">8.9K</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400 text-sm">Quiz Challenge</span>
+                    <span className="text-white font-semibold">6.7K</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-white font-semibold">Revenue Growth</h3>
+                  <DollarSign className="w-5 h-5 text-green-400" />
+                </div>
+                <div className="text-3xl font-bold text-white mb-2">$951.50</div>
+                <div className="text-sm text-green-400 mb-4">+18.7% this month</div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-400">Goal: $1,200</span>
+                  <span className="text-white font-semibold">79%</span>
+                </div>
+                <div className="mt-2 h-2 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-full w-4/5 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full" />
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Page Content */}
-          <div className="flex-1 overflow-auto">
-            <div className="p-4 md:p-8">
-              {currentPage === 'home' && <HomePage />}
-              {currentPage === 'frames' && <FramesPage />}
-              {currentPage === 'quests' && <QuestsPage />}
-              {currentPage === 'mints' && <MintsPage />}
-              {currentPage === 'leaderboard' && <LeaderboardPage />}
-              {currentPage === 'settings' && <SettingsPage />}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Target className="w-5 h-5 text-purple-400" />
+                  Audience Insights
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-slate-400 text-sm">Returning Visitors</span>
+                      <span className="text-white font-semibold">68%</span>
+                    </div>
+                    <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-full w-2/3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full" />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-slate-400 text-sm">New Visitors</span>
+                      <span className="text-white font-semibold">32%</span>
+                    </div>
+                    <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-full w-1/3 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-full" />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-slate-400 text-sm">Avg. Session Time</span>
+                      <span className="text-white font-semibold">4m 32s</span>
+                    </div>
+                    <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-full w-3/4 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-purple-400" />
+                  Recent Activity
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-green-500/20 rounded-lg">
+                      <Eye className="w-4 h-4 text-green-400" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-white text-sm font-medium">New milestone reached</div>
+                      <div className="text-slate-400 text-xs">10K views on Interactive Poll</div>
+                      <div className="text-slate-500 text-xs mt-1">2 hours ago</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-purple-500/20 rounded-lg">
+                      <Heart className="w-4 h-4 text-purple-400" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-white text-sm font-medium">Engagement spike</div>
+                      <div className="text-slate-400 text-xs">NFT Showcase trending</div>
+                      <div className="text-slate-500 text-xs mt-1">5 hours ago</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-yellow-500/20 rounded-lg">
+                      <DollarSign className="w-4 h-4 text-yellow-400" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-white text-sm font-medium">Revenue update</div>
+                      <div className="text-slate-400 text-xs">$145 earned today</div>
+                      <div className="text-slate-500 text-xs mt-1">1 day ago</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </motion.div>
+        )}
 
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/60 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+        {/* Community Tab */}
+        {activeTab === 'community' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                {communityPosts.map((post, index) => (
+                  <motion.div
+                    key={post.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-6 hover:border-purple-500/50 transition-all"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold">
+                        {post.author[0]}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-white font-semibold">{post.author}</span>
+                          <span className="text-slate-500 text-sm">{post.timestamp}</span>
+                          {post.badges.map((badge) => (
+                            <span
+                              key={badge}
+                              className="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs rounded-full"
+                            >
+                              {badge}
+                            </span>
+                          ))}
+                        </div>
+                        <p className="text-slate-300 mb-4">{post.content}</p>
+                        <div className="flex items-center gap-6">
+                          <button className="flex items-center gap-2 text-slate-400 hover:text-purple-400 transition-all">
+                            <Heart className="w-5 h-5" />
+                            <span>{post.likes}</span>
+                          </button>
+                          <button className="flex items-center gap-2 text-slate-400 hover:text-purple-400 transition-all">
+                            <MessageSquare className="w-5 h-5" />
+                            <span>{post.comments}</span>
+                          </button>
+                          <button className="flex items-center gap-2 text-slate-400 hover:text-purple-400 transition-all">
+                            <Share2 className="w-5 h-5" />
+                            Share
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="space-y-6">
+                <div className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 backdrop-blur-xl border border-purple-500/50 rounded-xl p-6">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Crown className="w-5 h-5 text-yellow-400" />
+                    Top Creators
+                  </h3>
+                  <div className="space-y-3">
+                    {['FrameMaster', 'CryptoCreator', 'NFTArtist'].map((creator, i) => (
+                      <div key={creator} className="flex items-center gap-3">
+                        <div className="text-slate-400 font-bold text-lg w-6">#{i + 1}</div>
+                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold">
+                          {creator[0]}
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-white font-semibold text-sm">{creator}</div>
+                          <div className="text-slate-400 text-xs">{(1234 - i * 200).toLocaleString()} pts</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-6">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Fire className="w-5 h-5 text-orange-400" />
+                    Trending Topics
+                  </h3>
+                  <div className="space-y-3">
+                    {['#AIFrames', '#NFTShowcase', '#InteractivePoll', '#Web3Design'].map((tag) => (
+                      <div
+                        key={tag}
+                        className="flex items-center justify-between p-2 bg-slate-800/50 rounded-lg hover:bg-slate-700/50 transition-all cursor-pointer"
+                      >
+                        <span className="text-purple-400 font-medium">{tag}</span>
+                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-6">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Gift className="w-5 h-5 text-pink-400" />
+                    Community Events
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-purple-500/20 border border-purple-500/50 rounded-lg">
+                      <div className="text-white font-semibold text-sm mb-1">Frame Contest</div>
+                      <div className="text-purple-400 text-xs">Ends in 3 days</div>
+                    </div>
+                    <div className="p-3 bg-cyan-500/20 border border-cyan-500/50 rounded-lg">
+                      <div className="text-white font-semibold text-sm mb-1">Creator Workshop</div>
+                      <div className="text-cyan-400 text-xs">Tomorrow at 2PM</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Marketplace Tab */}
+        {activeTab === 'marketplace' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex gap-2 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500/20">
+                {['All', 'Social', 'DeFi', 'NFT', 'Gaming', 'Events'].map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setSelectedFilter(filter.toLowerCase())}
+                    className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all ${
+                      selectedFilter === filter.toLowerCase()
+                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                        : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                    }`}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search templates..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition-all"
+                />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {templates.map((template, index) => (
+                <motion.div
+                  key={template.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group relative"
+                >
+                  {template.featured && (
+                    <div className="absolute -top-2 -right-2 z-10 px-3 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full text-white text-xs font-bold flex items-center gap-1 shadow-lg">
+                      <Star className="w-3 h-3" />
+                      Featured
+                    </div>
+                  )}
+                  <div className="relative bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl overflow-hidden hover:border-purple-500/50 transition-all">
+                    <div className="relative h-48 bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                      <Image className="w-16 h-16 text-white/50" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <button className="px-4 py-2 bg-white text-slate-900 rounded-lg font-semibold flex items-center gap-2 hover:bg-slate-100 transition-all">
+                          <Eye className="w-4 h-4" />
+                          Preview
+                        </button>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-white font-semibold">{template.name}</h3>
+                        <span className="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs rounded">
+                          {template.category}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4 mb-4 text-sm text-slate-400">
+                        <span className="flex items-center gap-1">
+                          <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                          {template.rating}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Download className="w-4 h-4" />
+                          {template.downloads.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold text-white">${template.price}</span>
+                        <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-lg text-white font-semibold transition-all">
+                          Buy Now
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="mt-8 bg-gradient-to-r from-purple-900/50 to-pink-900/50 backdrop-blur-xl border border-purple-500/50 rounded-xl p-8 text-center"
+            >
+              <h3 className="text-2xl font-bold text-white mb-2">Want to sell your frames?</h3>
+              <p className="text-slate-300 mb-4">Join our marketplace and earn from your creations</p>
+              <button className="px-6 py-3 bg-white text-slate-900 rounded-lg font-semibold hover:bg-slate-100 transition-all flex items-center gap-2 mx-auto">
+                Become a Seller
+                <ArrowUpRight className="w-5 h-5" />
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }
