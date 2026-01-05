@@ -108,12 +108,16 @@ cd apps/admin && pnpm dev -- -p 3010
 # Install dependencies
 pnpm install
 
-# Run both dashboards simultaneously
-pnpm dev:all
-
-# Or use the self-healing script
+# Run both dashboards using self-healing script (recommended)
 chmod +x scripts/self-healing-ui.sh
 ./scripts/self-healing-ui.sh
+
+# Or run manually in separate terminals:
+# Terminal 1: User Dashboard
+cd apps/web && pnpm dev
+
+# Terminal 2: Admin Dashboard  
+cd apps/admin && pnpm dev -- -p 3010
 ```
 
 📖 **Full Documentation:** See [docs/DASHBOARDS.md](./docs/DASHBOARDS.md) for complete setup, configuration, deployment, and troubleshooting guides.
