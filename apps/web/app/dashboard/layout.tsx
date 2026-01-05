@@ -1,10 +1,10 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { neo } from "@castquest/neo-ux-core";
 
 interface DashboardLayoutProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 type UserRole = "user" | "admin" | "developer";
