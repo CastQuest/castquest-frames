@@ -50,10 +50,10 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { neo } from "@castquest/neo-ux-core";
-import { clsx } from "clsx";
+import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-const cn = (...inputs: any[]) => twMerge(clsx(inputs));
+const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
 // Mock Data Types
 interface User {
