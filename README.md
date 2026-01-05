@@ -60,6 +60,64 @@ npm install -g pnpm@9
 nvm use  # Automatically uses Node 20.19.6
 ```
 
+## 🎨 Dashboards
+
+CastQuest Frames includes two production-ready dashboards with **neo-glow theme** for creators and administrators.
+
+### 👤 User Dashboard
+**Port:** 3000 | **URL:** http://localhost:3000/dashboard
+
+A creator-focused dashboard with AI tools and community features:
+- ✨ **AI Frame Builder** - Generate frames with natural language
+- 📊 **Analytics** - Track views, engagement, and revenue
+- 🏪 **Marketplace** - Browse and purchase frame templates
+- 💬 **Community Hub** - Social feed with interactions
+- 🎯 **Frame Management** - Create and monitor frames
+- 🏆 **Leaderboard** - Global rankings and achievements
+- ⚡ **Quest System** - Daily/weekly challenges
+- 💎 **NFT Mints** - Manage collectible mints
+
+```bash
+# Start user dashboard
+cd apps/web && pnpm dev
+# Access: http://localhost:3000/dashboard
+```
+
+### 👑 Admin Dashboard
+**Port:** 3010 | **URL:** http://localhost:3010/dashboard
+
+A protocol management console with comprehensive monitoring:
+- 💎 **Token Management** - Monitor $CAST, $PIC, $VID, $AUDIO
+- 🔐 **Permission System** - Role-based access control
+- 💰 **Fee Controls** - Adjustable protocol fees
+- 🛡️ **Risk Management** - AI-powered detection (98% accuracy)
+- 📊 **Protocol Metrics** - TVL, volume, active users
+- 📡 **System Health** - Real-time monitoring
+- 🖼️ **Frame Monitoring** - Track all frame activity
+- 📋 **Activity Logs** - Complete audit trail
+
+```bash
+# Start admin dashboard
+cd apps/admin && pnpm dev -- -p 3010
+# Access: http://localhost:3010/dashboard
+```
+
+### 🚀 Quick Start - Both Dashboards
+
+```bash
+# Install dependencies
+pnpm install
+
+# Run both dashboards simultaneously
+pnpm dev:all
+
+# Or use the self-healing script
+chmod +x scripts/self-healing-ui.sh
+./scripts/self-healing-ui.sh
+```
+
+📖 **Full Documentation:** See [docs/DASHBOARDS.md](./docs/DASHBOARDS.md) for complete setup, configuration, deployment, and troubleshooting guides.
+
 ## �💸 Sponsors & Partners
 
 Site: https://castquest.xyz (placeholder)
