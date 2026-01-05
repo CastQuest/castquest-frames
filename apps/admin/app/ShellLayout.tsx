@@ -14,40 +14,44 @@ import {
   ChevronRight,
   FileJson,
   Settings,
+  Users,
+  Activity,
+  Zap,
+  BarChart3,
+  Shield,
+  Database,
 } from "lucide-react";
 
 export default function ShellLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  const [openModules, setOpenModules] = useState(true);
-  const [openData, setOpenData] = useState(false);
+  const [openFrames, setOpenFrames] = useState(true);
+  const [openQuests, setOpenQuests] = useState(false);
+  const [openMints, setOpenMints] = useState(false);
+  const [openWorkers, setOpenWorkers] = useState(false);
+  const [openBrain, setOpenBrain] = useState(false);
+  const [openUsers, setOpenUsers] = useState(false);
+  const [openSystem, setOpenSystem] = useState(false);
 
   const NavItem = ({
     href,
     label,
     icon: Icon,
-    description,
   }: {
     href: string;
     label: string;
     icon: any;
-    description?: string;
   }) => {
     const active = pathname === href;
     return (
       <Link
         href={href}
-        className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition
-          ${active ? "bg-emerald-600 text-white" : "text-neutral-300 hover:bg-neutral-800"}
+        className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-all
+          ${active ? "bg-primary text-black font-semibold shadow-glow-primary" : "text-neutral-300 hover:bg-neutral-800 hover:text-primary"}
         `}
       >
-        <Icon size={18} />
-        <div className="flex flex-col leading-tight">
-          <span className="font-medium">{label}</span>
-          {description && (
-            <span className="text-xs text-neutral-400">{description}</span>
-          )}
-        </div>
+        <Icon size={16} />
+        <span>{label}</span>
       </Link>
     );
   };
@@ -56,17 +60,22 @@ export default function ShellLayout({ children }: { children: React.ReactNode })
     title,
     open,
     setOpen,
+    icon: Icon,
   }: {
     title: string;
     open: boolean;
     setOpen: (v: boolean) => void;
+    icon: any;
   }) => (
     <button
       onClick={() => setOpen(!open)}
-      className="flex items-center justify-between w-full px-3 py-2 text-left text-neutral-400 hover:text-neutral-200"
+      className="flex items-center justify-between w-full px-3 py-2 text-left text-neutral-400 hover:text-primary transition-colors"
     >
-      <span className="text-xs font-semibold tracking-wide">{title}</span>
-      {open ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+      <div className="flex items-center gap-2">
+        <Icon size={14} />
+        <span className="text-xs font-semibold tracking-wide">{title}</span>
+      </div>
+      {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
     </button>
   );
 
@@ -81,162 +90,148 @@ export default function ShellLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex h-screen bg-black text-neutral-200">
       {/* Sidebar */}
-      <aside className="w-64 border-r border-neutral-800 bg-neutral-950 flex flex-col">
+      <aside className="w-64 border-r border-neutral-800 bg-neutral-950 flex flex-col overflow-y-auto">
         <div className="p-4 border-b border-neutral-800">
           <h1 className="text-lg font-semibold flex items-center gap-2">
-            <LayoutDashboard size={20} />
+            <LayoutDashboard size={20} className="text-primary" />
             CastQuest Admin
           </h1>
           <p className="text-xs text-neutral-500 mt-1">
-            Sovereign Operator Console
+            Neo-Glow Dashboard
           </p>
         </div>
 
-        <nav className="flex-1 overflow-y-auto py-4 space-y-2">
-
-          {/* Core Navigation */}
+        <nav className="flex-1 py-4 space-y-1">
+          {/* Dashboard Home */}
           <div className="px-3">
             <NavItem
-              href="/"
+              href="/dashboard"
               label="Dashboard"
               icon={LayoutDashboard}
-              description="Overview & system status"
             />
           </div>
 
-          {/* Module Section */}
+          {/* Frames Section */}
           <div>
             <SectionHeader
-              title="MODULES"
-              open={openModules}
-              setOpen={setOpenModules}
+              title="FRAMES"
+              open={openFrames}
+              setOpen={setOpenFrames}
+              icon={Boxes}
             />
-            {openModules && (
+            {openFrames && (
               <div className="space-y-1 pl-3">
-                <NavItem
-                  href="/media"
-                  label="Media"
-                  icon={ImageIcon}
-                  description="Uploads & assets"
-                />
-                <div className="flex items-center gap-2 pl-3">
-                  <Badge label="M6" color="bg-blue-700 text-white" />
-                </div>
-
-                <NavItem
-                  href="/templates"
-                  label="Templates"
-                  icon={Layers}
-                  description="Frame templates"
-                />
-                <div className="flex items-center gap-2 pl-3">
-                  <Badge label="M6" color="bg-blue-700 text-white" />
-                </div>
-
-                <NavItem
-                  href="/frames"
-                  label="Frames"
-                  icon={Boxes}
-                  description="Generated frames"
-                />
-                <div className="flex items-center gap-2 pl-3">
-                  <Badge label="M7B" color="bg-purple-700 text-white" />
-                </div>
-
-                <NavItem
-                  href="/mints"
-                  label="Mints"
-                  icon={Workflow}
-                  description="Mint actions & logs"
-                />
-                <div className="flex items-center gap-2 pl-3">
-                  <Badge label="M7A" color="bg-purple-700 text-white" />
-                </div>
-
-                <NavItem
-                  href="/quests"
-                  label="Quests"
-                  icon={FileJson}
-                  description="Quest engine"
-                />
-                <div className="flex items-center gap-2 pl-3">
-                  <Badge label="M5B" color="bg-amber-700 text-white" />
-                </div>
-
-                <NavItem
-                  href="/worker"
-                  label="Strategy Worker"
-                  icon={Settings}
-                  description="Automation engine"
-                />
-                <div className="flex items-center gap-2 pl-3">
-                  <Badge label="M7C" color="bg-purple-700 text-white" />
-                </div>
-
-                <NavItem
-                  href="/brain"
-                  label="Brain"
-                  icon={Brain}
-                  description="Smart Brain runtime engine"
-                />
-                <div className="flex items-center gap-2 pl-3">
-                  <Badge label="M8" color="bg-emerald-700 text-white" />
-                </div>
+                <NavItem href="/dashboard/frames" label="All Frames" icon={Boxes} />
+                <NavItem href="/frames/create" label="Create Frame" icon={Boxes} />
+                <NavItem href="/frame-templates" label="Templates" icon={Layers} />
               </div>
             )}
           </div>
 
-          {/* Data Section */}
+          {/* Quests Section */}
           <div>
             <SectionHeader
-              title="DATA SURFACES"
-              open={openData}
-              setOpen={setOpenData}
+              title="QUESTS"
+              open={openQuests}
+              setOpen={setOpenQuests}
+              icon={Workflow}
             />
-            {openData && (
+            {openQuests && (
               <div className="space-y-1 pl-3">
-                <NavItem
-                  href="/data/media"
-                  label="media.json"
-                  icon={FileJson}
-                />
-                <NavItem
-                  href="/data/frames"
-                  label="frames.json"
-                  icon={FileJson}
-                />
-                <NavItem
-                  href="/data/mints"
-                  label="mints.json"
-                  icon={FileJson}
-                />
-                <NavItem
-                  href="/data/quests"
-                  label="quests.json"
-                  icon={FileJson}
-                />
-                <NavItem
-                  href="/data/worker-events"
-                  label="worker-events.json"
-                  icon={FileJson}
-                />
-                <NavItem
-                  href="/data/brain-events"
-                  label="brain-events.json"
-                  icon={FileJson}
-                />
-                <NavItem
-                  href="/data/brain-suggestions"
-                  label="brain-suggestions.json"
-                  icon={FileJson}
-                />
+                <NavItem href="/quests" label="Active Quests" icon={Workflow} />
+                <NavItem href="/quests/history" label="Quest History" icon={FileJson} />
+                <NavItem href="/quests/analytics" label="Analytics" icon={BarChart3} />
+              </div>
+            )}
+          </div>
+
+          {/* Mints Section */}
+          <div>
+            <SectionHeader
+              title="MINTS"
+              open={openMints}
+              setOpen={setOpenMints}
+              icon={Zap}
+            />
+            {openMints && (
+              <div className="space-y-1 pl-3">
+                <NavItem href="/mints" label="Recent Mints" icon={Zap} />
+                <NavItem href="/mints/claims" label="Claim Management" icon={Shield} />
+              </div>
+            )}
+          </div>
+
+          {/* Workers Section */}
+          <div>
+            <SectionHeader
+              title="WORKERS"
+              open={openWorkers}
+              setOpen={setOpenWorkers}
+              icon={Settings}
+            />
+            {openWorkers && (
+              <div className="space-y-1 pl-3">
+                <NavItem href="/worker" label="Worker Status" icon={Activity} />
+                <NavItem href="/workers/queue" label="Job Queue" icon={FileJson} />
+                <NavItem href="/workers/metrics" label="Performance" icon={BarChart3} />
+              </div>
+            )}
+          </div>
+
+          {/* Brain Engine Section */}
+          <div>
+            <SectionHeader
+              title="BRAIN ENGINE"
+              open={openBrain}
+              setOpen={setOpenBrain}
+              icon={Brain}
+            />
+            {openBrain && (
+              <div className="space-y-1 pl-3">
+                <NavItem href="/brain" label="Events Log" icon={FileJson} />
+                <NavItem href="/brain/suggestions" label="Suggestions" icon={Brain} />
+                <NavItem href="/brain/insights" label="ML Insights" icon={BarChart3} />
+              </div>
+            )}
+          </div>
+
+          {/* Users & Access Section */}
+          <div>
+            <SectionHeader
+              title="USERS & ACCESS"
+              open={openUsers}
+              setOpen={setOpenUsers}
+              icon={Users}
+            />
+            {openUsers && (
+              <div className="space-y-1 pl-3">
+                <NavItem href="/users" label="User Management" icon={Users} />
+                <NavItem href="/users/roles" label="Roles & Permissions" icon={Shield} />
+                <NavItem href="/users/activity" label="Activity Logs" icon={Activity} />
+              </div>
+            )}
+          </div>
+
+          {/* System Section */}
+          <div>
+            <SectionHeader
+              title="SYSTEM"
+              open={openSystem}
+              setOpen={setOpenSystem}
+              icon={Database}
+            />
+            {openSystem && (
+              <div className="space-y-1 pl-3">
+                <NavItem href="/systems" label="Health Monitoring" icon={Activity} />
+                <NavItem href="/system/config" label="Configuration" icon={Settings} />
+                <NavItem href="/system/logs" label="Logs" icon={FileJson} />
               </div>
             )}
           </div>
         </nav>
 
         <div className="p-4 border-t border-neutral-800 text-xs text-neutral-500">
-          CastQuest Protocol • Operator Mode
+          CastQuest Protocol • v0.1.0
         </div>
       </aside>
 
