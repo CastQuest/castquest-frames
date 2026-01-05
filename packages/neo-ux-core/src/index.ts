@@ -10,9 +10,11 @@ export * from "./components/GlowPanel";
 // Dashboard
 export * from "./dashboard/DashboardWidgets";
 export * from "./dashboard/DashboardComponents";
+export * from "./dashboard/AdminComponents";
 
 // Brain
 export * from "./brain/BrainActivityGraph";
 
 // Worker
 export * from "./worker/WorkerTimeline";
+export * from "./worker/WorkerPulse";
