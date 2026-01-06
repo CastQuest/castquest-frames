@@ -26,6 +26,9 @@ web-build/
 *.log
 *.backup
 
+# TypeScript build info
+*.tsbuildinfo
+
 # Generated reports
 AUDIT-REPORT.md
 
