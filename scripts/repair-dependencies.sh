@@ -200,9 +200,7 @@ create_missing_docs() {
   if [ ! -f "$ROOT_DIR/docs/DEPENDENCY-HEALTH.md" ]; then
     log_warn "docs/DEPENDENCY-HEALTH.md is missing"
     if [ "$DRY_RUN" = "false" ]; then
-      log_info "Creating docs/DEPENDENCY-HEALTH.md..."
-      # This will be created in a separate step
-      log_success "Will create DEPENDENCY-HEALTH.md"
+      log_info "DEPENDENCY-HEALTH.md should be created manually or via documentation system"
     fi
   else
     log_success "docs/DEPENDENCY-HEALTH.md exists"

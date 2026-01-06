@@ -66,18 +66,20 @@ analyze_dependency_health() {
   # Check for outdated packages
   log_info "Checking for outdated packages..."
   if pnpm outdated > "$ORACLE_CACHE_DIR/outdated.txt" 2>&1; then
-    local outdated_count=$(wc -l < "$ORACLE_CACHE_DIR/outdated.txt" || echo "0")
+    # No outdated packages (pnpm outdated returns 0 when all up to date)
+    log_success "All packages are up to date"
+    health_score=$((health_score + 100))
+  else
+    # Has outdated packages (pnpm outdated returns non-zero when outdated found)
+    local outdated_count=$(grep -c "│" "$ORACLE_CACHE_DIR/outdated.txt" 2>/dev/null || echo "0")
     if [ "$outdated_count" -gt 0 ]; then
       log_warn "Found $outdated_count outdated packages"
       issues=$((issues + outdated_count))
       health_score=$((health_score + 50))
     else
-      log_success "All packages are up to date"
+      log_info "No outdated packages detected"
       health_score=$((health_score + 100))
     fi
-  else
-    log_info "No outdated packages detected"
-    health_score=$((health_score + 100))
   fi
   
   # Check for version consistency
