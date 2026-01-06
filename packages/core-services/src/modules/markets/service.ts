@@ -298,7 +298,18 @@ export class MarketsService {
         totalBuys: sql<number>`count(case when ${trades.type} = 'buy' then 1 end)::int`,
         totalSells: sql<number>`count(case when ${trades.type} = 'sell' then 1 end)::int`,
         totalVolume: sql<string>`sum(CAST(${trades.totalValue} AS NUMERIC))::text`,
-        uniqueTraders: sql<number>`count(distinct ${trades.buyer}) + count(distinct ${trades.seller})::int`,
+        uniqueTraders: sql<number>`(
+          select count(distinct addr)::int
+          from (
+            select "buyer" as addr
+            from "trades"
+            where "tokenAddress" = ${tokenAddress.toLowerCase()}
+            union
+            select "seller" as addr
+            from "trades"
+            where "tokenAddress" = ${tokenAddress.toLowerCase()}
+          ) as t
+        )`,
       })
       .from(trades)
       .where(eq(trades.tokenAddress, tokenAddress.toLowerCase()));
