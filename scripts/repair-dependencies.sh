@@ -244,7 +244,7 @@ validate_package_json() {
   
   local invalid_count=0
   for file in $package_files; do
-    if ! node -e "JSON.parse(require('fs').readFileSync('$file', 'utf8'))" 2>/dev/null; then
+    if ! node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$file" 2>/dev/null; then
       log_error "Invalid JSON in: $file"
       invalid_count=$((invalid_count + 1))
     fi
