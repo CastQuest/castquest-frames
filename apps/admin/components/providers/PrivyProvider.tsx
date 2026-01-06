@@ -2,14 +2,29 @@
 
 import { PrivyProvider } from '@privy-io/react-auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
+// Create QueryClient outside component to maintain single instance
 const queryClient = new QueryClient();
 
 export function AppPrivyProvider({ children }: { children: ReactNode }) {
+  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
+
+  if (!appId) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        'Privy App ID (NEXT_PUBLIC_PRIVY_APP_ID) is not set. Privy will not be initialized correctly.'
+      );
+    } else {
+      throw new Error(
+        'Privy App ID (NEXT_PUBLIC_PRIVY_APP_ID) is required but was not provided.'
+      );
+    }
+  }
+
   return (
     <PrivyProvider
-      appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ''}
+      appId={appId as string}
       config={{
         loginMethods: ['email', 'wallet', 'google', 'farcaster'],
         appearance: {

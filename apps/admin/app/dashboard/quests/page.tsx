@@ -6,18 +6,14 @@ import {
   Target,
   Plus,
   Search,
-  Filter,
   Eye,
   Edit,
   Trash2,
-  TrendingUp,
   Users,
   Trophy,
   Clock,
   CheckCircle,
-  XCircle,
   Play,
-  Pause,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -165,10 +161,10 @@ export default function QuestsPage() {
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             {[
-              { label: 'Total Quests', value: quests.length, icon: Target, color: 'purple' },
-              { label: 'Active', value: quests.filter((q) => q.status === 'active').length, icon: Play, color: 'green' },
-              { label: 'Total Participants', value: quests.reduce((sum, q) => sum + q.participants, 0), icon: Users, color: 'cyan' },
-              { label: 'Completions', value: quests.reduce((sum, q) => sum + q.completions, 0), icon: Trophy, color: 'yellow' },
+              { label: 'Total Quests', value: quests.length, icon: Target, colorClasses: { bg: 'from-purple-600/20', text: 'text-purple-400' } },
+              { label: 'Active', value: quests.filter((q) => q.status === 'active').length, icon: Play, colorClasses: { bg: 'from-green-600/20', text: 'text-green-400' } },
+              { label: 'Total Participants', value: quests.reduce((sum, q) => sum + q.participants, 0), icon: Users, colorClasses: { bg: 'from-cyan-600/20', text: 'text-cyan-400' } },
+              { label: 'Completions', value: quests.reduce((sum, q) => sum + q.completions, 0), icon: Trophy, colorClasses: { bg: 'from-yellow-600/20', text: 'text-yellow-400' } },
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
@@ -177,10 +173,10 @@ export default function QuestsPage() {
                 transition={{ delay: index * 0.1 }}
                 className="relative group"
               >
-                <div className={`absolute inset-0 bg-gradient-to-r from-${stat.color}-600/20 to-pink-600/20 rounded-xl blur-xl group-hover:blur-2xl transition-all`} />
+                <div className={`absolute inset-0 bg-gradient-to-r ${stat.colorClasses.bg} to-pink-600/20 rounded-xl blur-xl group-hover:blur-2xl transition-all`} />
                 <div className="relative bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl p-4 hover:border-purple-500/50 transition-all">
                   <div className="flex items-center justify-between mb-2">
-                    <stat.icon className={`w-5 h-5 text-${stat.color}-400`} />
+                    <stat.icon className={`w-5 h-5 ${stat.colorClasses.text}`} />
                     <span className="text-2xl font-bold text-white">{stat.value}</span>
                   </div>
                   <div className="text-slate-400 text-sm">{stat.label}</div>

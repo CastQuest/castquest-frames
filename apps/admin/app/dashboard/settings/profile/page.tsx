@@ -8,12 +8,9 @@ import {
   Mail,
   Shield,
   CheckCircle,
-  AlertCircle,
   Copy,
   ExternalLink,
   User,
-  Image as ImageIcon,
-  Upload,
   Edit,
   Link as LinkIcon,
   Twitter,
@@ -32,6 +29,7 @@ export default function ProfilePage() {
       setTimeout(() => setCopying(null), 2000);
     } catch (err) {
       console.error('Failed to copy:', err);
+      alert('Failed to copy to clipboard. Please try again.');
     }
   };
 
@@ -167,6 +165,10 @@ export default function ProfilePage() {
                       </a>
                     </div>
                   </div>
+                  {/* TODO: Implement real-time balance fetching from blockchain
+                   * Current values are placeholders (0.00) and should be replaced with actual on-chain balances
+                   * Consider using wagmi hooks or viem to fetch balances for ETH, USDC, and CAST tokens
+                   */}
                   <div className="grid grid-cols-3 gap-4 pt-3 border-t border-slate-700">
                     <div>
                       <div className="text-slate-500 text-xs mb-1">ETH Balance</div>
@@ -254,38 +256,51 @@ export default function ProfilePage() {
             Connected Accounts
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              { name: 'Farcaster', icon: LinkIcon, color: 'purple', action: linkFarcaster, connected: !!user?.farcaster },
-              { name: 'Google', icon: Mail, color: 'red', action: linkGoogle, connected: !!user?.google },
-              { name: 'Twitter', icon: Twitter, color: 'blue', action: () => {}, connected: false },
-              { name: 'GitHub', icon: Github, color: 'gray', action: () => {}, connected: false },
-            ].map((account) => (
-              <div
-                key={account.name}
-                className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg hover:border-purple-500/50 transition-all"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 bg-${account.color}-500/20 rounded-lg`}>
-                      <account.icon className={`w-5 h-5 text-${account.color}-400`} />
+            {(() => {
+              const accountColorClasses: Record<string, { bg: string; text: string }> = {
+                purple: { bg: 'bg-purple-500/20', text: 'text-purple-400' },
+                red: { bg: 'bg-red-500/20', text: 'text-red-400' },
+                blue: { bg: 'bg-blue-500/20', text: 'text-blue-400' },
+                gray: { bg: 'bg-gray-500/20', text: 'text-gray-400' },
+              };
+
+              return [
+                { name: 'Farcaster', icon: LinkIcon, color: 'purple', action: linkFarcaster, connected: !!user?.farcaster },
+                { name: 'Google', icon: Mail, color: 'red', action: linkGoogle, connected: !!user?.google },
+                // TODO: Implement Twitter and GitHub OAuth integration
+                { name: 'Twitter', icon: Twitter, color: 'blue', action: () => { alert('Twitter integration coming soon'); }, connected: false },
+                { name: 'GitHub', icon: Github, color: 'gray', action: () => { alert('GitHub integration coming soon'); }, connected: false },
+              ].map((account) => {
+                const colorClass = accountColorClasses[account.color];
+                return (
+                  <div
+                    key={account.name}
+                    className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg hover:border-purple-500/50 transition-all"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`p-2 ${colorClass.bg} rounded-lg`}>
+                          <account.icon className={`w-5 h-5 ${colorClass.text}`} />
+                        </div>
+                        <span className="text-white font-semibold">{account.name}</span>
+                      </div>
+                      {account.connected ? (
+                        <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold">
+                          Connected
+                        </span>
+                      ) : (
+                        <button
+                          onClick={account.action}
+                          className="px-3 py-1 bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 rounded-full text-xs font-semibold transition-all"
+                        >
+                          Connect
+                        </button>
+                      )}
                     </div>
-                    <span className="text-white font-semibold">{account.name}</span>
                   </div>
-                  {account.connected ? (
-                    <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold">
-                      Connected
-                    </span>
-                  ) : (
-                    <button
-                      onClick={account.action}
-                      className="px-3 py-1 bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 rounded-full text-xs font-semibold transition-all"
-                    >
-                      Connect
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
+                );
+              });
+            })()}
           </div>
         </motion.div>
       </div>
