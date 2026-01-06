@@ -197,7 +197,7 @@ cmd_health() {
   log "1. Validating package.json files..."
   local invalid_json=0
   while IFS= read -r -d '' file; do
-    if ! node -e "JSON.parse(require('fs').readFileSync('$file', 'utf8'))" 2>/dev/null; then
+    if ! node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$file" 2>/dev/null; then
       err "Invalid JSON in: $file"
       invalid_json=$((invalid_json + 1))
       checks_failed=$((checks_failed + 1))
