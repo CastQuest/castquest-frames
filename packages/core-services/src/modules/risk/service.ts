@@ -18,8 +18,13 @@ export class RiskService {
     const [assessment] = await db
       .insert(riskAssessments)
       .values({
-        ...data,
         tokenAddress: data.tokenAddress.toLowerCase(),
+        riskScore: data.riskScore,
+        riskLevel: data.riskLevel,
+        confidence: 85, // Default confidence level
+        flags: data.recommendations, // Map recommendations to flags
+        reasons: data.recommendations, // Map recommendations to reasons
+        assessedBy: data.assessedBy,
         assessedAt: new Date(),
       })
       .returning();
@@ -33,7 +38,7 @@ export class RiskService {
       })
       .where(eq(mediaMetadata.tokenAddress, data.tokenAddress.toLowerCase()));
 
-    return assessment;
+    return assessment as RiskAssessment;
   }
 
   /**
@@ -47,7 +52,7 @@ export class RiskService {
       .orderBy(desc(riskAssessments.assessedAt))
       .limit(1);
 
-    return assessment || null;
+    return (assessment as RiskAssessment) || null;
   }
 
   /**
@@ -64,7 +69,7 @@ export class RiskService {
       .where(eq(riskAssessments.tokenAddress, tokenAddress.toLowerCase()))
       .orderBy(desc(riskAssessments.assessedAt))
       .limit(limit)
-      .offset(offset);
+      .offset(offset) as Promise<RiskAssessment[]>;
   }
 
   /**
@@ -77,7 +82,7 @@ export class RiskService {
       .where(gte(riskAssessments.riskScore, 70))
       .orderBy(desc(riskAssessments.riskScore), desc(riskAssessments.assessedAt))
       .limit(limit)
-      .offset(offset);
+      .offset(offset) as Promise<RiskAssessment[]>;
   }
 
   /**
@@ -94,7 +99,7 @@ export class RiskService {
       .where(eq(riskAssessments.riskLevel, riskLevel))
       .orderBy(desc(riskAssessments.assessedAt))
       .limit(limit)
-      .offset(offset);
+      .offset(offset) as Promise<RiskAssessment[]>;
   }
 
   /**
@@ -231,7 +236,9 @@ export class RiskService {
     };
 
     levelCounts.forEach((row) => {
-      byLevel[row.level] = row.count;
+      if (row.level) {
+        byLevel[row.level] = row.count;
+      }
     });
 
     // Get average risk score
@@ -250,7 +257,7 @@ export class RiskService {
       .from(mediaMetadata);
 
     return {
-      totalAssessments: Object.values(byLevel).reduce((a: number, b: number) => a + b, 0),
+      totalAssessments: (Object.values(byLevel) as number[]).reduce((a, b) => a + b, 0),
       byLevel,
       averageRiskScore: parseFloat(avgScore?.avg?.toString() || '0'),
       flaggedCount: statusCounts?.flagged || 0,
