@@ -26,7 +26,7 @@ export default function FramesPage() {
   async function fetchFrames() {
     try {
       setLoading(true);
-      const response = await fetch('/api/frames?perPage=20');
+      const response = await fetch('/api/frame-templates');
       const data = await response.json();
       if (data.success) {
         setFrames(data.data);
@@ -56,7 +56,7 @@ export default function FramesPage() {
           <p className="text-neutral-400">Manage your frames and configurations</p>
         </div>
         <Link
-          href="/frames/new"
+          href="/frame-templates/create"
           className="flex items-center gap-2 px-4 py-2 bg-primary text-black rounded-md hover:bg-primary/90 transition-all font-medium"
         >
           <Plus size={18} />
@@ -110,7 +110,7 @@ export default function FramesPage() {
                   </td>
                   <td className="px-4 py-3 text-neutral-400 text-xs">{formatDate(frame.createdAt)}</td>
                   <td className="px-4 py-3">
-                    <Link href={`/frames/${frame.id}`} className="text-primary hover:text-primary/80">
+                    <Link href={`/frame-templates/${frame.id}`} className="text-primary hover:text-primary/80">
                       Edit
                     </Link>
                   </td>

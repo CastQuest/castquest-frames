@@ -1,5 +1,4 @@
 "use client";
-import { neo } from "../neo/theme";
 
 export default function WebLayoutNEO({ children }) {
   return (
