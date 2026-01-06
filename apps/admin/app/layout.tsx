@@ -2,6 +2,7 @@
 
 import "./globals.css";
 import { ReactNode } from "react";
+import { AppPrivyProvider } from "../components/providers/PrivyProvider";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -10,7 +11,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <title>CastQuest Admin</title>
       </head>
       <body className="bg-bg-primary text-white antialiased">
-        {children}
+        <AppPrivyProvider>
+          {children}
+        </AppPrivyProvider>
       </body>
     </html>
   );

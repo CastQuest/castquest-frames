@@ -77,6 +77,7 @@ export function getStatusColor(status: string): string {
     draft: 'text-neutral-400 bg-neutral-800 border-neutral-700',
     paused: 'text-neutral-400 bg-neutral-800 border-neutral-700',
     archived: 'text-neutral-500 bg-neutral-900 border-neutral-800',
+    suspended: 'text-error bg-error/10 border-error/30',
     ok: 'text-success bg-success/10 border-success/30',
     warn: 'text-warning bg-warning/10 border-warning/30',
     running: 'text-success bg-success/10 border-success/30',
