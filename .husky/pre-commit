@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 echo "🔍 Running pre-commit checks..."
 
 # 1. Validate package.json changes
@@ -5,7 +7,7 @@ if git diff --cached --name-only | grep -q "package.json"; then
   echo "📦 Validating package.json files..."
   for file in $(git diff --cached --name-only | grep package.json); do
     if [ -f "$file" ]; then
-      node -e "JSON.parse(require('fs').readFileSync('$file'))" || {
+      node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$file" || {
         echo "❌ Invalid JSON in $file"
         exit 1
       }
@@ -30,7 +32,7 @@ if git diff --cached --name-only | grep -q "tsconfig.json"; then
   echo "📘 Validating TypeScript configs..."
   for file in $(git diff --cached --name-only | grep tsconfig.json); do
     if [ -f "$file" ]; then
-      node -e "JSON.parse(require('fs').readFileSync('$file'))" || {
+      node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$file" || {
         echo "❌ Invalid JSON in $file"
         exit 1
       }

@@ -12,7 +12,7 @@
     "docs:generate": "pnpm run docs:sdk && pnpm run docs:api",
     "docs:sdk": "pnpm --filter @castquest/sdk docs",
     "docs:api": "node docs-site/scripts/generate-openapi-docs.js",
-    "prepare": "husky install || true"
+    "prepare": "husky install || echo \"Warning: husky install failed; git hooks were not installed.\" >&2"
   },
   "devDependencies": {
     "typescript": "^5.3.0",
