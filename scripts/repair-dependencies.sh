@@ -54,12 +54,12 @@ log_success() {
 
 log_warn() {
   echo -e "${YELLOW}[WARN]${NC} $*"
-  ((WARNINGS++))
+  WARNINGS=$((WARNINGS + 1))
 }
 
 log_error() {
   echo -e "${RED}[ERROR]${NC} $*"
-  ((ISSUES_FOUND++))
+  ISSUES_FOUND=$((ISSUES_FOUND + 1))
 }
 
 log_step() {
@@ -96,7 +96,7 @@ clean_install() {
       return 1
     }
     log_success "Successfully installed all dependencies"
-    ((ISSUES_FIXED++))
+    ISSUES_FIXED=$((ISSUES_FIXED + 1))
   else
     log_info "[DRY RUN] Would run: pnpm install"
   fi
@@ -117,19 +117,19 @@ fix_dependency_versions() {
   # Check apps/web
   if grep -q '"typescript": "5.9.3"' "$ROOT_DIR/apps/web/package.json" 2>/dev/null; then
     log_warn "apps/web has TypeScript 5.9.3, should be $ts_version"
-    ((ISSUES_FOUND++))
+    ISSUES_FOUND=$((ISSUES_FOUND + 1))
   fi
   
   if grep -q '"@types/node": "25.0.3"' "$ROOT_DIR/apps/web/package.json" 2>/dev/null; then
     log_warn "apps/web has @types/node 25.0.3, should be $node_types_version"
-    ((ISSUES_FOUND++))
+    ISSUES_FOUND=$((ISSUES_FOUND + 1))
   fi
   
   # Check Next.js versions
   for app in web admin; do
     if grep -q '"next": "14.0.0"' "$ROOT_DIR/apps/$app/package.json" 2>/dev/null; then
       log_warn "apps/$app has Next.js 14.0.0 (has vulnerabilities), should be $next_version"
-      ((ISSUES_FOUND++))
+      ISSUES_FOUND=$((ISSUES_FOUND + 1))
     fi
   done
   
@@ -158,7 +158,7 @@ build_packages() {
     if [ "$DRY_RUN" = "false" ]; then
       if pnpm --filter "$pkg" build 2>&1 | tee /tmp/build-$pkg.log; then
         log_success "Built $pkg successfully"
-        ((ISSUES_FIXED++))
+        ISSUES_FIXED=$((ISSUES_FIXED + 1))
       else
         log_error "Failed to build $pkg"
         cat /tmp/build-$pkg.log
@@ -248,7 +248,7 @@ validate_package_json() {
   for file in $package_files; do
     if ! node -e "JSON.parse(require('fs').readFileSync('$file', 'utf8'))" 2>/dev/null; then
       log_error "Invalid JSON in: $file"
-      ((invalid_count++))
+      invalid_count=$((invalid_count + 1))
     fi
   done
   

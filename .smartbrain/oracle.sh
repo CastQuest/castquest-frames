@@ -69,7 +69,7 @@ analyze_dependency_health() {
     local outdated_count=$(wc -l < "$ORACLE_CACHE_DIR/outdated.txt" || echo "0")
     if [ "$outdated_count" -gt 0 ]; then
       log_warn "Found $outdated_count outdated packages"
-      ((issues+=outdated_count))
+      issues=$((issues + outdated_count))
       health_score=$((health_score + 50))
     else
       log_success "All packages are up to date"
@@ -90,7 +90,7 @@ analyze_dependency_health() {
     health_score=$((health_score + 100))
   else
     log_warn "Version inconsistencies detected"
-    ((issues++))
+    issues=$((issues + 1))
     health_score=$((health_score + 50))
   fi
   

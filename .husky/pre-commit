@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 echo "🔍 Running pre-commit checks..."
 
 # 1. Validate package.json changes
@@ -42,11 +39,11 @@ if git diff --cached --name-only | grep -q "tsconfig.json"; then
   echo "✓ TypeScript configs are valid"
 fi
 
-# 4. Run lint-staged for formatting
-if command -v npx >/dev/null 2>&1; then
-  echo "✨ Running formatters..."
+# 4. Run lint-staged for validation (no formatting)
+if command -v npx >/dev/null 2>&1 && [ -f ".lintstagedrc.json" ]; then
+  echo "✨ Running validators..."
   npx lint-staged || {
-    echo "❌ Formatting failed"
+    echo "❌ Validation failed"
     exit 1
   }
 fi

@@ -199,14 +199,14 @@ cmd_health() {
   while IFS= read -r -d '' file; do
     if ! node -e "JSON.parse(require('fs').readFileSync('$file', 'utf8'))" 2>/dev/null; then
       err "Invalid JSON in: $file"
-      invalid_json=$((invalid_json + 1))
-      checks_failed=$((checks_failed + 1))
+      ((invalid_json++))
+      ((checks_failed++))
     fi
   done < <(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -print0)
   
   if [ $invalid_json -eq 0 ]; then
     log "✓ All package.json files are valid"
-    checks_passed=$((checks_passed + 1))
+    ((checks_passed++))
   else
     health_status=1
   fi
@@ -215,10 +215,10 @@ cmd_health() {
   log "2. Checking workspace dependencies..."
   if $PNPM list -r --depth 0 >/dev/null 2>&1; then
     log "✓ Workspace dependencies are correctly linked"
-    checks_passed=$((checks_passed + 1))
+    ((checks_passed++))
   else
     warn "✗ Workspace dependency issues detected"
-    checks_failed=$((checks_failed + 1))
+    ((checks_failed++))
     health_status=1
   fi
 
@@ -230,14 +230,14 @@ cmd_health() {
       log "✓ $pkg has build artifacts"
     else
       warn "✗ $pkg missing build artifacts"
-      build_errors=$((build_errors + 1))
+      ((build_errors++))
     fi
   done
   
   if [ $build_errors -eq 0 ]; then
-    checks_passed=$((checks_passed + 1))
+    ((checks_passed++))
   else
-    checks_failed=$((checks_failed + 1))
+    ((checks_failed++))
     if [ "$auto_fix" = "true" ]; then
       log "Auto-fixing: rebuilding packages..."
       $PNPM -r build || true
@@ -251,27 +251,27 @@ cmd_health() {
     if command -v lsof >/dev/null 2>&1; then
       if lsof -i:"$port" -sTCP:LISTEN >/dev/null 2>&1; then
         warn "Port $port is in use"
-        ports_in_use=$((ports_in_use + 1))
+        ((ports_in_use++))
       fi
     fi
   done
   
   if [ $ports_in_use -eq 0 ]; then
     log "✓ All required ports are available"
-    checks_passed=$((checks_passed + 1))
+    ((checks_passed++))
   else
     warn "⚠ Some ports are in use (not critical)"
-    checks_passed=$((checks_passed + 1))
+    ((checks_passed++))
   fi
 
   # 5. TypeScript config consistency
   log "5. Validating TypeScript configs..."
   if find "$ROOT_DIR" -name "tsconfig.json" -not -path "*/node_modules/*" -exec node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" {} \; 2>/dev/null; then
     log "✓ All tsconfig.json files are valid"
-    checks_passed=$((checks_passed + 1))
+    ((checks_passed++))
   else
     warn "✗ Invalid tsconfig.json detected"
-    checks_failed=$((checks_failed + 1))
+    ((checks_failed++))
   fi
 
   # 6. Check for broken symlinks
@@ -279,28 +279,28 @@ cmd_health() {
   local broken_links=$(find "$ROOT_DIR" -type l ! -exec test -e {} \; -print 2>/dev/null | grep -v node_modules || true)
   if [ -z "$broken_links" ]; then
     log "✓ No broken symlinks found"
-    checks_passed=$((checks_passed + 1))
+    ((checks_passed++))
   else
     warn "✗ Found broken symlinks"
     echo "$broken_links"
-    checks_failed=$((checks_failed + 1))
+    ((checks_failed++))
   fi
 
   # 7. Environment files check
   log "7. Checking environment files..."
   # Non-critical check
   log "ℹ Environment file check skipped (optional)"
-  checks_passed=$((checks_passed + 1))
+  ((checks_passed++))
 
   # 8. Dependency version consistency
   log "8. Checking dependency version consistency..."
   local ts_versions=$(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -exec grep -h '"typescript"' {} \; 2>/dev/null | sort -u | wc -l || echo "0")
   if [ "$ts_versions" -le 2 ]; then
     log "✓ TypeScript versions are consistent"
-    checks_passed=$((checks_passed + 1))
+    ((checks_passed++))
   else
     warn "✗ TypeScript version inconsistencies detected"
-    checks_failed=$((checks_failed + 1))
+    ((checks_failed++))
     health_status=1
   fi
 
@@ -308,17 +308,17 @@ cmd_health() {
   log "9. Running security audit..."
   if $PNPM audit --audit-level=high >/dev/null 2>&1; then
     log "✓ No high-severity vulnerabilities"
-    checks_passed=$((checks_passed + 1))
+    ((checks_passed++))
   else
     warn "⚠ Security vulnerabilities detected (run: pnpm audit)"
-    checks_passed=$((checks_passed + 1))  # Non-blocking
+    ((checks_passed++))  # Non-blocking
   fi
 
   # 10. Linting and type checking
   log "10. Running lint and typecheck..."
   $PNPM lint >/dev/null 2>&1 || warn "Linting issues detected"
   $PNPM -r run typecheck >/dev/null 2>&1 || warn "Type checking issues detected"
-  checks_passed=$((checks_passed + 1))
+  ((checks_passed++))
 
   # Generate summary report
   log ""
