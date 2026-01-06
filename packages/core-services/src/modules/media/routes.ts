@@ -1,8 +1,9 @@
 import { Request, Response, Router } from 'express';
 import { z } from 'zod';
 import { MediaService } from './service';
+import { MediaType, TokenStatus } from '../../types';
 
-export const mediaRoutes = Router();
+export const mediaRoutes: Router = Router();
 const mediaService = new MediaService();
 
 // Validation schemas
@@ -15,6 +16,7 @@ const createMediaSchema = z.object({
   description: z.string().max(2000),
   mediaType: z.enum(['image', 'video', 'audio', 'text']),
   mediaUrl: z.string().url(),
+  metadataUri: z.string().url(),
   blockNumber: z.string().transform(BigInt),
   transactionHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
 });
@@ -151,7 +153,10 @@ mediaRoutes.post('/', async (req: Request, res: Response) => {
   try {
     const validated = createMediaSchema.parse(req.body);
 
-    const media = await mediaService.createMedia(validated);
+    const media = await mediaService.createMedia({
+      ...validated,
+      mediaType: validated.mediaType as MediaType,
+    });
 
     res.status(201).json({
       success: true,
@@ -181,7 +186,7 @@ mediaRoutes.put('/:tokenAddress/status', async (req: Request, res: Response) => 
 
     const media = await mediaService.updateStatus(
       tokenAddress,
-      validated.status,
+      validated.status as TokenStatus,
       validated.riskFlags
     );
 

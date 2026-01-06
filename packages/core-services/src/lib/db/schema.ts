@@ -185,6 +185,7 @@ export const riskAssessments = pgTable('risk_assessments', {
   id: uuid('id').primaryKey().defaultRandom(),
   tokenAddress: text('token_address').notNull(),
   riskScore: integer('risk_score').notNull(),
+  riskLevel: text('risk_level'), // low, medium, high, critical
   confidence: integer('confidence').notNull(),
   flags: text('flags').array().notNull(),
   reasons: text('reasons').array().notNull(),

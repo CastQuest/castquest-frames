@@ -275,8 +275,8 @@ pnpm --filter ./apps/admin dev -- -p 3010
 
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](../docs/CONTRIBUTING.md) for guidelines on contributing to documentation.
+See [CONTRIBUTING.md](https://github.com/CastQuest/castquest-frames/blob/main/CONTRIBUTING.md) for guidelines on contributing to documentation.
 
 ## 📄 License
 
-MIT - See [LICENSE](../LICENSE) for details.
+MIT - See [LICENSE](https://github.com/CastQuest/castquest-frames/blob/main/LICENSE) for details.

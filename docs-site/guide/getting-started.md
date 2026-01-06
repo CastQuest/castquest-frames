@@ -71,5 +71,5 @@ CastQuest is a pipeline-based protocol where each component is transparent and i
 ## Need Help?
 
 - [GitHub Discussions](https://github.com/CastQuest/castquest-frames/discussions)
-- [Contributing Guide](/docs/CONTRIBUTING)
+- [Contributing Guide](https://github.com/CastQuest/castquest-frames/blob/main/CONTRIBUTING.md)
 - [Troubleshooting](/guide/installation#common-installation-issues)

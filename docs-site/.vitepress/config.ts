@@ -6,6 +6,20 @@ export default defineConfig({
   
   base: '/',
   
+  // Ignore localhost URLs in documentation examples
+  ignoreDeadLinks: [
+    // Ignore localhost URLs (valid in development examples)
+    /^http:\/\/localhost:\d+/,
+    // Ignore advanced guide links (to be created in future)
+    '/sdk/examples/validation',
+    '/sdk/examples/quest-integration',
+    '/sdk/examples/transactions',
+    '/guide/advanced/monitoring',
+    '/guide/advanced/scaling',
+    '/guide/advanced/worker-patterns',
+    '/guide/advanced/ai-best-practices',
+  ],
+  
   themeConfig: {
     logo: '/logo.svg',
     

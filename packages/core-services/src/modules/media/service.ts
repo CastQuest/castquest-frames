@@ -16,6 +16,7 @@ export class MediaService {
     description: string;
     mediaType: MediaType;
     mediaUrl: string;
+    metadataUri: string;
     blockNumber: bigint;
     transactionHash: string;
   }): Promise<MediaMetadata> {
@@ -27,7 +28,12 @@ export class MediaService {
       createdAt: new Date(),
     }).returning();
 
-    return media;
+    return {
+      ...media,
+      creatorUserId: media.creatorUserId ?? undefined,
+      mediaType: media.mediaType as MediaType,
+      status: media.status as TokenStatus,
+    } as MediaMetadata;
   }
 
   /**
@@ -39,7 +45,14 @@ export class MediaService {
       .from(mediaMetadata)
       .where(eq(mediaMetadata.tokenAddress, tokenAddress.toLowerCase()));
 
-    return media || null;
+    if (!media) return null;
+
+    return {
+      ...media,
+      creatorUserId: media.creatorUserId ?? undefined,
+      mediaType: media.mediaType as MediaType,
+      status: media.status as TokenStatus,
+    } as MediaMetadata;
   }
 
   /**
@@ -51,20 +64,34 @@ export class MediaService {
       .from(mediaMetadata)
       .where(eq(mediaMetadata.mediaId, mediaId));
 
-    return media || null;
+    if (!media) return null;
+
+    return {
+      ...media,
+      creatorUserId: media.creatorUserId ?? undefined,
+      mediaType: media.mediaType as MediaType,
+      status: media.status as TokenStatus,
+    } as MediaMetadata;
   }
 
   /**
    * Get media by owner
    */
   async getByOwner(ownerAddress: string, limit = 50, offset = 0): Promise<MediaMetadata[]> {
-    return db
+    const rows = await db
       .select()
       .from(mediaMetadata)
       .where(eq(mediaMetadata.ownerAddress, ownerAddress.toLowerCase()))
       .orderBy(desc(mediaMetadata.createdAt))
       .limit(limit)
       .offset(offset);
+
+    return rows.map(media => ({
+      ...media,
+      creatorUserId: media.creatorUserId ?? undefined,
+      mediaType: media.mediaType as MediaType,
+      status: media.status as TokenStatus,
+    } as MediaMetadata));
   }
 
   /**
@@ -73,7 +100,7 @@ export class MediaService {
   async search(query: string, limit = 50, offset = 0): Promise<MediaMetadata[]> {
     const searchPattern = `%${query}%`;
     
-    return db
+    const rows = await db
       .select()
       .from(mediaMetadata)
       .where(
@@ -85,6 +112,13 @@ export class MediaService {
       .orderBy(desc(mediaMetadata.createdAt))
       .limit(limit)
       .offset(offset);
+
+    return rows.map(media => ({
+      ...media,
+      creatorUserId: media.creatorUserId ?? undefined,
+      mediaType: media.mediaType as MediaType,
+      status: media.status as TokenStatus,
+    } as MediaMetadata));
   }
 
   /**
@@ -108,10 +142,17 @@ export class MediaService {
       query = query.where(eq(mediaMetadata.mediaType, mediaType)) as any;
     }
 
-    return query
+    const rows = await query
       .orderBy(desc(mediaMetadata.createdAt))
       .limit(limit)
       .offset(offset);
+
+    return rows.map(media => ({
+      ...media,
+      creatorUserId: media.creatorUserId ?? undefined,
+      mediaType: media.mediaType as MediaType,
+      status: media.status as TokenStatus,
+    } as MediaMetadata));
   }
 
   /**
@@ -134,7 +175,14 @@ export class MediaService {
       .where(eq(mediaMetadata.tokenAddress, tokenAddress.toLowerCase()))
       .returning();
 
-    return updated || null;
+    if (!updated) return null;
+
+    return {
+      ...updated,
+      creatorUserId: updated.creatorUserId ?? undefined,
+      mediaType: updated.mediaType as MediaType,
+      status: updated.status as TokenStatus,
+    } as MediaMetadata;
   }
 
   /**
@@ -151,33 +199,54 @@ export class MediaService {
       .where(eq(mediaMetadata.tokenAddress, tokenAddress.toLowerCase()))
       .returning();
 
-    return updated || null;
+    if (!updated) return null;
+
+    return {
+      ...updated,
+      creatorUserId: updated.creatorUserId ?? undefined,
+      mediaType: updated.mediaType as MediaType,
+      status: updated.status as TokenStatus,
+    } as MediaMetadata;
   }
 
   /**
    * Get flagged media
    */
   async getFlagged(limit = 50, offset = 0): Promise<MediaMetadata[]> {
-    return db
+    const rows = await db
       .select()
       .from(mediaMetadata)
       .where(eq(mediaMetadata.status, 'flagged'))
       .orderBy(desc(mediaMetadata.createdAt))
       .limit(limit)
       .offset(offset);
+
+    return rows.map(media => ({
+      ...media,
+      creatorUserId: media.creatorUserId ?? undefined,
+      mediaType: media.mediaType as MediaType,
+      status: media.status as TokenStatus,
+    } as MediaMetadata));
   }
 
   /**
    * Get high-risk media (risk score > 70)
    */
   async getHighRisk(limit = 50, offset = 0): Promise<MediaMetadata[]> {
-    return db
+    const rows = await db
       .select()
       .from(mediaMetadata)
       .where(sql`${mediaMetadata.riskScore} > 70`)
       .orderBy(desc(mediaMetadata.riskScore))
       .limit(limit)
       .offset(offset);
+
+    return rows.map(media => ({
+      ...media,
+      creatorUserId: media.creatorUserId ?? undefined,
+      mediaType: media.mediaType as MediaType,
+      status: media.status as TokenStatus,
+    } as MediaMetadata));
   }
 
   /**
