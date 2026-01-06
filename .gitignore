@@ -29,6 +29,10 @@ web-build/
 # Generated reports
 AUDIT-REPORT.md
 
+# Smart Brain cache
+.smartbrain/cache/
+.smartbrain/oracle-state.json
+
 # Turbo
 .turbo
 
