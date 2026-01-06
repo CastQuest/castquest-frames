@@ -1,6 +1,5 @@
 'use client';
 
-import { Metadata } from 'next';
 import { useState } from 'react';
 import { Save, Eye, Settings, Plus, Trash2 } from 'lucide-react';
 
