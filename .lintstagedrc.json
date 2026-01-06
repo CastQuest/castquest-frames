@@ -1,0 +1,11 @@
+{
+  "*.{ts,tsx}": [
+    "prettier --write"
+  ],
+  "*.{json,md}": [
+    "prettier --write"
+  ],
+  "package.json": [
+    "node -e \"JSON.parse(require('fs').readFileSync(process.argv[1]))\""
+  ]
+}
