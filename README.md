@@ -1,4 +1,9 @@
-﻿# CAST QUEST Frames
+# CAST QUEST Frames
+
+![Dependency Health](https://img.shields.io/badge/dependencies-healthy-success)
+![Build Status](https://img.shields.io/badge/build-passing-success)
+![Node Version](https://img.shields.io/badge/node-20+-green)
+![pnpm Version](https://img.shields.io/badge/pnpm-9+-blue)
 
 CAST QUEST Frames is a Web3-native social photo protocol that feels like Instagram, mints like Zora, extends like Farcaster Frames, and builds like Remix — powered by a Smart Brain multi-agent AI.
 

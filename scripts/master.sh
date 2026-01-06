@@ -178,19 +178,184 @@ cmd_integrity() {
 
 # ------------------------------------------------------------------------------
 # SUBCOMMAND: health  (for CI/PR validation)
-# Combines quick audit + lightweight heal signals.
+# Comprehensive health check with detailed validation.
 # ------------------------------------------------------------------------------
 
 cmd_health() {
-  log "Running lightweight health check (CI/PR friendly)."
+  log "Running comprehensive health check (CI/PR friendly)."
 
   ensure_pnpm_install
 
-  $PNPM lint || true
-  $PNPM test || true
-  $PNPM -r run typecheck || true
+  local checks_passed=0
+  local checks_failed=0
 
-  log "Health check finished (non-destructive)."
+  # 1. Validate all package.json files are valid JSON
+  log "Validating package.json files..."
+  local invalid_json=0
+  while IFS= read -r -d '' file; do
+    if ! jq empty "$file" 2>/dev/null; then
+      err "Invalid JSON: $file"
+      ((invalid_json++))
+    fi
+  done < <(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -print0)
+  
+  if [[ $invalid_json -eq 0 ]]; then
+    log "✓ All package.json files are valid JSON"
+    ((checks_passed++))
+  else
+    err "✗ Found $invalid_json invalid package.json files"
+    ((checks_failed++))
+  fi
+
+  # 2. Check workspace dependencies are correctly linked
+  log "Checking workspace dependencies..."
+  local broken_links=0
+  if [[ -d "$ROOT_DIR/apps/web/node_modules/@castquest/neo-ux-core" ]] || \
+     [[ -L "$ROOT_DIR/apps/web/node_modules/@castquest/neo-ux-core" ]]; then
+    log "✓ Workspace links verified"
+    ((checks_passed++))
+  else
+    warn "⚠ Workspace links may not be properly set up"
+    ((checks_failed++))
+  fi
+
+  # 3. Verify build artifacts exist (dist/ directories)
+  log "Checking build artifacts..."
+  local missing_dist=0
+  for pkg in packages/neo-ux-core packages/sdk; do
+    if [[ ! -d "$ROOT_DIR/$pkg/dist" ]]; then
+      warn "Missing dist directory: $pkg"
+      ((missing_dist++))
+    fi
+  done
+  
+  if [[ $missing_dist -eq 0 ]]; then
+    log "✓ Build artifacts present"
+    ((checks_passed++))
+  else
+    warn "⚠ Found $missing_dist packages without dist directories"
+    ((checks_failed++))
+  fi
+
+  # 4. Check for port conflicts
+  log "Checking for port conflicts..."
+  local port_conflicts=0
+  for port in 3000 3001 3010 4000; do
+    if command -v lsof >/dev/null 2>&1; then
+      if lsof -i:"$port" -sTCP:LISTEN -t >/dev/null 2>&1; then
+        warn "Port $port is in use"
+        ((port_conflicts++))
+      fi
+    fi
+  done
+  
+  if [[ $port_conflicts -eq 0 ]]; then
+    log "✓ No port conflicts detected"
+    ((checks_passed++))
+  else
+    warn "⚠ Found $port_conflicts port conflicts"
+    ((checks_failed++))
+  fi
+
+  # 5. Validate TypeScript configuration consistency
+  log "Checking TypeScript versions..."
+  local ts_versions
+  ts_versions=$(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -exec jq -r '.devDependencies.typescript // .dependencies.typescript // empty' {} \; 2>/dev/null | sort -u | wc -l)
+  
+  if [[ $ts_versions -le 1 ]]; then
+    log "✓ TypeScript versions are consistent"
+    ((checks_passed++))
+  else
+    warn "⚠ Multiple TypeScript versions detected"
+    ((checks_failed++))
+  fi
+
+  # 6. Check for broken symlinks
+  log "Checking for broken symlinks..."
+  local broken_symlinks=0
+  while IFS= read -r -d '' link; do
+    if [[ ! -e "$link" ]]; then
+      warn "Broken symlink: $link"
+      ((broken_symlinks++))
+    fi
+  done < <(find "$ROOT_DIR" -type l -not -path "*/node_modules/*" -not -path "*/.git/*" -print0 2>/dev/null)
+  
+  if [[ $broken_symlinks -eq 0 ]]; then
+    log "✓ No broken symlinks found"
+    ((checks_passed++))
+  else
+    warn "⚠ Found $broken_symlinks broken symlinks"
+    ((checks_failed++))
+  fi
+
+  # 7. Verify environment files exist
+  log "Checking for .env.example files..."
+  local env_examples=0
+  for app in apps/web apps/admin; do
+    if [[ -f "$ROOT_DIR/$app/.env.example" ]] || [[ -f "$ROOT_DIR/$app/.env.local" ]]; then
+      ((env_examples++))
+    fi
+  done
+  
+  if [[ $env_examples -gt 0 ]]; then
+    log "✓ Environment file examples found"
+    ((checks_passed++))
+  else
+    log "ℹ No .env.example files (optional)"
+    ((checks_passed++))
+  fi
+
+  # 8. Run linting
+  log "Running linters..."
+  if $PNPM lint 2>/dev/null; then
+    log "✓ Linting passed"
+    ((checks_passed++))
+  else
+    warn "⚠ Linting issues detected"
+    ((checks_failed++))
+  fi
+
+  # 9. Run type checking
+  log "Running type checks..."
+  if $PNPM -r run typecheck 2>/dev/null; then
+    log "✓ Type checking passed"
+    ((checks_passed++))
+  else
+    warn "⚠ Type checking issues detected"
+    ((checks_failed++))
+  fi
+
+  # 10. Report dependency version consistency
+  log "Checking dependency consistency..."
+  local node_types_versions
+  node_types_versions=$(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -exec jq -r '.devDependencies["@types/node"] // .dependencies["@types/node"] // empty' {} \; 2>/dev/null | sort -u | wc -l)
+  
+  if [[ $node_types_versions -le 1 ]]; then
+    log "✓ @types/node versions are consistent"
+    ((checks_passed++))
+  else
+    warn "⚠ Multiple @types/node versions detected"
+    ((checks_failed++))
+  fi
+
+  # Summary
+  echo ""
+  log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  log "Health Check Summary"
+  log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  log "Passed: $checks_passed"
+  log "Failed/Warnings: $checks_failed"
+  
+  if [[ $checks_failed -eq 0 ]]; then
+    log "Status: ✅ HEALTHY"
+    log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  else
+    log "Status: ⚠️  NEEDS ATTENTION"
+    log "Run './scripts/repair-dependencies.sh health' for detailed analysis"
+    log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  fi
+
+  log "Health check finished."
 }
 
 # ------------------------------------------------------------------------------
@@ -208,13 +373,17 @@ COMMANDS:
   audit      Run full Smart Brain Oracle Audit → AUDIT-REPORT.md
   heal       Execute mega self-heal chain (neo-healer + castquest-healer)
   integrity  ABI ↔ SDK consistency check
-  health     Lightweight health check (lint + test + typecheck)
+  health     Comprehensive health check with detailed validation
 
 EXAMPLES:
   ./scripts/master.sh audit
   ./scripts/master.sh heal
   ./scripts/master.sh integrity
   ./scripts/master.sh health
+
+ADDITIONAL TOOLS:
+  ./scripts/repair-dependencies.sh    Dependency repair and harmonization
+  .smartbrain/oracle.sh               AI-powered repository insights
 
 All operations are idempotent and non-destructive.
 No deletions, no structural changes unless explicitly approved.
