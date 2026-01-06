@@ -15,7 +15,7 @@ pool.on('connect', () => {
   logger.info('Database connection established');
 });
 
-pool.on('error', (err) => {
+pool.on('error', (err: Error) => {
   logger.error('Database connection error:', err);
 });
 

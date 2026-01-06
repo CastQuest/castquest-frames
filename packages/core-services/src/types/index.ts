@@ -178,21 +178,33 @@ export interface Trade {
 // Risk & Abuse Domain
 // ============================================================================
 
+export type RiskFlag = 
+  | 'WASH_TRADING'
+  | 'PUMP_AND_DUMP'
+  | 'LOW_LIQUIDITY'
+  | 'SUSPICIOUS_VOLUME'
+  | 'PRICE_MANIPULATION'
+  | 'SPAM_TOKEN'
+  | 'RUG_PULL_RISK'
+  | 'HONEYPOT'
+  | 'HIGH_CONCENTRATION'
+  | 'nsfw'
+  | 'spam'
+  | 'copyright'
+  | 'scam'
+  | 'duplicate'
+  | 'low_quality';
+
 export interface RiskAssessment {
+  id?: string;
   tokenAddress: string;
   riskScore: number; // 0-100
   confidence: number; // 0-100
-  flags: RiskFlag[];
+  flags: string[]; // Array of RiskFlag strings
   reasons: string[];
+  riskLevel?: 'low' | 'medium' | 'high' | 'critical' | null;
   assessedAt: Date;
   assessedBy: 'ai' | 'moderator' | 'community';
-}
-
-export interface RiskFlag {
-  type: 'nsfw' | 'spam' | 'copyright' | 'scam' | 'duplicate' | 'low_quality';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  confidence: number;
-  details?: string;
 }
 
 export interface RateLimit {

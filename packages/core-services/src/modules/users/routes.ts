@@ -3,7 +3,7 @@ import { Request, Response, Router } from 'express';
 import { z } from 'zod';
 import { UserService } from './service';
 
-const router = Router();
+const router: Router = Router();
 const userService = new UserService();
 
 // ============================================================================
