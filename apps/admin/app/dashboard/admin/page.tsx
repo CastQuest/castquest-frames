@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { Users, Zap, Activity, Shield, ArrowRight } from 'lucide-react';
-import { formatNumber } from '../../../lib/utils';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard | CastQuest',
