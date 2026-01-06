@@ -12,6 +12,8 @@
     "@castquest/neo-ux-core": "workspace:*",
     "@castquest/sdk": "workspace:*",
     "@hookform/resolvers": "^3.3.3",
+    "@privy-io/react-auth": "^1.55.0",
+    "@privy-io/wagmi-connector": "^0.1.11",
     "@tanstack/react-query": "^5.17.0",
     "@tanstack/react-table": "^8.10.7",
     "clsx": "^2.0.0",
@@ -24,6 +26,8 @@
     "react-hook-form": "^7.49.2",
     "recharts": "^2.10.3",
     "tailwind-merge": "^2.2.0",
+    "viem": "^2.7.15",
+    "wagmi": "^2.5.7",
     "ws": "^8.16.0",
     "zod": "^3.22.4",
     "zustand": "^4.4.7"
