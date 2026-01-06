@@ -1,9 +1,6 @@
-echo "husky - DEPRECATED
+# Deprecated Husky shim.
+# This file is kept for backward compatibility with hooks that still source it.
+# It now intentionally does nothing and always succeeds.
 
-Please remove the following two lines from $0:
-
-#!/usr/bin/env sh
-. \"\$(dirname -- \"\$0\")/_/husky.sh\"
-
-They WILL FAIL in v10.0.0
-"
+# If sourced, return success; if executed, exit success.
+return 0 2>/dev/null || exit 0
