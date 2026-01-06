@@ -179,18 +179,32 @@ export default function ProfilePage() {
                    * Current values are placeholders (0.00) and should be replaced with actual on-chain balances
                    * Consider using wagmi hooks or viem to fetch balances for ETH, USDC, and CAST tokens
                    */}
-                  <div className="grid grid-cols-3 gap-4 pt-3 border-t border-slate-700">
-                    <div>
-                      <div className="text-slate-500 text-xs mb-1">ETH Balance</div>
-                      <div className="text-white font-semibold">0.00 ETH</div>
+                  {/* 
+                   * TODO: Replace the placeholder balances below with real on-chain values.
+                   * These "0.00" amounts are mock data and should not be treated as actual balances.
+                   */}
+                  <div className="pt-3 border-t border-slate-700">
+                    <div className="mb-3">
+                      <span className="inline-flex items-center rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-300 border border-dashed border-slate-600">
+                        Balance display coming soon
+                      </span>
+                      <p className="mt-1 text-xs text-slate-500">
+                        The values below are placeholders while on-chain balance retrieval is being implemented.
+                      </p>
                     </div>
-                    <div>
-                      <div className="text-slate-500 text-xs mb-1">USDC Balance</div>
-                      <div className="text-white font-semibold">0.00 USDC</div>
-                    </div>
-                    <div>
-                      <div className="text-slate-500 text-xs mb-1">CAST Balance</div>
-                      <div className="text-purple-400 font-semibold">0 CAST</div>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <div className="text-slate-500 text-xs mb-1">ETH Balance</div>
+                        <div className="text-white font-semibold">0.00 ETH</div>
+                      </div>
+                      <div>
+                        <div className="text-slate-500 text-xs mb-1">USDC Balance</div>
+                        <div className="text-white font-semibold">0.00 USDC</div>
+                      </div>
+                      <div>
+                        <div className="text-slate-500 text-xs mb-1">CAST Balance</div>
+                        <div className="text-purple-400 font-semibold">0 CAST</div>
+                      </div>
                     </div>
                   </div>
                 </div>
