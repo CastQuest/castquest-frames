@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Key } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 export default function ApiKeysPage() {
   return (
