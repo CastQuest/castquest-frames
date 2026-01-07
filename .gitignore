@@ -1,14 +1,28 @@
-﻿node_modules
-dist
+﻿# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.next/
+out/
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Environment files
 .env
 .env.*
 .env.local
-.DS_Store
-coverage
 
-# Next.js build artifacts
-.next
-out
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Test coverage
+coverage/
 
 # Expo / React Native
 .expo
@@ -23,8 +37,13 @@ web-build/
 
 # Temporary files
 *.tmp
-*.log
 *.backup
+
+# IDE
+.idea/
+.vscode/settings.json
+*.swp
+*.swo
 
 # Generated reports
 AUDIT-REPORT.md
@@ -35,4 +54,3 @@ AUDIT-REPORT.md
 # Supabase
 supabase/.branches
 supabase/.temp
-*.tsbuildinfo

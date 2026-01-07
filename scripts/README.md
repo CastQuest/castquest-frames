@@ -178,17 +178,45 @@ castquest-frames/
 └── pnpm-workspace.yaml (pnpm workspace config)
 ```
 
-## Other Scripts
+## Core Orchestration Scripts
 
-This directory also contains other utility scripts for the CastQuest ecosystem:
+These scripts provide system-wide orchestration and maintenance:
 
-- `master.sh` - Master orchestration script
-- `healer.sh` - Self-healing utilities
-- `contracts.sh` - Smart contract operations
-- `ai.sh` - AI/Smart Brain operations
-- And many more...
+### Master Scripts
+- **`master.sh`** - Main orchestrator for all operations
+- **`healer.sh`** - Self-healing utilities for workspace health
+- **`audit.sh`** - Contract and security auditing
 
-See individual script files for specific documentation.
+### App-Specific Scripts
+- **`admin.sh`** - Admin app commands and operations
+- **`ui.sh`** - UI package building and management
+- **`sdk.sh`** - SDK commands and documentation generation
+- **`api.sh`** - API commands and service management
+- **`contracts.sh`** - Smart contract compilation, testing, and deployment
+
+### Development Scripts
+- **`full-stack-start.sh`** - Start all services simultaneously
+- **`full-stack-stop.sh`** - Stop all running services
+- **`full-stack-health.sh`** - System health check across all services
+- **`self-healing-ui.sh`** - UI-specific self-healing and hot reload
+
+### Utility Scripts
+- **`mega-port-cleaner.sh`** - Clean up zombie processes and free ports
+- **`port-detect.sh`** - Detect port usage and conflicts
+- **`bootstrap-admin-web.sh`** - Bootstrap admin and web apps together
+
+### Smart Brain & AI Scripts
+- **`ai.sh`** - AI/Smart Brain validation and operations
+- **`castquest-mega-selfheal.sh`** - Mega self-healing system
+- **`smart-mega-neo-wiring.sh`** - Smart wiring validation
+
+### Module & Component Generators
+- **`new-dashboard-widget.sh`** - Generate new dashboard widgets
+- **`new-glow-component.sh`** - Generate new glow UI components
+- **`new-visualization.sh`** - Generate new data visualizations
+- **`module-*.sh`** - Various module scaffolding scripts
+
+See individual script files for specific documentation and usage.
 
 ## Contributing
 
