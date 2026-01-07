@@ -99,17 +99,15 @@ check_command() {
 }
 
 run_command() {
-  local cmd="$*"
-  debug "Running: $cmd"
-  
+  debug "Running: $*"
+
   if [[ "$DRY_RUN" == "true" ]]; then
-    info "[DRY RUN] Would run: $cmd"
+    info "[DRY RUN] Would run: $*"
     return 0
   fi
-  
-  eval "$cmd"
-}
 
+  "$@"
+}
 # ============================================================================
 # Validation Functions
 # ============================================================================
