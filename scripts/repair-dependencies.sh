@@ -221,7 +221,7 @@ harmonize_dependency_versions() {
   
   # Check TypeScript versions
   log "Checking TypeScript versions..."
-  for pkg in apps/web apps/admin packages/neo-ux-core packages/sdk packages/core-services; do
+  for pkg in apps/web apps/admin packages/neo-ux-core packages/sdk packages/core-services packages/frames packages/strategy-worker; do
     local pkg_json="$ROOT_DIR/$pkg/package.json"
     if ! check_dependency_version "$pkg_json" "typescript" "$EXPECTED_TYPESCRIPT"; then
       ((mismatches++))
@@ -230,7 +230,7 @@ harmonize_dependency_versions() {
   
   # Check @types/node versions
   log "Checking @types/node versions..."
-  for pkg in apps/web apps/admin packages/sdk packages/core-services; do
+  for pkg in apps/web apps/admin packages/sdk packages/core-services packages/frames; do
     local pkg_json="$ROOT_DIR/$pkg/package.json"
     if ! check_dependency_version "$pkg_json" "@types/node" "$EXPECTED_NODE_TYPES"; then
       ((mismatches++))
@@ -239,7 +239,7 @@ harmonize_dependency_versions() {
   
   # Check Next.js versions
   log "Checking Next.js versions..."
-  for pkg in apps/web apps/admin; do
+  for pkg in apps/web apps/admin packages/frames; do
     local pkg_json="$ROOT_DIR/$pkg/package.json"
     if ! check_dependency_version "$pkg_json" "next" "$EXPECTED_NEXTJS"; then
       ((mismatches++))

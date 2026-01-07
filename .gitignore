@@ -28,6 +28,7 @@ web-build/
 
 # Generated reports
 AUDIT-REPORT.md
+ORACLE-REPORT.md
 
 # Turbo
 .turbo

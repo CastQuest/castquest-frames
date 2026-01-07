@@ -28,14 +28,16 @@ else
   
   if [ -n "$CHANGED_PACKAGE_JSON" ]; then
     INVALID=0
-    for file in $CHANGED_PACKAGE_JSON; do
+    while IFS= read -r file; do
       if [ -f "$file" ]; then
         if ! jq empty "$file" 2>/dev/null; then
           echo "${RED}✗ Invalid JSON: $file${NC}"
           INVALID=$((INVALID + 1))
         fi
       fi
-    done
+    done <<EOF
+$CHANGED_PACKAGE_JSON
+EOF
     
     if [ $INVALID -eq 0 ]; then
       echo "${GREEN}✓ All package.json files are valid${NC}"
@@ -56,7 +58,7 @@ CHANGED_PACKAGE_JSON=$(git diff --cached --name-only | grep "package.json" || tr
 
 if [ -n "$CHANGED_PACKAGE_JSON" ] && command -v jq &> /dev/null; then
   INVALID_REFS=0
-  for file in $CHANGED_PACKAGE_JSON; do
+  while IFS= read -r file; do
     if [ -f "$file" ]; then
       # Check for workspace dependencies using incorrect syntax
       WORKSPACE_DEPS=$(jq -r '.dependencies, .devDependencies | to_entries[] | select(.key | startswith("@castquest/")) | select(.value | startswith("workspace:") | not) | .key + ": " + .value' "$file" 2>/dev/null || true)
@@ -67,7 +69,9 @@ if [ -n "$CHANGED_PACKAGE_JSON" ] && command -v jq &> /dev/null; then
         INVALID_REFS=$((INVALID_REFS + 1))
       fi
     fi
-  done
+  done <<EOF
+$CHANGED_PACKAGE_JSON
+EOF
   
   if [ $INVALID_REFS -eq 0 ]; then
     echo "${GREEN}✓ Workspace dependencies are correctly referenced${NC}"
@@ -88,7 +92,7 @@ CHANGED_TS_CONFIG=$(git diff --cached --name-only | grep "tsconfig.json" || true
 
 if [ -n "$CHANGED_TS_CONFIG" ] && command -v jq &> /dev/null; then
   INVALID_TS=0
-  for file in $CHANGED_TS_CONFIG; do
+  while IFS= read -r file; do
     if [ -f "$file" ]; then
       # Validate JSON
       if ! jq empty "$file" 2>/dev/null; then
@@ -96,7 +100,9 @@ if [ -n "$CHANGED_TS_CONFIG" ] && command -v jq &> /dev/null; then
         INVALID_TS=$((INVALID_TS + 1))
       fi
     fi
-  done
+  done <<EOF
+$CHANGED_TS_CONFIG
+EOF
   
   if [ $INVALID_TS -eq 0 ]; then
     echo "${GREEN}✓ TypeScript configurations are valid${NC}"

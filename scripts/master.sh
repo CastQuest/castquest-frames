@@ -260,7 +260,7 @@ cmd_health() {
   # 5. Validate TypeScript configuration consistency
   log "Checking TypeScript versions..."
   local ts_versions
-  ts_versions=$(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -exec jq -r '.devDependencies.typescript // .dependencies.typescript // empty' {} \; 2>/dev/null | sort -u | wc -l)
+  ts_versions=$(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -exec jq -r '.devDependencies.typescript // .dependencies.typescript // empty' {} \; 2>/dev/null | grep -v '^$' | sort -u | wc -l)
   
   if [[ $ts_versions -le 1 ]]; then
     log "✓ TypeScript versions are consistent"
@@ -328,7 +328,7 @@ cmd_health() {
   # 10. Report dependency version consistency
   log "Checking dependency consistency..."
   local node_types_versions
-  node_types_versions=$(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -exec jq -r '.devDependencies["@types/node"] // .dependencies["@types/node"] // empty' {} \; 2>/dev/null | sort -u | wc -l)
+  node_types_versions=$(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -exec jq -r '.devDependencies["@types/node"] // .dependencies["@types/node"] // empty' {} \; 2>/dev/null | awk 'NF' | sort -u | wc -l)
   
   if [[ $node_types_versions -le 1 ]]; then
     log "✓ @types/node versions are consistent"

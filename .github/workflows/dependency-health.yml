@@ -129,7 +129,7 @@ jobs:
           for pkg in "${PACKAGES[@]}"; do
             if [ -f "$pkg/package.json" ]; then
               echo "Building $pkg..." >> $GITHUB_STEP_SUMMARY
-              if cd "$pkg" && pnpm build && cd ../..; then
+              if (cd "$pkg" && pnpm build); then
                 echo "✅ $pkg built successfully" >> $GITHUB_STEP_SUMMARY
               else
                 echo "❌ Failed to build $pkg" >> $GITHUB_STEP_SUMMARY
@@ -285,15 +285,3 @@ jobs:
               body: body,
               labels: ['dependencies', 'automated', 'health-check']
             });
-      
-      - name: Generate health badge
-        if: success()
-        run: |
-          mkdir -p badges
-          echo '{"schemaVersion": 1, "label": "dependencies", "message": "healthy", "color": "success"}' > badges/dependency-health.json
-      
-      - name: Generate unhealthy badge
-        if: failure()
-        run: |
-          mkdir -p badges
-          echo '{"schemaVersion": 1, "label": "dependencies", "message": "needs attention", "color": "critical"}' > badges/dependency-health.json

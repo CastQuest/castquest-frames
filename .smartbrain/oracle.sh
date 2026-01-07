@@ -88,7 +88,10 @@ analyze_dependency_health() {
   local ts_versions
   ts_versions=$(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -exec jq -r '.devDependencies.typescript // .dependencies.typescript // empty' {} \; | sort -u)
   
-  if [[ $(echo "$ts_versions" | wc -l) -gt 1 ]]; then
+  local ts_count
+  ts_count=$(echo "$ts_versions" | grep -v '^$' | wc -l)
+  
+  if [[ $ts_count -gt 1 ]]; then
     warn "Multiple TypeScript versions detected:"
     echo "$ts_versions" | sed 's/^/  /'
     insight "Recommendation: Standardize on TypeScript 5.3.3 for consistency"
@@ -100,7 +103,10 @@ analyze_dependency_health() {
   local node_types_versions
   node_types_versions=$(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -exec jq -r '.devDependencies["@types/node"] // .dependencies["@types/node"] // empty' {} \; | sort -u)
   
-  if [[ $(echo "$node_types_versions" | wc -l) -gt 1 ]]; then
+  local node_count
+  node_count=$(echo "$node_types_versions" | awk 'NF' | wc -l)
+  
+  if [[ $node_count -gt 1 ]]; then
     warn "Multiple @types/node versions detected:"
     echo "$node_types_versions" | sed 's/^/  /'
     insight "Recommendation: Standardize on @types/node 20.10.6 to match Node.js 20"
@@ -466,6 +472,13 @@ generate_comprehensive_report() {
   
   log "Generating comprehensive report..."
   
+  # Cache summaries to avoid duplicate analysis runs
+  local dep_health_summary
+  dep_health_summary=$(analyze_dependency_health 2>&1 | grep -E "✓|⚠|✗|💡" | sed 's/^/- /')
+  
+  local security_status_summary
+  security_status_summary=$(detect_security_vulnerabilities 2>&1 | grep -E "✓|⚠|✗|💡" | sed 's/^/- /')
+  
   cat > "$report_file" <<EOF
 # CastQuest Smart Brain Oracle - Analysis Report
 
@@ -489,10 +502,10 @@ The Smart Brain Oracle has analyzed the CastQuest Frames repository for:
 ## Key Findings
 
 ### Dependency Health
-$(analyze_dependency_health 2>&1 | grep -E "✓|⚠|✗|💡" | sed 's/^/- /')
+${dep_health_summary}
 
 ### Security Status
-$(detect_security_vulnerabilities 2>&1 | grep -E "✓|⚠|✗|💡" | sed 's/^/- /')
+${security_status_summary}
 
 ### Performance Opportunities
 - Enable advanced Next.js optimizations
