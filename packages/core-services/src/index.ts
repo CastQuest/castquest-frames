@@ -25,7 +25,7 @@ export { logger } from './lib/logger';
 export { authenticateAdmin, authenticateJWT, optionalAuth } from './lib/middleware/auth';
 
 // Export services (for direct usage in other packages)
-export { MarketService } from './modules/markets/service';
+export { MarketsService } from './modules/markets/service';
 export { MediaService } from './modules/media/service';
 export { RiskService } from './modules/risk/service';
 export { UserService } from './modules/users/service';

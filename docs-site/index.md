@@ -90,8 +90,8 @@ AI-powered system that provides suggestions, validates data, and optimizes opera
 ## Community & Support
 
 - [GitHub Discussions](https://github.com/CastQuest/castquest-frames/discussions)
-- [Contributing Guide](/docs/CONTRIBUTING)
-- [Contributor Recognition](/docs/contributor-cards)
+- [Contributing Guide](https://github.com/CastQuest/castquest-frames/blob/main/CONTRIBUTING.md)
+- [Contributor Recognition](https://github.com/CastQuest/castquest-frames/blob/main/docs/contributor-cards.md)
 
 ## Protocol Status
 

@@ -3,7 +3,7 @@ import { Request, Response, Router } from 'express';
 import { z } from 'zod';
 import { WalletService } from './service';
 
-const router = Router();
+const router: Router = Router();
 const walletService = new WalletService();
 
 // ============================================================================

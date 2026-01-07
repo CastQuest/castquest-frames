@@ -1,8 +1,9 @@
 import { Request, Response, Router } from 'express';
 import { z } from 'zod';
 import { MarketsService } from './service';
+import { MarketStatus } from '../../types';
 
-export const marketRoutes = Router();
+export const marketRoutes: Router = Router();
 const marketsService = new MarketsService();
 
 // Validation schemas
@@ -18,11 +19,13 @@ const upsertMarketSchema = z.object({
 
 const recordTradeSchema = z.object({
   tokenAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
-  traderAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
-  tradeType: z.enum(['buy', 'sell']),
+  buyer: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
+  seller: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
+  type: z.enum(['buy', 'sell']),
   amount: z.string(),
   price: z.string(),
   totalValue: z.string(),
+  protocolFee: z.string(),
   transactionHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
   blockNumber: z.string().transform(BigInt),
 });
@@ -216,7 +219,10 @@ marketRoutes.post('/sync', async (req: Request, res: Response) => {
   try {
     const validated = upsertMarketSchema.parse(req.body);
 
-    const signal = await marketsService.upsertMarketSignal(validated);
+    const signal = await marketsService.upsertMarketSignal({
+      ...validated,
+      status: validated.status as MarketStatus,
+    });
 
     res.json({
       success: true,

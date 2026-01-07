@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import { z } from 'zod';
 import { RiskService } from './service';
 
-export const riskRoutes = Router();
+export const riskRoutes: Router = Router();
 const riskService = new RiskService();
 
 // Validation schemas

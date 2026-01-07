@@ -87,10 +87,12 @@ export class UserService {
       .where(eq(users.id, user.id));
     
     // Generate JWT
+    const jwtSecret = config.auth.jwtSecret as string;
+    const jwtExpiresIn = config.auth.jwtExpiresIn as string;
     const token = jwt.sign(
       { userId: user.id, email: user.email },
-      config.auth.jwtSecret,
-      { expiresIn: config.auth.jwtExpiresIn }
+      jwtSecret,
+      { expiresIn: jwtExpiresIn } as jwt.SignOptions
     );
     
     logger.info(`User logged in: ${user.id}`);
