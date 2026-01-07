@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { GlowButton, DashboardGrid, DashboardStat } from "@castquest/neo-ux-core";
 import { FrameCard, QuestCard, MediaCard } from "../../components/Cards";
 import { useMockFrames, useMockQuests, useMockMedia, useMockStats } from "../../hooks/useMockData";
+import { TokenBadge, IntegrationBadge, EngagementStats } from "../../components/Badges";
 import { neo } from "@castquest/neo-ux-core";
 
 export default function DashboardOverview() {
@@ -12,6 +13,26 @@ export default function DashboardOverview() {
   const { media, loading: mediaLoading } = useMockMedia();
   const { stats } = useMockStats();
   const [activeTab, setActiveTab] = useState<"frames" | "quests" | "media">("frames");
+
+  // Calculate aggregate social metrics from frames data
+  const socialMetrics = useMemo(() => {
+    if (!frames || frames.length === 0) return { casts: 0, recasts: 0, likes: 0 };
+    
+    return frames.reduce((acc: any, frame: any) => ({
+      casts: acc.casts + (frame.casts || 0),
+      recasts: acc.recasts + (frame.recasts || 0),
+      likes: acc.likes + (frame.likes || 0)
+    }), { casts: 0, recasts: 0, likes: 0 });
+  }, [frames]);
+
+  // Token prices from web-content
+  const tokenPrices = [
+    { ticker: "QUEST", price: "$0.42" },
+    { ticker: "MINT", price: "$1.25" },
+    { ticker: "CODE", price: "$0.88" },
+    { ticker: "REMIX", price: "$0.65" },
+    { ticker: "DROP", price: "$0.15" }
+  ];
 
   return (
     <div className="min-h-screen">
@@ -49,6 +70,40 @@ export default function DashboardOverview() {
             Powered by Farcaster, Zora, Solana, BASE, and the Neo Glow Protocol. 
             Build frames, complete quests, mint NFTs, and earn rewards in the decentralized ecosystem.
           </p>
+
+          {/* Protocol Integration Badges */}
+          <div className="flex gap-3 justify-center mb-6">
+            <IntegrationBadge platform="farcaster" size="md" />
+            <IntegrationBadge platform="zora" size="md" />
+            <IntegrationBadge platform="solana" size="md" />
+            <IntegrationBadge platform="base" size="md" />
+          </div>
+
+          {/* Token Prices - Horizontal Scrolling */}
+          <div className="mb-6 overflow-x-auto">
+            <div className="flex gap-3 justify-center min-w-max px-4">
+              {tokenPrices.map((token) => (
+                <TokenBadge 
+                  key={token.ticker} 
+                  ticker={token.ticker} 
+                  price={token.price} 
+                  size="md"
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Social Metrics Row */}
+          <div className="mb-8 flex justify-center">
+            <div className={`inline-flex items-center gap-6 px-6 py-3 rounded-lg border ${neo.colors.border.glow} bg-black/40 backdrop-blur-sm`}>
+              <EngagementStats 
+                casts={socialMetrics.casts}
+                recasts={socialMetrics.recasts}
+                likes={socialMetrics.likes}
+                compact={false}
+              />
+            </div>
+          </div>
 
           <div className="flex gap-4 justify-center mb-12">
             <GlowButton onClick={() => window.location.href = "/dashboard/quests"}>
