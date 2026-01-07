@@ -8,11 +8,18 @@ import { ReactNode } from 'react';
 const queryClient = new QueryClient();
 
 export function AppPrivyProvider({ children }: { children: ReactNode }) {
-  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'placeholder-app-id';
+  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
 
-  if (!process.env.NEXT_PUBLIC_PRIVY_APP_ID) {
+  // If no Privy App ID is configured, skip Privy authentication entirely
+  // This allows the app to run in development without authentication
+  if (!appId) {
     console.warn(
-      'Privy App ID (NEXT_PUBLIC_PRIVY_APP_ID) is not set. Using placeholder for build.'
+      'Privy App ID (NEXT_PUBLIC_PRIVY_APP_ID) is not set. Running without authentication.'
+    );
+    return (
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
     );
   }
 
