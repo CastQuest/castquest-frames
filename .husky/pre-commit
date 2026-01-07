@@ -122,7 +122,9 @@ if [ -n "$CHANGED_FILES" ]; then
       CHECKS_PASSED=$((CHECKS_PASSED + 1))
       
       # Re-stage files that were auto-fixed
-      git add $CHANGED_FILES 2>/dev/null || true
+      printf '%s\n' "$CHANGED_FILES" | while IFS= read -r file; do
+        [ -n "$file" ] && git add -- "$file" 2>/dev/null || true
+      done
     else
       echo "${YELLOW}⚠ Linting issues detected (non-blocking)${NC}"
       CHECKS_PASSED=$((CHECKS_PASSED + 1))
