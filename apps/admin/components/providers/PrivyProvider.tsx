@@ -16,14 +16,9 @@ export function AppPrivyProvider({ children }: { children: ReactNode }) {
     console.warn(
       'Privy App ID (NEXT_PUBLIC_PRIVY_APP_ID) is not set. Running without authentication.'
     );
-    return (
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
-    );
   }
 
-  return (
+  const content = appId ? (
     <PrivyProvider
       appId={appId}
       config={{
@@ -37,9 +32,15 @@ export function AppPrivyProvider({ children }: { children: ReactNode }) {
         },
       }}
     >
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
+      {children}
     </PrivyProvider>
+  ) : (
+    children
+  );
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      {content}
+    </QueryClientProvider>
   );
 }
