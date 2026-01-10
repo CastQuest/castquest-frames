@@ -1,29 +1,14 @@
-﻿# Dependencies
-node_modules/
-
-# Build outputs
-dist/
-.next/
-out/
-*.tsbuildinfo
-tsconfig.tsbuildinfo
-
-# Environment files
+node_modules
+dist
 .env
 .env.*
-!.env.example
 .env.local
-
-# OS files
 .DS_Store
-Thumbs.db
+coverage
 
-# Logs
-logs/
-*.log
-
-# Test coverage
-coverage/
+# Next.js build artifacts
+.next
+out
 
 # Expo / React Native
 .expo
@@ -38,19 +23,25 @@ web-build/
 
 # Temporary files
 *.tmp
+*.log
 *.backup
 
-# IDE
-.idea/
-.vscode/settings.json
-*.swp
-*.swo
+# TypeScript build info
+*.tsbuildinfo
 
 # Generated reports
 AUDIT-REPORT.md
 
+# Smart Brain cache
+.smartbrain/cache/
+.smartbrain/oracle-state.json
+
 # Turbo
 .turbo
+
+# Supabase
+supabase/.branches
+supabase/.temp
 
 # Supabase
 supabase/.branches

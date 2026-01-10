@@ -1,0 +1,7 @@
+{
+  "*.{ts,tsx}": [],
+  "*.{json,md}": [],
+  "package.json": [
+    "npx npm-package-json-lint --pkg-files"
+  ]
+}

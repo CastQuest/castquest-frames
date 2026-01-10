@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+echo "🔍 Running pre-commit checks..."
+
+# 1. Validate package.json changes
+if git diff --cached --name-only | grep -q "package.json"; then
+  echo "📦 Validating package.json files..."
+  for file in $(git diff --cached --name-only | grep package.json); do
+    if [ -f "$file" ]; then
+      node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$file" || {
+        echo "❌ Invalid JSON in $file"
+        exit 1
+      }
+    fi
+  done
+  echo "✓ All package.json files are valid"
+fi
+
+# 2. Check workspace dependencies if package.json changed
+if git diff --cached --name-only | grep -q "package.json\|pnpm-lock.yaml"; then
+  echo "🔗 Checking workspace dependencies..."
+  pnpm list -r --depth 0 >/dev/null 2>&1 || {
+    echo "❌ Workspace dependency issues detected"
+    echo "Run 'bash scripts/repair-dependencies.sh' to fix"
+    exit 1
+  }
+  echo "✓ Workspace dependencies OK"
+fi
+
+# 3. Verify TypeScript configs if changed
+if git diff --cached --name-only | grep -q "tsconfig.json"; then
+  echo "📘 Validating TypeScript configs..."
+  for file in $(git diff --cached --name-only | grep tsconfig.json); do
+    if [ -f "$file" ]; then
+      node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$file" || {
+        echo "❌ Invalid JSON in $file"
+        exit 1
+      }
+    fi
+  done
+  echo "✓ TypeScript configs are valid"
+fi
+
+# 4. Run lint-staged for validation (no formatting)
+if command -v npx >/dev/null 2>&1 && [ -f ".lintstagedrc.json" ]; then
+  echo "✨ Running validators..."
+  npx lint-staged || {
+    echo "❌ Validation failed"
+    exit 1
+  }
+fi
+
+# 5. Quick Smart Brain validation (if available)
+if [ -x ".smartbrain/brain.sh" ]; then
+  echo "🧠 Running Smart Brain quick validation..."
+  .smartbrain/brain.sh validate-quick 2>/dev/null || {
+    echo "⚠️  Smart Brain detected potential issues"
+    echo "This is a warning only - commit will proceed"
+  }
+fi
+
+echo "✅ Pre-commit checks passed!"
