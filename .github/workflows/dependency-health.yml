@@ -1,0 +1,236 @@
+name: Dependency Health Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run every day at 6 AM UTC (cron: 0 6 * * * – daily)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  dependency-health:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.0.0
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Repair Script
+        run: |
+          bash scripts/repair-dependencies.sh --dry-run
+        continue-on-error: true
+
+      - name: Run Health Check
+        id: health-check
+        run: |
+          bash scripts/master.sh health --json > health-report.json
+          cat health-report.json
+        continue-on-error: true
+
+      - name: Smart Brain Oracle Analysis
+        run: |
+          .smartbrain/oracle.sh analyze > oracle-report.txt
+          cat oracle-report.txt
+        continue-on-error: true
+
+      - name: Security Audit
+        run: |
+          pnpm audit --audit-level=moderate || echo "Security vulnerabilities detected"
+        continue-on-error: true
+
+      - name: Check Version Consistency
+        id: version-check
+        run: |
+          echo "Checking TypeScript versions..."
+          TS_VERSIONS=$(find . -name "package.json" -not -path "*/node_modules/*" -exec grep -h '"typescript"' {} \; | sort -u | wc -l)
+          echo "ts_versions=$TS_VERSIONS" >> $GITHUB_OUTPUT
+          
+          echo "Checking @types/node versions..."
+          NODE_TYPES_VERSIONS=$(find . -name "package.json" -not -path "*/node_modules/*" -exec grep -h '"@types/node"' {} \; | sort -u | wc -l)
+          echo "node_types_versions=$NODE_TYPES_VERSIONS" >> $GITHUB_OUTPUT
+          
+          echo "Checking Next.js versions..."
+          NEXT_VERSIONS=$(find . -name "package.json" -not -path "*/node_modules/*" -exec grep -h '"next"' {} \; | sort -u | wc -l)
+          echo "next_versions=$NEXT_VERSIONS" >> $GITHUB_OUTPUT
+          
+          if [ "$TS_VERSIONS" -le 2 ] && [ "$NODE_TYPES_VERSIONS" -le 2 ] && [ "$NEXT_VERSIONS" -le 1 ]; then
+            echo "Version consistency check passed ✓"
+            echo "consistent=true" >> $GITHUB_OUTPUT
+          else
+            echo "Version consistency check failed ✗"
+            echo "TypeScript versions: $TS_VERSIONS (should be ≤2)"
+            echo "@types/node versions: $NODE_TYPES_VERSIONS (should be ≤2)"
+            echo "Next.js versions: $NEXT_VERSIONS (should be 1)"
+            echo "consistent=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload Health Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: health-report
+          path: |
+            health-report.json
+            oracle-report.txt
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let healthReport = { status: 'unknown', checks_passed: 0, checks_failed: 0 };
+            try {
+              healthReport = JSON.parse(fs.readFileSync('health-report.json', 'utf8'));
+            } catch (e) {
+              console.log('Could not parse health report');
+            }
+            
+            let oracleReport = '';
+            try {
+              oracleReport = fs.readFileSync('oracle-report.txt', 'utf8');
+            } catch (e) {
+              console.log('Could not read oracle report');
+            }
+            
+            const versionConsistent = '${{ steps.version-check.outputs.consistent }}' === 'true';
+            
+            const statusEmoji = healthReport.status === 'healthy' ? '✅' : '⚠️';
+            const versionEmoji = versionConsistent ? '✅' : '❌';
+            
+            const comment = `## 🏥 Dependency Health Check
+            
+            **Status:** ${statusEmoji} ${healthReport.status}
+            **Checks Passed:** ${healthReport.checks_passed}
+            **Checks Failed:** ${healthReport.checks_failed}
+            **Version Consistency:** ${versionEmoji} ${versionConsistent ? 'Consistent' : 'Inconsistent'}
+            
+            <details>
+            <summary>📊 Smart Brain Oracle Analysis</summary>
+            
+            \`\`\`
+            ${oracleReport.substring(0, 2000)}
+            \`\`\`
+            </details>
+            
+            <details>
+            <summary>ℹ️ Health Report Details</summary>
+            
+            \`\`\`json
+            ${JSON.stringify(healthReport, null, 2)}
+            \`\`\`
+            </details>
+            
+            ---
+            
+            ${healthReport.status === 'unhealthy' || !versionConsistent ? '⚠️ **Action Required:** Please address the issues above before merging.' : '✅ All checks passed! Safe to merge.'}
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: Create Issue on Failure
+        if: failure() && (github.event_name == 'schedule' || github.event_name == 'push')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let healthReport = { status: 'unknown' };
+            try {
+              healthReport = JSON.parse(fs.readFileSync('health-report.json', 'utf8'));
+            } catch (e) {
+              console.log('Could not parse health report');
+            }
+            
+            const title = '🚨 Dependency Health Check Failed';
+            const body = `## Automated Health Check Failure
+            
+            A scheduled dependency health check has detected issues in the repository.
+            
+            **Workflow Run:** ${context.payload.repository.html_url}/actions/runs/${context.runId}
+            **Triggered by:** ${context.eventName}
+            **Timestamp:** ${new Date().toISOString()}
+            
+            ### Status
+            - Health Status: ${healthReport.status || 'unknown'}
+            - Checks Failed: ${healthReport.checks_failed || 'unknown'}
+            
+            ### Recommended Actions
+            1. Review the workflow run logs for detailed error information
+            2. Run \`bash scripts/repair-dependencies.sh\` locally to diagnose issues
+            3. Run \`bash scripts/master.sh health\` to see detailed health report
+            4. Check \`.smartbrain/oracle.sh analyze\` for AI-powered insights
+            
+            ### Quick Fix
+            \`\`\`bash
+            # Clean and repair dependencies
+            bash scripts/repair-dependencies.sh
+            
+            # Run health check
+            bash scripts/master.sh health
+            
+            # Get oracle recommendations
+            .smartbrain/oracle.sh recommend-upgrades
+            \`\`\`
+            
+            This issue was automatically created by the Dependency Health Check workflow.
+            `;
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['dependencies', 'automated', 'health-check']
+            });
+
+      - name: Set workflow status
+        if: always()
+        run: |
+          if [ -f health-report.json ]; then
+            STATUS=$(jq -r '.status' health-report.json)
+            if [ "$STATUS" = "unhealthy" ]; then
+              echo "Health check reported unhealthy status"
+              exit 1
+            fi
+          fi
+          echo "Health check completed"

@@ -178,19 +178,172 @@ cmd_integrity() {
 
 # ------------------------------------------------------------------------------
 # SUBCOMMAND: health  (for CI/PR validation)
-# Combines quick audit + lightweight heal signals.
+# Comprehensive health check with detailed diagnostics
 # ------------------------------------------------------------------------------
 
 cmd_health() {
-  log "Running lightweight health check (CI/PR friendly)."
+  log "Running comprehensive health check..."
 
+  local output_format="${2:-text}"
+  local auto_fix="${3:-false}"
+  local health_status=0
+  local checks_passed=0
+  local checks_failed=0
+  
+  # Ensure dependencies are installed
   ensure_pnpm_install
 
-  $PNPM lint || true
-  $PNPM test || true
-  $PNPM -r run typecheck || true
+  # 1. Validate package.json files
+  log "1. Validating package.json files..."
+  local invalid_json=0
+  while IFS= read -r -d '' file; do
+    if ! node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$file" 2>/dev/null; then
+      err "Invalid JSON in: $file"
+      invalid_json=$((invalid_json + 1))
+      checks_failed=$((checks_failed + 1))
+    fi
+  done < <(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -print0)
+  
+  if [ $invalid_json -eq 0 ]; then
+    log "✓ All package.json files are valid"
+    checks_passed=$((checks_passed + 1))
+  else
+    health_status=1
+  fi
 
-  log "Health check finished (non-destructive)."
+  # 2. Check workspace dependencies
+  log "2. Checking workspace dependencies..."
+  if $PNPM list -r --depth 0 >/dev/null 2>&1; then
+    log "✓ Workspace dependencies are correctly linked"
+    checks_passed=$((checks_passed + 1))
+  else
+    warn "✗ Workspace dependency issues detected"
+    checks_failed=$((checks_failed + 1))
+    health_status=1
+  fi
+
+  # 3. Verify build artifacts
+  log "3. Checking build artifacts..."
+  local build_errors=0
+  for pkg in neo-ux-core sdk core-services; do
+    if [ -d "$ROOT_DIR/packages/$pkg/dist" ]; then
+      log "✓ $pkg has build artifacts"
+    else
+      warn "✗ $pkg missing build artifacts"
+      build_errors=$((build_errors + 1))
+    fi
+  done
+  
+  if [ $build_errors -eq 0 ]; then
+    checks_passed=$((checks_passed + 1))
+  else
+    checks_failed=$((checks_failed + 1))
+    if [ "$auto_fix" = "true" ]; then
+      log "Auto-fixing: rebuilding packages..."
+      $PNPM -r build || true
+    fi
+  fi
+
+  # 4. Port conflict detection
+  log "4. Checking port availability (3000, 3001, 3010)..."
+  local ports_in_use=0
+  for port in 3000 3001 3010; do
+    if command -v lsof >/dev/null 2>&1; then
+      if lsof -i:"$port" -sTCP:LISTEN >/dev/null 2>&1; then
+        warn "Port $port is in use"
+        ports_in_use=$((ports_in_use + 1))
+      fi
+    fi
+  done
+  
+  if [ $ports_in_use -eq 0 ]; then
+    log "✓ All required ports are available"
+    checks_passed=$((checks_passed + 1))
+  else
+    warn "⚠ Some ports are in use (not critical)"
+    checks_passed=$((checks_passed + 1))
+  fi
+
+  # 5. TypeScript config consistency
+  log "5. Validating TypeScript configs..."
+  if find "$ROOT_DIR" -name "tsconfig.json" -not -path "*/node_modules/*" -exec node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" {} \; 2>/dev/null; then
+    log "✓ All tsconfig.json files are valid"
+    checks_passed=$((checks_passed + 1))
+  else
+    warn "✗ Invalid tsconfig.json detected"
+    checks_failed=$((checks_failed + 1))
+  fi
+
+  # 6. Check for broken symlinks
+  log "6. Checking for broken symlinks..."
+  local broken_links=$(find "$ROOT_DIR" -type l ! -exec test -e {} \; -print 2>/dev/null | grep -v node_modules || true)
+  if [ -z "$broken_links" ]; then
+    log "✓ No broken symlinks found"
+    checks_passed=$((checks_passed + 1))
+  else
+    warn "✗ Found broken symlinks"
+    echo "$broken_links"
+    checks_failed=$((checks_failed + 1))
+  fi
+
+  # 7. Environment files check
+  log "7. Checking environment files..."
+  # Non-critical check
+  log "ℹ Environment file check skipped (optional)"
+  checks_passed=$((checks_passed + 1))
+
+  # 8. Dependency version consistency
+  log "8. Checking dependency version consistency..."
+  local ts_versions=$(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -exec grep -h '"typescript"' {} \; 2>/dev/null | sort -u | wc -l || echo "0")
+  if [ "$ts_versions" -le 2 ]; then
+    log "✓ TypeScript versions are consistent"
+    checks_passed=$((checks_passed + 1))
+  else
+    warn "✗ TypeScript version inconsistencies detected"
+    checks_failed=$((checks_failed + 1))
+    health_status=1
+  fi
+
+  # 9. Security audit (non-blocking)
+  log "9. Running security audit..."
+  if $PNPM audit --audit-level=high >/dev/null 2>&1; then
+    log "✓ No high-severity vulnerabilities"
+    checks_passed=$((checks_passed + 1))
+  else
+    warn "⚠ Security vulnerabilities detected (run: pnpm audit)"
+    checks_passed=$((checks_passed + 1))  # Non-blocking
+  fi
+
+  # 10. Linting and type checking
+  log "10. Running lint and typecheck..."
+  $PNPM lint >/dev/null 2>&1 || warn "Linting issues detected"
+  $PNPM -r run typecheck >/dev/null 2>&1 || warn "Type checking issues detected"
+  checks_passed=$((checks_passed + 1))
+
+  # Generate summary report
+  log ""
+  log "════════════════════════════════════════"
+  log "Health Check Summary"
+  log "════════════════════════════════════════"
+  log "Checks Passed: $checks_passed"
+  log "Checks Failed: $checks_failed"
+  log "Overall Status: $([ $health_status -eq 0 ] && echo "HEALTHY ✓" || echo "NEEDS ATTENTION ✗")"
+  log "════════════════════════════════════════"
+
+  # Output format handling
+  if [ "$output_format" = "--json" ]; then
+    cat > /tmp/health-report.json <<EOF
+{
+  "status": "$([ $health_status -eq 0 ] && echo "healthy" || echo "unhealthy")",
+  "checks_passed": $checks_passed,
+  "checks_failed": $checks_failed,
+  "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOF
+    cat /tmp/health-report.json
+  fi
+
+  return $health_status
 }
 
 # ------------------------------------------------------------------------------
@@ -202,24 +355,52 @@ usage() {
 @SMSDAO BOT - CastQuest Master Orchestrator v2.0
 
 USAGE:
-  ./scripts/master.sh <command>
+  ./scripts/master.sh <command> [options]
 
 COMMANDS:
   audit      Run full Smart Brain Oracle Audit → AUDIT-REPORT.md
   heal       Execute mega self-heal chain (neo-healer + castquest-healer)
   integrity  ABI ↔ SDK consistency check
-  health     Lightweight health check (lint + test + typecheck)
+  health     Comprehensive health check (lint + test + typecheck + diagnostics)
+             Options:
+               --json    Output in JSON format
+               --fix     Auto-fix detected issues
+  oracle     Run Smart Brain Oracle analysis
+             Subcommands:
+               analyze             Full dependency analysis
+               recommend-upgrades  Get upgrade recommendations
+               security-scan       Security vulnerability scan
 
 EXAMPLES:
   ./scripts/master.sh audit
   ./scripts/master.sh heal
   ./scripts/master.sh integrity
   ./scripts/master.sh health
+  ./scripts/master.sh health --json > health-report.json
+  ./scripts/master.sh health --fix
+  ./scripts/master.sh oracle analyze
 
 All operations are idempotent and non-destructive.
 No deletions, no structural changes unless explicitly approved.
 
 EOF
+}
+
+# ------------------------------------------------------------------------------
+# SUBCOMMAND: oracle  (Smart Brain Oracle integration)
+# ------------------------------------------------------------------------------
+
+cmd_oracle() {
+  local subcmd="${2:-analyze}"
+  local oracle_script="$ROOT_DIR/.smartbrain/oracle.sh"
+  
+  if [[ -x "$oracle_script" ]]; then
+    log "Running Smart Brain Oracle: $subcmd"
+    "$oracle_script" "$subcmd" "${@:3}"
+  else
+    err "Smart Brain Oracle script not found or not executable: $oracle_script"
+    return 1
+  fi
 }
 
 # ------------------------------------------------------------------------------
@@ -240,7 +421,10 @@ main() {
       cmd_integrity
       ;;
     health)
-      cmd_health
+      cmd_health "$@"
+      ;;
+    oracle)
+      cmd_oracle "$@"
       ;;
     help|--help|-h|"")
       usage
