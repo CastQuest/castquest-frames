@@ -13,11 +13,16 @@ This PR successfully integrates all changes from PR #54 to harmonize with the la
 ### 1. Dependency Version Harmonization ✅
 
 **Package Version Updates:**
-- Next.js: `14.0.0` → `14.2.18` (security patches)
+- Next.js: `14.0.0` → `14.2.35` (security patches for DoS and Authorization Bypass vulnerabilities)
 - TypeScript: `5.9.3` → `5.3.3` in `apps/web`
 - @types/node: `25.0.3` → `20.10.6` in `apps/web`
 - Added: husky `9.1.7` for Git hooks
 - Added: lint-staged `15.5.2` for pre-commit validation
+
+**Security Fixes:**
+- ✅ Fixed CVE: Denial of Service with Server Components (patched in 14.2.35)
+- ✅ Fixed CVE: Authorization Bypass in Next.js Middleware (patched in 14.2.25+)
+- ✅ Updated from vulnerable 14.2.18 to secure 14.2.35
 
 **Files Modified:**
 - `apps/admin/package.json`
