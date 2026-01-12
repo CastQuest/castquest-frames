@@ -23,7 +23,7 @@ export class CastQuestSDK {
   }
 
   async createFrame(config: any) {
-    return { success:  true, frameId: '...' };
+    return { success: true, frameId: '...' };
   }
 
   async createQuest(questData: any) {
