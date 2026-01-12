@@ -25,5 +25,3 @@ export class CastQuestDAO {
     console.log('Executing proposal:', proposalId);
   }
 }
-
-export default CastQuestDAO;
