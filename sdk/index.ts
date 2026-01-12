@@ -5,13 +5,13 @@
 
 export class CastQuestSDK {
   private apiUrl: string;
-  private contractAddress?:  string;
+  private contractAddress?: string;
   private daoAddress?: string;
   
   constructor(config: {
     apiUrl: string;
-    contractAddress?:  string;
-    daoAddress?:  string;
+    contractAddress?: string;
+    daoAddress?: string;
   }) {
     this.apiUrl = config.apiUrl;
     this.contractAddress = config.contractAddress;
