@@ -182,7 +182,7 @@ export class AuthService {
   /**
    * Remove sensitive data from user object
    */
-  private sanitizeUser(user: { passwordHash?: string; [key: string]: unknown }) {
+  private sanitizeUser(user: { passwordHash?: string | null; [key: string]: unknown }) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...sanitized } = user;
     return sanitized;

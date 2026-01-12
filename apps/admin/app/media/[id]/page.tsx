@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import Image from "next/image";
 
 export default function MediaDetailPage({ params }: any) {
   const dbPath = path.join(process.cwd(), "data", "media.json");
@@ -16,10 +17,12 @@ export default function MediaDetailPage({ params }: any) {
     <div>
       <h1 className="text-2xl font-semibold mb-4">{item.name}</h1>
 
-      <img
+      <Image
         src={item.imageUrl}
         alt={item.name}
-        style={{ width: "300px", borderRadius: "8px", marginBottom: "1rem" }}
+        width={300}
+        height={300}
+        style={{ borderRadius: "8px", marginBottom: "1rem" }}
       />
 
       <p className="text-zinc-300 mb-2">{item.description}</p>

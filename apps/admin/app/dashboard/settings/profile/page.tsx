@@ -400,7 +400,7 @@ export default function ProfilePage() {
                 ⚠️ Warning: Never share your private key with anyone. Anyone with access to your private key can access your wallet and steal your funds.
               </p>
               <p className={`${neo.colors.text.tertiary} text-sm mb-6`}>
-                This action will export your wallet's private key. Make sure you're in a secure environment and no one can see your screen.
+                This action will export your wallet&apos;s private key. Make sure you&apos;re in a secure environment and no one can see your screen.
               </p>
               <div className="flex gap-3">
                 <button

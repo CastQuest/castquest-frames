@@ -407,6 +407,7 @@ export default function DashboardPage() {
                       >
                         <div className="flex items-center gap-4">
                           <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            {/* eslint-disable-next-line jsx-a11y/alt-text */}
                             <Image className="w-8 h-8 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -570,6 +571,7 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between mt-4">
                   <div className="flex gap-2">
                     <button className="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition-all flex items-center gap-2">
+                      {/* eslint-disable-next-line jsx-a11y/alt-text */}
                       <Image className="w-4 h-4" />
                       Add Image
                     </button>
@@ -920,6 +922,7 @@ export default function DashboardPage() {
                   )}
                   <div className="relative bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-xl overflow-hidden hover:border-purple-500/50 transition-all">
                     <div className="relative h-48 bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                      {/* eslint-disable-next-line jsx-a11y/alt-text */}
                       <Image className="w-16 h-16 text-white/50" />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                         <button className="px-4 py-2 bg-white text-slate-900 rounded-lg font-semibold flex items-center gap-2 hover:bg-slate-100 transition-all">
