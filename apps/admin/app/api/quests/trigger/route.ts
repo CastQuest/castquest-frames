@@ -3,7 +3,7 @@ import { loadSteps, loadRewards } from "../utils/fs-quests";
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { questId, eventType, metadata } = body;
+  const { questId, eventType } = body;
 
   const steps = loadSteps();
   const rewards = loadRewards();

@@ -1,10 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Save, Eye, Settings } from 'lucide-react';
 
 export default function BuilderPage() {
-  const [frameName, setFrameName] = useState('');
+  const [_frameName, _setFrameName] = useState('');
 
   return (
     <div className="space-y-6">

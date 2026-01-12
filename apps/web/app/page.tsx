@@ -10,7 +10,7 @@ export default function WebFrontMega() {
   const { frames, loading: framesLoading } = useMockFrames();
   const { quests, loading: questsLoading } = useMockQuests();
   const { media, loading: mediaLoading } = useMockMedia();
-  const { stats, loading: statsLoading } = useMockStats();
+  const { stats } = useMockStats();
   const [activeTab, setActiveTab] = useState<"frames" | "quests" | "media">("frames");
 
   return (

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 // Trigger Brain deep think
 export async function POST(request: Request) {
   const body = await request.json();
-  const { context, data } = body;
+  const { context } = body;
 
   // Simulate deep thinking process
   const result = {

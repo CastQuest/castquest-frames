@@ -151,6 +151,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@castquest/core-services':
+        specifier: workspace:*
+        version: link:../../packages/core-services
       '@castquest/neo-ux-core':
         specifier: workspace:*
         version: link:../../packages/neo-ux-core
@@ -15204,7 +15207,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.28.4
       '@noble/curves': 1.9.7
-      '@noble/hashes': 1.4.0
+      '@noble/hashes': 1.8.0
       '@solana/buffer-layout': 4.0.1
       '@solana/codecs-numbers': 2.3.0(typescript@5.9.3)
       agentkeepalive: 4.6.0
