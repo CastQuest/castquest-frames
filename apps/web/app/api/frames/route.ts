@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FramesService } from '@castquest/core-services';
+import { requireAuth } from '../../../lib/auth';
 
 const framesService = new FramesService();
 
@@ -41,12 +42,6 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
-import { NextRequest, NextResponse } from 'next/server';
-import { FramesService } from '@castquest/core-services';
-import { requireAuth } from '../../../lib/auth';
-
-const framesService = new FramesService();
 
 /**
  * POST /api/frames - Create a new frame template

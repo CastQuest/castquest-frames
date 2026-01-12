@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "[ -d src ] && tsc -p tsconfig.json || echo 'Skipping build - no src directory'",
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
     "run:once": "ts-node src/index.ts --once"

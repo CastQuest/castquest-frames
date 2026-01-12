@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { QuestsService } from '@castquest/core-services';
-import { requireAuth } from '../../../../lib/auth';
+import { requireAuth } from '../../../../../lib/auth';
 
 const questsService = new QuestsService();
 

@@ -2,7 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@castquest/neo-ux-core'],
-  serverComponentsExternalPackages: ['@castquest/core-services', 'bcrypt', '@mapbox/node-pre-gyp'],
+  experimental: {
+    serverComponentsExternalPackages: ['@castquest/core-services', 'bcrypt', '@mapbox/node-pre-gyp'],
+  },
   webpack: (config, { isServer }) => {
     // Externalize bcrypt and node-gyp packages for server
     if (isServer) {
