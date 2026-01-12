@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AuthService } from '@castquest/core-services';
 
-const authService = new AuthService();
+// Lazy initialization to avoid build-time errors
+let authService: AuthService | null = null;
+
+function getAuthService(): AuthService {
+  if (!authService) {
+    authService = new AuthService();
+  }
+  return authService;
+}
 
 /**
  * POST /api/auth/login - Login user
@@ -20,7 +28,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = await authService.authenticateWallet(body.walletAddress);
+    const result = await getAuthService().authenticateWallet(body.walletAddress);
 
     return NextResponse.json({
       success: true,

@@ -2,7 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { FramesService } from '@castquest/core-services';
 import { requireUserId, handleAuthError } from '@/lib/auth';
 
-const framesService = new FramesService();
+// Lazy initialization to avoid build-time errors
+let framesService: FramesService | null = null;
+
+function getFramesService(): FramesService {
+  if (!framesService) {
+    framesService = new FramesService();
+  }
+  return framesService;
+}
 
 /**
  * GET /api/frames - List frame templates
@@ -17,7 +25,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');
 
-    const templates = await framesService.listTemplates({
+    const templates = await getFramesService().listTemplates({
       category,
       status,
       featured,
@@ -63,7 +71,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const template = await framesService.createTemplate({
+    const template = await getFramesService().createTemplate({
       name: body.name,
       description: body.description,
       category: body.category,

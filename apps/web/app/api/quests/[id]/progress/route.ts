@@ -2,7 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { QuestsService } from '@castquest/core-services';
 import { requireUserId, handleAuthError } from '@/lib/auth';
 
-const questsService = new QuestsService();
+// Lazy initialization to avoid build-time errors
+let questsService: QuestsService | null = null;
+
+function getQuestsService(): QuestsService {
+  if (!questsService) {
+    questsService = new QuestsService();
+  }
+  return questsService;
+}
 
 /**
  * GET /api/quests/[id]/progress - Get quest progress
@@ -26,7 +34,7 @@ export async function GET(
     // Require authentication
     const userId = requireUserId(request);
 
-    const progress = await questsService.getUserProgress(userId, params.id);
+    const progress = await getQuestsService().getUserProgress(userId, params.id);
 
     return NextResponse.json({
       success: true,

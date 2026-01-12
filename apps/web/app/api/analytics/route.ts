@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AnalyticsService } from '@castquest/core-services';
 
-const analyticsService = new AnalyticsService();
+// Lazy initialization to avoid build-time errors
+let analyticsService: AnalyticsService | null = null;
+
+function getAnalyticsService(): AnalyticsService {
+  if (!analyticsService) {
+    analyticsService = new AnalyticsService();
+  }
+  return analyticsService;
+}
 
 /**
  * GET /api/analytics - Get analytics data
@@ -14,7 +22,7 @@ export async function GET(request: NextRequest) {
     const days = parseInt(searchParams.get('days') || '30');
 
     if (type === 'user' && userId) {
-      const analytics = await analyticsService.getUserAnalytics(userId, days);
+      const analytics = await getAnalyticsService().getUserAnalytics(userId, days);
       return NextResponse.json({
         success: true,
         data: analytics,
@@ -22,7 +30,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (type === 'protocol') {
-      const metrics = await analyticsService.getProtocolMetrics(days);
+      const metrics = await getAnalyticsService().getProtocolMetrics(days);
       return NextResponse.json({
         success: true,
         data: metrics,
@@ -55,7 +63,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const event = await analyticsService.trackEvent({
+    const event = await getAnalyticsService().trackEvent({
       userId: body.userId,
       eventType: body.eventType,
       eventCategory: body.eventCategory,

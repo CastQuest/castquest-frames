@@ -3,7 +3,15 @@ import { cookies } from 'next/headers';
 import { AuthService } from '@castquest/core-services';
 import { Session } from './types';
 
-const authService = new AuthService();
+// Lazy initialization to avoid build-time errors
+let authService: AuthService | null = null;
+
+function getAuthService(): AuthService {
+  if (!authService) {
+    authService = new AuthService();
+  }
+  return authService;
+}
 
 /**
  * Extract token from request headers or cookies
@@ -43,7 +51,7 @@ export function getTokenFromCookies(): string | null {
  */
 export function parseSession(token: string): Session | null {
   try {
-    const decoded = authService.verifyToken(token);
+    const decoded = getAuthService().verifyToken(token);
     if (!decoded) {
       return null;
     }
@@ -95,7 +103,7 @@ export function isSessionValid(session: Session): boolean {
  */
 export async function refreshSession(oldToken: string): Promise<string | null> {
   try {
-    const result = await authService.refreshToken(oldToken);
+    const result = await getAuthService().refreshToken(oldToken);
     return result.token;
   } catch (error) {
     console.error('Error refreshing session:', error);

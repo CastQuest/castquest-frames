@@ -4,7 +4,15 @@ import { User, AuthContext } from './types';
 import { getTokenFromCookies, validateSession, parseSession } from './session';
 import { AuthenticationError } from './errors';
 
-const authService = new AuthService();
+// Lazy initialization to avoid build-time errors
+let authService: AuthService | null = null;
+
+function getAuthService(): AuthService {
+  if (!authService) {
+    authService = new AuthService();
+  }
+  return authService;
+}
 
 /**
  * Require authentication for API routes
@@ -24,7 +32,7 @@ export async function requireUser(request: NextRequest): Promise<User> {
   }
 
   // Get full user profile from database
-  const user = await authService.getProfile(session.userId);
+  const user = await getAuthService().getProfile(session.userId);
   
   if (!user) {
     throw new AuthenticationError('Unauthorized: User not found');
@@ -55,7 +63,7 @@ export async function getUser(request: NextRequest): Promise<User | null> {
       return null;
     }
 
-    const user = await authService.getProfile(session.userId);
+    const user = await getAuthService().getProfile(session.userId);
     return user as User | null;
   } catch (error) {
     console.error('Error getting user:', error);
@@ -80,7 +88,7 @@ export async function getUserFromCookies(): Promise<User | null> {
       return null;
     }
 
-    const user = await authService.getProfile(session.userId);
+    const user = await getAuthService().getProfile(session.userId);
     return user as User | null;
   } catch (error) {
     console.error('Error getting user from cookies:', error);
@@ -99,7 +107,7 @@ export async function requireAuthContext(request: NextRequest): Promise<AuthCont
     throw new AuthenticationError('Unauthorized: Authentication required');
   }
 
-  const user = await authService.getProfile(session.userId);
+  const user = await getAuthService().getProfile(session.userId);
   
   if (!user) {
     throw new AuthenticationError('Unauthorized: User not found');

@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { QuestsService } from '@castquest/core-services';
 
-const questsService = new QuestsService();
+// Lazy initialization to avoid build-time errors
+let questsService: QuestsService | null = null;
+
+function getQuestsService(): QuestsService {
+  if (!questsService) {
+    questsService = new QuestsService();
+  }
+  return questsService;
+}
 
 /**
  * GET /api/quests - List available quests
@@ -15,7 +23,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');
 
-    const quests = await questsService.listQuests({
+    const quests = await getQuestsService().listQuests({
       difficulty,
       category,
       status,
@@ -72,7 +80,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const quest = await questsService.createQuest({
+    const quest = await getQuestsService().createQuest({
       title: body.title,
       description: body.description,
       difficulty: body.difficulty,

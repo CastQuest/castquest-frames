@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FramesService } from '@castquest/core-services';
 
-const framesService = new FramesService();
+// Lazy initialization to avoid build-time errors
+let framesService: FramesService | null = null;
+
+function getFramesService(): FramesService {
+  if (!framesService) {
+    framesService = new FramesService();
+  }
+  return framesService;
+}
 
 /**
  * GET /api/market - Get marketplace listings
@@ -17,11 +25,11 @@ export async function GET(request: NextRequest) {
     let templates;
 
     if (sort === 'popular') {
-      templates = await framesService.getPopularTemplates(limit);
+      templates = await getFramesService().getPopularTemplates(limit);
     } else if (sort === 'featured' || featured) {
-      templates = await framesService.getFeaturedTemplates(limit);
+      templates = await getFramesService().getFeaturedTemplates(limit);
     } else {
-      templates = await framesService.listTemplates({
+      templates = await getFramesService().listTemplates({
         category,
         status: 'published',
         featured,

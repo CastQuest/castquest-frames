@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { QuestsService } from '@castquest/core-services';
-import { requireUserId, handleAuthError } from '@/lib/auth';
 
 // Lazy initialization to avoid build-time errors
 let questsService: QuestsService | null = null;
@@ -13,45 +12,46 @@ function getQuestsService(): QuestsService {
 }
 
 /**
- * POST /api/quests/[id]/start - Start a quest
+ * GET /api/quests/[id] - Get quest details
  */
-export async function POST(
+export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     // Validate quest ID
-    if (!params.id || typeof params.id !== 'string') {
+    if (!params.id) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Invalid quest ID',
+          error: 'Quest ID is required',
         },
         { status: 400 }
       );
     }
 
-    // Require authentication
-    const userId = requireUserId(request);
+    const quest = await getQuestsService().getQuestById(params.id);
 
-    const progress = await getQuestsService().startQuest(params.id, userId);
+    if (!quest) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Quest not found',
+        },
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
-      data: progress,
+      data: quest,
     });
   } catch (error: any) {
-    // Handle authentication errors consistently
-    const authErrorResponse = handleAuthError(error);
-    if (authErrorResponse) {
-      return authErrorResponse;
-    }
-
-    console.error('Error starting quest:', error);
+    console.error('Error getting quest:', error);
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to start quest',
+        error: error.message || 'Failed to get quest',
       },
       { status: 500 }
     );

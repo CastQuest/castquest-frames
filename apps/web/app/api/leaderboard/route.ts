@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { LeaderboardService } from '@castquest/core-services';
 
-const leaderboardService = new LeaderboardService();
+// Lazy initialization to avoid build-time errors
+let leaderboardService: LeaderboardService | null = null;
+
+function getLeaderboardService(): LeaderboardService {
+  if (!leaderboardService) {
+    leaderboardService = new LeaderboardService();
+  }
+  return leaderboardService;
+}
 
 /**
  * GET /api/leaderboard - Get leaderboard
@@ -14,7 +22,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '100');
     const offset = parseInt(searchParams.get('offset') || '0');
 
-    const leaderboard = await leaderboardService.getLeaderboard(
+    const leaderboard = await getLeaderboardService().getLeaderboard(
       type,
       period,
       limit,

@@ -2,7 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { FramesService } from '@castquest/core-services';
 import { requireUserId, handleAuthError } from '@/lib/auth';
 
-const framesService = new FramesService();
+// Lazy initialization to avoid build-time errors
+let framesService: FramesService | null = null;
+
+function getFramesService(): FramesService {
+  if (!framesService) {
+    framesService = new FramesService();
+  }
+  return framesService;
+}
 
 /**
  * GET /api/frames/[id] - Get frame template by ID
@@ -23,7 +31,7 @@ export async function GET(
       );
     }
 
-    const template = await framesService.getTemplateById(params.id);
+    const template = await getFramesService().getTemplateById(params.id);
 
     if (!template) {
       return NextResponse.json(
@@ -74,7 +82,7 @@ export async function PUT(
     const userId = requireUserId(request);
     
     // Verify ownership
-    const template = await framesService.getTemplateById(params.id);
+    const template = await getFramesService().getTemplateById(params.id);
     
     if (!template) {
       return NextResponse.json(
@@ -110,7 +118,7 @@ export async function PUT(
     if (body.status !== undefined) updateData.status = body.status;
     if (body.featured !== undefined) updateData.featured = body.featured;
 
-    const updated = await framesService.updateTemplate(params.id, updateData);
+    const updated = await getFramesService().updateTemplate(params.id, updateData);
 
     return NextResponse.json({
       success: true,
@@ -157,7 +165,7 @@ export async function DELETE(
     const userId = requireUserId(request);
     
     // Verify ownership
-    const template = await framesService.getTemplateById(params.id);
+    const template = await getFramesService().getTemplateById(params.id);
     
     if (!template) {
       return NextResponse.json(
@@ -179,7 +187,7 @@ export async function DELETE(
       );
     }
     
-    await framesService.deleteTemplate(params.id);
+    await getFramesService().deleteTemplate(params.id);
 
     return NextResponse.json({
       success: true,
