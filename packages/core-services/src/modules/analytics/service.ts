@@ -214,7 +214,7 @@ export class AnalyticsService {
    * Get top frames by views
    */
   async getTopFramesByViews(limit: number = 10, days?: number) {
-    let whereConditions = [eq(analyticsEvents.resourceType, 'frame')];
+    const whereConditions = [eq(analyticsEvents.resourceType, 'frame')];
     
     if (days) {
       const startDate = new Date();

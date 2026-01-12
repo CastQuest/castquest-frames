@@ -6,7 +6,6 @@ import { useState } from "react";
 import {
   LayoutDashboard,
   Brain,
-  ImageIcon,
   Layers,
   Boxes,
   Workflow,
@@ -77,14 +76,6 @@ export default function ShellLayout({ children }: { children: React.ReactNode })
       </div>
       {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
     </button>
-  );
-
-  const Badge = ({ label, color }: { label: string; color: string }) => (
-    <span
-      className={`px-2 py-0.5 text-[10px] rounded-full font-semibold uppercase tracking-wide ${color}`}
-    >
-      {label}
-    </span>
   );
 
   return (

@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { FileText, Filter, Search } from 'lucide-react';
+import { Filter, Search } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'API Logs | CastQuest',

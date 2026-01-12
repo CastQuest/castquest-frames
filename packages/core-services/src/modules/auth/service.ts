@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import { users, wallets } from '@/lib/db/schema';
 import { logger } from '@/lib/logger';
-import { eq, and } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 
 export class AuthService {
@@ -30,7 +30,7 @@ export class AuthService {
     const normalizedAddress = address.toLowerCase();
     
     // Check if wallet exists
-    let wallet = await db.query.wallets.findFirst({
+    const wallet = await db.query.wallets.findFirst({
       where: eq(wallets.address, normalizedAddress),
     });
 
@@ -183,6 +183,7 @@ export class AuthService {
    * Remove sensitive data from user object
    */
   private sanitizeUser(user: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...sanitized } = user;
     return sanitized;
   }
