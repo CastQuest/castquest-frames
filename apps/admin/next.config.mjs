@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@castquest/neo-ux-core'],
+<<<<<<< HEAD
   images: {
     remotePatterns: [
       {
@@ -10,6 +11,8 @@ const nextConfig = {
       },
     ],
   },
+=======
+>>>>>>> origin/copilot/add-resolution-doc-and-cleanup
   experimental: {
     serverComponentsExternalPackages: ['@castquest/core-services', 'bcrypt', '@mapbox/node-pre-gyp'],
   },

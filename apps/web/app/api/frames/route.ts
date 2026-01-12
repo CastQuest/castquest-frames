@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FramesService } from '@castquest/core-services';
+<<<<<<< HEAD
 import { requireUserId, handleAuthError } from '@/lib/auth';
+=======
+import { requireAuth } from '../../../lib/auth';
+>>>>>>> origin/copilot/add-resolution-doc-and-cleanup
 
 // Lazy initialization to avoid build-time errors
 let framesService: FramesService | null = null;
