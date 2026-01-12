@@ -406,7 +406,6 @@ export default function DashboardPage() {
                       >
                         <div className="flex items-center gap-4">
                           <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                            {/* eslint-disable-next-line jsx-a11y/alt-text */}
                             <Image className="w-8 h-8 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
