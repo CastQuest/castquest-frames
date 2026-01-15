@@ -10,21 +10,17 @@ const queryClient = new QueryClient();
 export function AppPrivyProvider({ children }: { children: ReactNode }) {
   const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
 
+  // If no Privy App ID is configured, skip Privy authentication entirely
+  // This allows the app to run in development without authentication
   if (!appId) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn(
-        'Privy App ID (NEXT_PUBLIC_PRIVY_APP_ID) is not set. Privy will not be initialized correctly.'
-      );
-    } else {
-      throw new Error(
-        'Privy App ID (NEXT_PUBLIC_PRIVY_APP_ID) is required but was not provided.'
-      );
-    }
+    console.warn(
+      'Privy App ID (NEXT_PUBLIC_PRIVY_APP_ID) is not set. Running without authentication.'
+    );
   }
 
-  return (
+  const content = appId ? (
     <PrivyProvider
-      appId={appId as string}
+      appId={appId}
       config={{
         loginMethods: ['email', 'wallet', 'google', 'farcaster'],
         appearance: {
@@ -36,9 +32,15 @@ export function AppPrivyProvider({ children }: { children: ReactNode }) {
         },
       }}
     >
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
+      {children}
     </PrivyProvider>
+  ) : (
+    children
+  );
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      {content}
+    </QueryClientProvider>
   );
 }

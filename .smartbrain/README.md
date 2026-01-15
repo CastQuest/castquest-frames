@@ -546,3 +546,203 @@ rm -f .smartbrain/state.json .smartbrain/state.log
 _Protocol Architect & AI Agent Coordinator_  
 _Zero-risk deployments with architectural protection_  
 ✅ **Production Ready**
+cat logs/brain-*.log
+
+# Run specific validation
+.smartbrain/brain.sh validate-arch
+.smartbrain/brain.sh validate-security
+
+# Skip validation (NOT RECOMMENDED)
+git commit --no-verify
+```
+
+### State Reset
+
+```bash
+# Reset Smart Brain state
+rm -f .smartbrain/state.json .smartbrain/state.log
+
+# Re-initialize
+.smartbrain/brain.sh identity
+```
+
+## Best Practices
+
+1. **Always validate before pushing**
+
+   ```bash
+   .smartbrain/brain.sh validate
+   ```
+
+2. **Use auto-deploy for routine changes**
+
+   ```bash
+   .smartbrain/brain.sh auto
+   ```
+
+3. **Use manual workflow for sensitive changes**
+
+   ```bash
+   # Review first
+   git diff
+
+   # Then deploy
+   .smartbrain/brain.sh deploy
+   ```
+
+4. **Check logs after deployment**
+
+   ```bash
+   tail -f logs/brain-*.log
+   ```
+
+5. **Integrate with master.sh for full control**
+   ```bash
+   .smartbrain/brain.sh auto && scripts/master.sh deploy production
+   ```
+
+## Support
+
+- **Documentation**: `docs/`
+- **Logs**: `logs/brain-*.log`
+- **State**: `.smartbrain/state.log`
+- **Config**: `.smartbrain/config.json`
+
+## Smart Brain Oracle
+
+The Oracle extends Smart Brain with AI-powered repository insights and predictive maintenance.
+
+### Oracle Overview
+
+The Smart Brain Oracle provides:
+- **Dependency Intelligence**: Health scoring and upgrade analysis
+- **Security Analysis**: Vulnerability scanning with severity scores
+- **Performance Optimization**: Bundle size and unused dependency detection
+- **Monorepo Health**: Workspace structure and circular dependency checks
+- **Predictive Maintenance**: Breaking change predictions and risk assessment
+
+### Oracle Commands
+
+```bash
+# Full dependency analysis
+.smartbrain/oracle.sh analyze
+
+# Get upgrade recommendations
+.smartbrain/oracle.sh recommend-upgrades
+
+# Security vulnerability scan
+.smartbrain/oracle.sh security-scan
+
+# Dependency graph visualization
+.smartbrain/oracle.sh visualize-deps
+
+# Performance analysis
+.smartbrain/oracle.sh performance
+
+# Predict impact of changes
+.smartbrain/oracle.sh predict-impact package-name@version
+
+# Monorepo health check
+.smartbrain/oracle.sh monorepo-health
+
+# CI mode (essential checks only)
+.smartbrain/oracle.sh --ci
+```
+
+### Integration with Validation
+
+The Oracle integrates seamlessly with existing Smart Brain validation:
+- Uses same rule framework as `brain.sh`
+- Extends validation with ML insights
+- Provides predictive maintenance
+- Generates automated suggestions
+- Runs in CI/CD pipelines
+
+### Integration with master.sh
+
+The Oracle can be called via master.sh:
+
+```bash
+# Run oracle through master orchestrator
+bash scripts/master.sh oracle analyze
+bash scripts/master.sh oracle recommend-upgrades
+bash scripts/master.sh oracle security-scan
+```
+
+### Oracle State and Caching
+
+Oracle maintains its own state and cache:
+- `.smartbrain/oracle-state.json` - Current analysis state
+- `.smartbrain/cache/` - Cached analysis results
+- Caching improves performance for repeated analyses
+
+### Example Workflows
+
+**Before Upgrading Dependencies:**
+```bash
+# 1. Check current health
+.smartbrain/oracle.sh analyze
+
+# 2. Get upgrade recommendations
+.smartbrain/oracle.sh recommend-upgrades
+
+# 3. Predict impact of specific upgrade
+.smartbrain/oracle.sh predict-impact typescript@5.4.0
+
+# 4. Run security scan
+.smartbrain/oracle.sh security-scan
+```
+
+**In CI/CD Pipeline:**
+```bash
+# Run essential checks for CI
+.smartbrain/oracle.sh --ci
+# Exits with code 1 if vulnerabilities detected
+```
+
+**Regular Maintenance:**
+```bash
+# Weekly health check
+.smartbrain/oracle.sh analyze > reports/weekly-health-$(date +%Y%m%d).txt
+
+# Performance optimization check
+.smartbrain/oracle.sh performance
+```
+
+### Oracle Configuration
+
+Oracle behavior can be customized in `.smartbrain/config.json`:
+
+```json
+{
+  "oracle": {
+    "enabled": true,
+    "caching": true,
+    "cacheTTL": 86400,
+    "securityScanLevel": "moderate",
+    "performanceThresholds": {
+      "bundleSize": "10MB",
+      "duplicates": 5
+    }
+  }
+}
+```
+
+### Oracle Reports
+
+The Oracle generates detailed reports in `.smartbrain/cache/`:
+- `outdated.txt` - List of outdated packages
+- `audit.json` - Security audit results
+- `deprecated.txt` - Deprecated packages
+- `packages.txt` - Full package list
+
+These reports are used by CI/CD workflows and health dashboards.
+
+📖 **Full Oracle Documentation**: See [docs/DEPENDENCY-HEALTH.md](../docs/DEPENDENCY-HEALTH.md)
+
+---
+
+**CastQuest Smart Brain v1.0.0**  
+_Protocol Architect & AI Agent Coordinator_  
+_Zero-risk deployments with architectural protection_  
+✅ **Production Ready**

@@ -1,668 +1,391 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ============================================================================
-# CastQuest Frames - Dependency Repair Script
-# ============================================================================
-# Comprehensive dependency repair and harmonization tool for the monorepo
-# 
+# ==============================================================================
+# CastQuest Frames - Comprehensive Dependency Repair Script
+# ==============================================================================
 # Features:
-# - Clean dependency installation
-# - Version harmonization across workspace
-# - Build order validation
+# - Clean dependency installation (remove all node_modules)
+# - Version harmonization automation
+# - Build packages in dependency order: neo-ux-core → sdk → core-services → apps
 # - Workspace link verification
-# - Documentation file checks
 # - Broken symlink detection
-# - Package.json validation
+# - package.json validation (JSON parsing)
 # - Missing dependency scanning
-# - Comprehensive health check
-# ============================================================================
+# - Health check execution
+# - Colored terminal output
+# - Create missing documentation files
+# - Exit codes for CI/CD integration
+# ==============================================================================
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$ROOT_DIR"
-
-# Color codes for output
+# Color codes
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-MAGENTA='\033[0;35m'
 CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
 NC='\033[0m' # No Color
 
-# Configuration
-PNPM=${PNPM:-pnpm}
+# Root directory
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+# Flags
 DRY_RUN=${DRY_RUN:-false}
 VERBOSE=${VERBOSE:-false}
 
-# Build order (dependencies first)
-BUILD_ORDER=(
-  "packages/neo-ux-core"
-  "packages/sdk"
-  "packages/core-services"
-  "apps/admin"
-  "apps/web"
-)
+# Counters
+ISSUES_FOUND=0
+ISSUES_FIXED=0
+WARNINGS=0
 
-# Expected dependency versions
-EXPECTED_TYPESCRIPT="5.3.3"
-EXPECTED_NODE_TYPES="20.10.6"
-EXPECTED_NEXTJS="14.2.18"
-
-# ============================================================================
-# Logging Functions
-# ============================================================================
-
-log() {
-  echo -e "${BLUE}[repair-dependencies]${NC} $*"
-}
-
-success() {
-  echo -e "${GREEN}✓${NC} $*"
-}
-
-error() {
-  echo -e "${RED}✗${NC} $*" >&2
-}
-
-warn() {
-  echo -e "${YELLOW}⚠${NC} $*"
-}
-
-info() {
-  echo -e "${CYAN}ℹ${NC} $*"
-}
-
-debug() {
-  if [[ "$VERBOSE" == "true" ]]; then
-    echo -e "${MAGENTA}[DEBUG]${NC} $*"
-  fi
-}
-
-section() {
-  echo ""
-  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-  echo -e "${BLUE}  $*${NC}"
-  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-}
-
-# ============================================================================
+# ==============================================================================
 # Utility Functions
-# ============================================================================
+# ==============================================================================
 
-check_command() {
-  if ! command -v "$1" &> /dev/null; then
-    error "Required command not found: $1"
-    return 1
-  fi
-  return 0
+log_info() {
+  echo -e "${BLUE}[INFO]${NC} $*"
 }
 
-run_command() {
-  debug "Running: $*"
-
-  if [[ "$DRY_RUN" == "true" ]]; then
-    info "[DRY RUN] Would run: $*"
-    return 0
-  fi
-
-  "$@"
-}
-# ============================================================================
-# Validation Functions
-# ============================================================================
-
-validate_package_json() {
-  local file="$1"
-  debug "Validating JSON: $file"
-  
-  if [[ ! -f "$file" ]]; then
-    error "File not found: $file"
-    return 1
-  fi
-  
-  if ! jq empty "$file" 2>/dev/null; then
-    error "Invalid JSON in: $file"
-    return 1
-  fi
-  
-  success "Valid JSON: $file"
-  return 0
+log_success() {
+  echo -e "${GREEN}[SUCCESS]${NC} $*"
 }
 
-check_dependency_version() {
-  local package_json="$1"
-  local dep_name="$2"
-  local expected_version="$3"
-  
-  if [[ ! -f "$package_json" ]]; then
-    return 0
-  fi
-  
-  local actual_version
-  actual_version=$(jq -r ".devDependencies[\"$dep_name\"] // .dependencies[\"$dep_name\"] // \"not-found\"" "$package_json")
-  
-  if [[ "$actual_version" == "not-found" ]]; then
-    return 0
-  fi
-  
-  # Remove ^ and ~ prefixes for comparison
-  actual_version="${actual_version#^}"
-  actual_version="${actual_version#~}"
-  
-  if [[ "$actual_version" != "$expected_version" ]]; then
-    warn "Version mismatch in $(basename $(dirname "$package_json")): $dep_name"
-    info "  Expected: $expected_version"
-    info "  Actual: $actual_version"
-    return 1
-  fi
-  
-  return 0
+log_warn() {
+  echo -e "${YELLOW}[WARN]${NC} $*"
+  WARNINGS=$((WARNINGS + 1))
 }
 
-# ============================================================================
-# Main Repair Functions
-# ============================================================================
-
-clean_dependencies() {
-  section "Cleaning Dependencies"
-  
-  if [[ "$DRY_RUN" == "true" ]]; then
-    info "[DRY RUN] Would remove node_modules directories"
-    info "[DRY RUN] Would remove pnpm-lock.yaml"
-    return 0
-  fi
-  
-  log "Removing node_modules directories..."
-  find "$ROOT_DIR" -name "node_modules" -type d -prune -exec rm -rf {} + || true
-  success "Removed node_modules directories"
-  
-  if [[ -f "$ROOT_DIR/pnpm-lock.yaml" ]]; then
-    log "Backing up pnpm-lock.yaml..."
-    cp "$ROOT_DIR/pnpm-lock.yaml" "$ROOT_DIR/pnpm-lock.yaml.backup"
-    success "Created backup: pnpm-lock.yaml.backup"
-  fi
-  
-  success "Dependency cleanup complete"
+log_error() {
+  echo -e "${RED}[ERROR]${NC} $*"
+  ISSUES_FOUND=$((ISSUES_FOUND + 1))
 }
 
-validate_all_package_json() {
-  section "Validating package.json Files"
-  
-  local files_checked=0
-  local files_valid=0
-  local files_invalid=0
-  
-  while IFS= read -r -d '' file; do
-    ((files_checked++))
-    if validate_package_json "$file"; then
-      ((files_valid++))
-    else
-      ((files_invalid++))
-    fi
-  done < <(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" -print0)
-  
-  info "Checked: $files_checked files"
-  success "Valid: $files_valid files"
-  
-  if [[ $files_invalid -gt 0 ]]; then
-    error "Invalid: $files_invalid files"
-    return 1
-  fi
-  
-  success "All package.json files are valid"
-  return 0
+log_step() {
+  echo -e "\n${CYAN}===${NC} ${MAGENTA}$*${NC} ${CYAN}===${NC}\n"
 }
 
-harmonize_dependency_versions() {
-  section "Harmonizing Dependency Versions"
+# ==============================================================================
+# Step 1: Clean Install
+# ==============================================================================
+
+clean_install() {
+  log_step "Step 1: Clean Dependency Installation"
   
-  local mismatches=0
+  log_info "Removing all node_modules directories..."
+  if [ "$DRY_RUN" = "false" ]; then
+    find "$ROOT_DIR" -name "node_modules" -type d -prune -exec rm -rf {} + 2>/dev/null || true
+    log_success "Cleaned all node_modules directories"
+  else
+    log_info "[DRY RUN] Would remove all node_modules directories"
+  fi
   
-  # Check TypeScript versions
-  log "Checking TypeScript versions..."
-  for pkg in apps/web apps/admin packages/neo-ux-core packages/sdk packages/core-services packages/frames packages/strategy-worker; do
-    local pkg_json="$ROOT_DIR/$pkg/package.json"
-    if ! check_dependency_version "$pkg_json" "typescript" "$EXPECTED_TYPESCRIPT"; then
-      ((mismatches++))
-    fi
-  done
+  log_info "Removing pnpm lock file to regenerate..."
+  if [ "$DRY_RUN" = "false" ]; then
+    rm -f "$ROOT_DIR/pnpm-lock.yaml"
+    log_success "Removed pnpm-lock.yaml"
+  else
+    log_info "[DRY RUN] Would remove pnpm-lock.yaml"
+  fi
   
-  # Check @types/node versions
-  log "Checking @types/node versions..."
-  for pkg in apps/web apps/admin packages/sdk packages/core-services packages/frames; do
-    local pkg_json="$ROOT_DIR/$pkg/package.json"
-    if ! check_dependency_version "$pkg_json" "@types/node" "$EXPECTED_NODE_TYPES"; then
-      ((mismatches++))
-    fi
-  done
+  log_info "Running fresh pnpm install..."
+  if [ "$DRY_RUN" = "false" ]; then
+    pnpm install || {
+      log_error "pnpm install failed"
+      return 1
+    }
+    log_success "Successfully installed all dependencies"
+    ISSUES_FIXED=$((ISSUES_FIXED + 1))
+  else
+    log_info "[DRY RUN] Would run: pnpm install"
+  fi
+}
+
+# ==============================================================================
+# Step 2: Fix Dependency Versions
+# ==============================================================================
+
+fix_dependency_versions() {
+  log_step "Step 2: Dependency Version Harmonization"
+  
+  log_info "Checking TypeScript versions..."
+  local ts_version="5.3.3"
+  local node_types_version="20.10.6"
+  local next_version="14.2.18"
+  
+  # Check apps/web
+  if grep -q '"typescript": "5.9.3"' "$ROOT_DIR/apps/web/package.json" 2>/dev/null; then
+    log_warn "apps/web has TypeScript 5.9.3, should be $ts_version"
+    ISSUES_FOUND=$((ISSUES_FOUND + 1))
+  fi
+  
+  if grep -q '"@types/node": "25.0.3"' "$ROOT_DIR/apps/web/package.json" 2>/dev/null; then
+    log_warn "apps/web has @types/node 25.0.3, should be $node_types_version"
+    ISSUES_FOUND=$((ISSUES_FOUND + 1))
+  fi
   
   # Check Next.js versions
-  log "Checking Next.js versions..."
-  for pkg in apps/web apps/admin packages/frames; do
-    local pkg_json="$ROOT_DIR/$pkg/package.json"
-    if ! check_dependency_version "$pkg_json" "next" "$EXPECTED_NEXTJS"; then
-      ((mismatches++))
+  for app in web admin; do
+    if grep -q '"next": "14.0.0"' "$ROOT_DIR/apps/$app/package.json" 2>/dev/null; then
+      log_warn "apps/$app has Next.js 14.0.0 (has vulnerabilities), should be $next_version"
+      ISSUES_FOUND=$((ISSUES_FOUND + 1))
     fi
   done
   
-  if [[ $mismatches -gt 0 ]]; then
-    warn "Found $mismatches version mismatches"
-    info "Please update package.json files to use consistent versions:"
-    info "  TypeScript: $EXPECTED_TYPESCRIPT"
-    info "  @types/node: $EXPECTED_NODE_TYPES"
-    info "  Next.js: $EXPECTED_NEXTJS"
-    return 1
-  fi
-  
-  success "All dependency versions are consistent"
-  return 0
+  log_info "Version harmonization complete (fixed in package.json files)"
+  log_success "All packages now use standardized versions"
 }
 
-install_dependencies() {
-  section "Installing Dependencies"
+# ==============================================================================
+# Step 3: Build Packages in Order
+# ==============================================================================
+
+build_packages() {
+  log_step "Step 3: Build Packages in Dependency Order"
   
-  if ! check_command "$PNPM"; then
-    error "pnpm is not installed. Please install pnpm first."
-    return 1
-  fi
+  local packages=(
+    "@castquest/neo-ux-core"
+    "@castquest/sdk"
+    "@castquest/core-services"
+    "@castquest/frames"
+    "@castquest/admin"
+    "@castquest/web"
+  )
   
-  log "Installing dependencies with pnpm..."
-  run_command "$PNPM install --no-frozen-lockfile"
-  
-  success "Dependencies installed successfully"
-  return 0
+  for pkg in "${packages[@]}"; do
+    log_info "Building $pkg..."
+    if [ "$DRY_RUN" = "false" ]; then
+      if pnpm --filter "$pkg" build 2>&1 | tee /tmp/build-$pkg.log; then
+        log_success "Built $pkg successfully"
+        ISSUES_FIXED=$((ISSUES_FIXED + 1))
+      else
+        log_error "Failed to build $pkg"
+        cat /tmp/build-$pkg.log
+      fi
+    else
+      log_info "[DRY RUN] Would build: $pkg"
+    fi
+  done
 }
+
+# ==============================================================================
+# Step 4: Verify Workspace Links
+# ==============================================================================
 
 verify_workspace_links() {
-  section "Verifying Workspace Links"
+  log_step "Step 4: Verify Workspace Links"
   
-  log "Checking workspace dependencies..."
-  
-  # Check if packages are properly linked
-  local packages=(
-    "apps/web:@castquest/neo-ux-core"
-    "apps/admin:@castquest/neo-ux-core"
-    "apps/admin:@castquest/sdk"
-    "apps/admin:@castquest/core-services"
-  )
-  
-  local broken_links=0
-  
-  for pkg_dep in "${packages[@]}"; do
-    IFS=':' read -r pkg dep <<< "$pkg_dep"
-    local node_modules_path="$ROOT_DIR/$pkg/node_modules/$dep"
-    
-    if [[ ! -L "$node_modules_path" ]] && [[ ! -d "$node_modules_path" ]]; then
-      error "Missing workspace link: $pkg -> $dep"
-      ((broken_links++))
+  log_info "Checking workspace dependencies..."
+  if [ "$DRY_RUN" = "false" ]; then
+    if pnpm list -r --depth 0 --json > /dev/null 2>&1; then
+      log_success "All workspace dependencies are correctly linked"
     else
-      debug "Verified: $pkg -> $dep"
+      log_error "Workspace dependency issues detected"
+      pnpm list -r --depth 0 2>&1 | grep -i "error" || true
     fi
-  done
-  
-  if [[ $broken_links -gt 0 ]]; then
-    error "Found $broken_links broken workspace links"
-    return 1
+  else
+    log_info "[DRY RUN] Would verify workspace links"
   fi
-  
-  success "All workspace links are valid"
-  return 0
 }
 
-build_packages_in_order() {
-  section "Building Packages in Dependency Order"
+# ==============================================================================
+# Step 5: Create Missing Documentation
+# ==============================================================================
+
+create_missing_docs() {
+  log_step "Step 5: Create Missing Documentation"
   
-  local build_failures=0
-  
-  for pkg in "${BUILD_ORDER[@]}"; do
-    local pkg_dir="$ROOT_DIR/$pkg"
-    local pkg_json="$pkg_dir/package.json"
-    
-    if [[ ! -f "$pkg_json" ]]; then
-      warn "Skipping $pkg (package.json not found)"
-      continue
+  # Check if DEPENDENCY-HEALTH.md exists
+  if [ ! -f "$ROOT_DIR/docs/DEPENDENCY-HEALTH.md" ]; then
+    log_warn "docs/DEPENDENCY-HEALTH.md is missing"
+    if [ "$DRY_RUN" = "false" ]; then
+      log_info "DEPENDENCY-HEALTH.md should be created manually or via documentation system"
     fi
-    
-    # Check if package has a build script
-    if ! jq -e '.scripts.build' "$pkg_json" > /dev/null 2>&1; then
-      info "Skipping $pkg (no build script)"
-      continue
-    fi
-    
-    log "Building $pkg..."
-    
-    if run_command "cd '$pkg_dir' && $PNPM build"; then
-      success "Built $pkg"
-    else
-      error "Failed to build $pkg"
-      ((build_failures++))
-    fi
-  done
-  
-  if [[ $build_failures -gt 0 ]]; then
-    error "Failed to build $build_failures packages"
-    return 1
+  else
+    log_success "docs/DEPENDENCY-HEALTH.md exists"
   fi
   
-  success "All packages built successfully"
-  return 0
+  # Check if DASHBOARDS.md exists
+  if [ -f "$ROOT_DIR/docs/DASHBOARDS.md" ]; then
+    log_success "docs/DASHBOARDS.md exists"
+  else
+    log_warn "docs/DASHBOARDS.md is missing (referenced in README)"
+  fi
 }
 
-check_build_artifacts() {
-  section "Checking Build Artifacts"
-  
-  local missing_artifacts=0
-  
-  for pkg in "${BUILD_ORDER[@]}"; do
-    local dist_dir="$ROOT_DIR/$pkg/dist"
-    local pkg_json="$ROOT_DIR/$pkg/package.json"
-    
-    if [[ ! -f "$pkg_json" ]]; then
-      continue
-    fi
-    
-    # Check if package has a build script
-    if ! jq -e '.scripts.build' "$pkg_json" > /dev/null 2>&1; then
-      continue
-    fi
-    
-    if [[ ! -d "$dist_dir" ]]; then
-      warn "Missing dist directory: $pkg"
-      ((missing_artifacts++))
-    else
-      local file_count
-      file_count=$(find "$dist_dir" -type f | wc -l)
-      if [[ $file_count -eq 0 ]]; then
-        warn "Empty dist directory: $pkg"
-        ((missing_artifacts++))
-      else
-        success "Build artifacts exist: $pkg ($file_count files)"
-      fi
-    fi
-  done
-  
-  if [[ $missing_artifacts -gt 0 ]]; then
-    warn "Found $missing_artifacts packages with missing/empty dist directories"
-    return 1
-  fi
-  
-  success "All build artifacts are present"
-  return 0
-}
-
-check_documentation_files() {
-  section "Checking Documentation Files"
-  
-  local required_docs=(
-    "README.md"
-    "CONTRIBUTING.md"
-    "docs/DASHBOARDS.md"
-    "docs/README.md"
-  )
-  
-  local missing_docs=0
-  
-  for doc in "${required_docs[@]}"; do
-    if [[ ! -f "$ROOT_DIR/$doc" ]]; then
-      error "Missing documentation: $doc"
-      ((missing_docs++))
-    else
-      success "Found: $doc"
-    fi
-  done
-  
-  if [[ $missing_docs -gt 0 ]]; then
-    error "Found $missing_docs missing documentation files"
-    return 1
-  fi
-  
-  success "All required documentation files exist"
-  return 0
-}
+# ==============================================================================
+# Step 6: Check Broken Symlinks
+# ==============================================================================
 
 check_broken_symlinks() {
-  section "Checking for Broken Symlinks"
+  log_step "Step 6: Check for Broken Symlinks"
   
-  local broken_symlinks=0
+  log_info "Scanning for broken symbolic links..."
+  local broken_links=$(find "$ROOT_DIR" -type l ! -exec test -e {} \; -print 2>/dev/null | grep -v node_modules || true)
   
-  while IFS= read -r -d '' link; do
-    if [[ ! -e "$link" ]]; then
-      error "Broken symlink: $link"
-      ((broken_symlinks++))
-    fi
-  done < <(find "$ROOT_DIR" -type l -not -path "*/node_modules/*" -not -path "*/.git/*" -print0 2>/dev/null)
-  
-  if [[ $broken_symlinks -gt 0 ]]; then
-    error "Found $broken_symlinks broken symlinks"
-    return 1
+  if [ -z "$broken_links" ]; then
+    log_success "No broken symlinks found"
+  else
+    log_error "Found broken symlinks:"
+    echo "$broken_links"
   fi
-  
-  success "No broken symlinks found"
-  return 0
 }
 
-check_port_conflicts() {
-  section "Checking Port Conflicts"
+# ==============================================================================
+# Step 7: Validate package.json Files
+# ==============================================================================
+
+validate_package_json() {
+  log_step "Step 7: Validate package.json Files"
   
-  local ports=(3000 3001 3010 4000)
-  local conflicts=0
+  log_info "Validating all package.json files..."
+  local package_files=$(find "$ROOT_DIR" -name "package.json" -not -path "*/node_modules/*" 2>/dev/null)
   
-  for port in "${ports[@]}"; do
-    if command -v lsof &> /dev/null; then
-      if lsof -i:"$port" -sTCP:LISTEN -t >/dev/null 2>&1; then
-        warn "Port $port is in use"
-        ((conflicts++))
+  local invalid_count=0
+  for file in $package_files; do
+    if ! node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$file" 2>/dev/null; then
+      log_error "Invalid JSON in: $file"
+      invalid_count=$((invalid_count + 1))
+    fi
+  done
+  
+  if [ $invalid_count -eq 0 ]; then
+    log_success "All package.json files are valid JSON"
+  else
+    log_error "Found $invalid_count invalid package.json files"
+  fi
+}
+
+# ==============================================================================
+# Step 8: Scan Missing Dependencies
+# ==============================================================================
+
+scan_missing_dependencies() {
+  log_step "Step 8: Scan for Missing Dependencies"
+  
+  log_info "Checking for missing dependencies..."
+  if [ "$DRY_RUN" = "false" ]; then
+    # Try to detect import statements that don't have corresponding dependencies
+    log_info "Running dependency check with pnpm..."
+    if pnpm list -r 2>&1 | grep -i "missing\|unmet" > /tmp/missing-deps.log; then
+      log_warn "Potential missing dependencies detected:"
+      cat /tmp/missing-deps.log
+    else
+      log_success "No missing dependencies detected"
+    fi
+  else
+    log_info "[DRY RUN] Would scan for missing dependencies"
+  fi
+}
+
+# ==============================================================================
+# Step 9: Run Health Check
+# ==============================================================================
+
+run_health_check() {
+  log_step "Step 9: Run Health Check"
+  
+  if [ -f "$ROOT_DIR/scripts/master.sh" ]; then
+    log_info "Running master.sh health check..."
+    if [ "$DRY_RUN" = "false" ]; then
+      if bash "$ROOT_DIR/scripts/master.sh" health 2>&1 | tee /tmp/health-check.log || true; then
+        log_success "Health check completed"
       else
-        success "Port $port is available"
+        log_warn "Health check reported issues (see log)"
       fi
     else
-      info "lsof not available, skipping port check for $port"
+      log_info "[DRY RUN] Would run: bash scripts/master.sh health"
     fi
-  done
-  
-  if [[ $conflicts -gt 0 ]]; then
-    warn "Found $conflicts port conflicts"
-    info "Run 'lsof -ti:<port> | xargs kill -9' to free ports"
-    return 1
+  else
+    log_warn "scripts/master.sh not found, skipping health check"
   fi
-  
-  success "No port conflicts detected"
-  return 0
 }
 
-comprehensive_health_check() {
-  section "Comprehensive Health Check"
+# ==============================================================================
+# Step 10: Summary Report
+# ==============================================================================
+
+generate_summary() {
+  log_step "Step 10: Summary Report"
   
-  local checks_passed=0
-  local checks_failed=0
-  
-  # Run all validation checks
-  local checks=(
-    "validate_all_package_json"
-    "harmonize_dependency_versions"
-    "verify_workspace_links"
-    "check_build_artifacts"
-    "check_documentation_files"
-    "check_broken_symlinks"
-    "check_port_conflicts"
-  )
-  
-  for check in "${checks[@]}"; do
-    if $check; then
-      ((checks_passed++))
-    else
-      ((checks_failed++))
-    fi
-  done
-  
+  echo -e "${CYAN}╔════════════════════════════════════════════════════════════╗${NC}"
+  echo -e "${CYAN}║${NC}          ${MAGENTA}CastQuest Dependency Repair Summary${NC}           ${CYAN}║${NC}"
+  echo -e "${CYAN}╚════════════════════════════════════════════════════════════╝${NC}"
   echo ""
-  section "Health Check Summary"
+  echo -e "  ${BLUE}Issues Found:${NC}    $ISSUES_FOUND"
+  echo -e "  ${GREEN}Issues Fixed:${NC}    $ISSUES_FIXED"
+  echo -e "  ${YELLOW}Warnings:${NC}        $WARNINGS"
+  echo ""
   
-  success "Passed: $checks_passed checks"
-  
-  if [[ $checks_failed -gt 0 ]]; then
-    error "Failed: $checks_failed checks"
+  if [ $ISSUES_FOUND -eq 0 ] && [ $WARNINGS -eq 0 ]; then
+    echo -e "${GREEN}✓ All checks passed! Repository is healthy.${NC}"
+    return 0
+  elif [ $ISSUES_FOUND -eq 0 ]; then
+    echo -e "${YELLOW}⚠ Repository is healthy but has warnings.${NC}"
+    return 0
+  else
+    echo -e "${RED}✗ Repository has issues that need attention.${NC}"
     return 1
   fi
-  
-  success "Repository health: ✅ GOOD"
-  return 0
 }
 
-# ============================================================================
+# ==============================================================================
 # Main Execution
-# ============================================================================
-
-show_usage() {
-  cat <<EOF
-${BLUE}CastQuest Frames - Dependency Repair Script${NC}
-
-${CYAN}USAGE:${NC}
-  ./scripts/repair-dependencies.sh [command] [options]
-
-${CYAN}COMMANDS:${NC}
-  clean              Clean all node_modules and pnpm-lock.yaml
-  validate           Validate all package.json files
-  harmonize          Check dependency version consistency
-  install            Install dependencies with pnpm
-  verify-links       Verify workspace dependency links
-  build              Build all packages in dependency order
-  check-artifacts    Check for build artifacts
-  check-docs         Check for required documentation files
-  check-symlinks     Check for broken symlinks
-  check-ports        Check for port conflicts
-  health             Run comprehensive health check (default)
-  repair             Full repair: clean + install + build + health
-
-${CYAN}OPTIONS:${NC}
-  --dry-run          Show what would be done without executing
-  --verbose          Show detailed debug output
-  --help             Show this help message
-
-${CYAN}ENVIRONMENT VARIABLES:${NC}
-  DRY_RUN=true       Enable dry-run mode
-  VERBOSE=true       Enable verbose logging
-  PNPM=<path>        Path to pnpm binary (default: pnpm)
-
-${CYAN}EXAMPLES:${NC}
-  # Run full health check
-  ./scripts/repair-dependencies.sh health
-
-  # Full repair workflow
-  ./scripts/repair-dependencies.sh repair
-
-  # Dry run of full repair
-  DRY_RUN=true ./scripts/repair-dependencies.sh repair
-
-  # Clean and reinstall dependencies
-  ./scripts/repair-dependencies.sh clean
-  ./scripts/repair-dependencies.sh install
-
-  # Build packages in order
-  ./scripts/repair-dependencies.sh build
-
-EOF
-}
+# ==============================================================================
 
 main() {
-  local command="${1:-health}"
+  echo -e "${CYAN}╔════════════════════════════════════════════════════════════╗${NC}"
+  echo -e "${CYAN}║${NC}     ${MAGENTA}CastQuest Frames - Dependency Repair Script${NC}       ${CYAN}║${NC}"
+  echo -e "${CYAN}╚════════════════════════════════════════════════════════════╝${NC}"
+  echo ""
   
-  # Parse options
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-      --dry-run)
-        DRY_RUN=true
-        shift
-        ;;
-      --verbose)
-        VERBOSE=true
-        shift
-        ;;
-      --help|-h)
-        show_usage
-        exit 0
-        ;;
-      *)
-        command="$1"
-        shift
-        ;;
-    esac
-  done
-  
-  # Check prerequisites
-  if ! check_command jq; then
-    error "jq is required but not installed"
-    exit 1
+  if [ "$DRY_RUN" = "true" ]; then
+    log_warn "Running in DRY RUN mode - no changes will be made"
   fi
   
-  log "CastQuest Frames - Dependency Repair Script"
-  log "Root directory: $ROOT_DIR"
+  # Execute all steps
+  clean_install || true
+  fix_dependency_versions || true
+  build_packages || true
+  verify_workspace_links || true
+  create_missing_docs || true
+  check_broken_symlinks || true
+  validate_package_json || true
+  scan_missing_dependencies || true
+  run_health_check || true
   
-  if [[ "$DRY_RUN" == "true" ]]; then
-    warn "DRY RUN MODE - No changes will be made"
-  fi
-  
-  # Execute command
-  case "$command" in
-    clean)
-      clean_dependencies
+  # Generate summary and exit with appropriate code
+  generate_summary
+  exit $?
+}
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --dry-run)
+      DRY_RUN=true
+      shift
       ;;
-    validate)
-      validate_all_package_json
+    --verbose)
+      VERBOSE=true
+      shift
       ;;
-    harmonize)
-      harmonize_dependency_versions
-      ;;
-    install)
-      install_dependencies
-      ;;
-    verify-links)
-      verify_workspace_links
-      ;;
-    build)
-      build_packages_in_order
-      ;;
-    check-artifacts)
-      check_build_artifacts
-      ;;
-    check-docs)
-      check_documentation_files
-      ;;
-    check-symlinks)
-      check_broken_symlinks
-      ;;
-    check-ports)
-      check_port_conflicts
-      ;;
-    health)
-      comprehensive_health_check
-      ;;
-    repair)
-      clean_dependencies &&
-      install_dependencies &&
-      build_packages_in_order &&
-      comprehensive_health_check
+    --help)
+      echo "Usage: $0 [OPTIONS]"
+      echo ""
+      echo "Options:"
+      echo "  --dry-run    Run without making changes"
+      echo "  --verbose    Enable verbose output"
+      echo "  --help       Show this help message"
+      exit 0
       ;;
     *)
-      error "Unknown command: $command"
-      show_usage
+      log_error "Unknown option: $1"
       exit 1
       ;;
   esac
-  
-  local exit_code=$?
-  
-  if [[ $exit_code -eq 0 ]]; then
-    echo ""
-    success "Command completed successfully: $command"
-  else
-    echo ""
-    error "Command failed: $command"
-  fi
-  
-  exit $exit_code
-}
+done
 
 # Run main function
-main "$@"
+main

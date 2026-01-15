@@ -1,4 +1,4 @@
-﻿node_modules
+node_modules
 dist
 .env
 .env.*
@@ -26,12 +26,23 @@ web-build/
 *.log
 *.backup
 
+# TypeScript build info
+*.tsbuildinfo
+
 # Generated reports
 AUDIT-REPORT.md
 ORACLE-REPORT.md
 
+# Smart Brain cache
+.smartbrain/cache/
+.smartbrain/oracle-state.json
+
 # Turbo
 .turbo
+
+# Supabase
+supabase/.branches
+supabase/.temp
 
 # Supabase
 supabase/.branches

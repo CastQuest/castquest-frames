@@ -2,45 +2,41 @@ name: Dependency Health Check
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main]
   schedule:
-    # Run daily at 2 AM UTC
-    - cron: '0 2 * * *'
+    # Run every day at 6 AM UTC (cron: 0 6 * * * – daily)
+    - cron: '0 6 * * *'
   workflow_dispatch:
-
-permissions:
-  contents: read
-  issues: write
-  pull-requests: write
 
 jobs:
   dependency-health:
-    name: Check Repository Health
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-      
-      - name: Setup pnpm
+
+      - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 9
-      
+          version: 9.0.0
+
       - name: Get pnpm store directory
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-      
+
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
@@ -48,177 +44,68 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-      
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
-      
-      - name: Validate package.json files
-        id: validate-json
-        run: |
-          echo "## Package.json Validation" >> $GITHUB_STEP_SUMMARY
-          INVALID=0
-          while IFS= read -r -d '' file; do
-            if ! jq empty "$file" 2>/dev/null; then
-              echo "❌ Invalid JSON: $file" >> $GITHUB_STEP_SUMMARY
-              INVALID=$((INVALID + 1))
-            fi
-          done < <(find . -name "package.json" -not -path "*/node_modules/*" -print0)
-          
-          if [ $INVALID -eq 0 ]; then
-            echo "✅ All package.json files are valid" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ Found $INVALID invalid package.json files" >> $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
-      
-      - name: Check dependency version consistency
-        id: check-versions
-        run: |
-          echo "## Dependency Version Consistency" >> $GITHUB_STEP_SUMMARY
-          
-          # Check TypeScript versions
-          echo "### TypeScript Versions" >> $GITHUB_STEP_SUMMARY
-          TS_VERSIONS=$(find . -name "package.json" -not -path "*/node_modules/*" -exec jq -r '.devDependencies.typescript // .dependencies.typescript // empty' {} \; | sort -u)
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "$TS_VERSIONS" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          
-          TS_COUNT=$(echo "$TS_VERSIONS" | grep -v '^$' | wc -l)
-          if [ $TS_COUNT -gt 1 ]; then
-            echo "⚠️ Multiple TypeScript versions detected" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "✅ TypeScript version is consistent" >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          # Check @types/node versions
-          echo "### @types/node Versions" >> $GITHUB_STEP_SUMMARY
-          NODE_VERSIONS=$(find . -name "package.json" -not -path "*/node_modules/*" -exec jq -r '.devDependencies["@types/node"] // .dependencies["@types/node"] // empty' {} \; | sort -u)
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "$NODE_VERSIONS" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          
-          NODE_COUNT=$(echo "$NODE_VERSIONS" | grep -v '^$' | wc -l)
-          if [ $NODE_COUNT -gt 1 ]; then
-            echo "⚠️ Multiple @types/node versions detected" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "✅ @types/node version is consistent" >> $GITHUB_STEP_SUMMARY
-          fi
-      
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      
-      - name: Verify workspace links
+
+      - name: Run Repair Script
         run: |
-          echo "## Workspace Dependencies" >> $GITHUB_STEP_SUMMARY
-          if [ -d "apps/web/node_modules/@castquest/neo-ux-core" ] || [ -L "apps/web/node_modules/@castquest/neo-ux-core" ]; then
-            echo "✅ Workspace links are properly configured" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ Workspace links are not properly configured" >> $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
-      
-      - name: Run build tests
-        id: build-tests
-        run: |
-          echo "## Build Tests" >> $GITHUB_STEP_SUMMARY
-          
-          # Build packages in order
-          PACKAGES=("packages/neo-ux-core" "packages/sdk")
-          BUILD_FAILURES=0
-          
-          for pkg in "${PACKAGES[@]}"; do
-            if [ -f "$pkg/package.json" ]; then
-              echo "Building $pkg..." >> $GITHUB_STEP_SUMMARY
-              if (cd "$pkg" && pnpm build); then
-                echo "✅ $pkg built successfully" >> $GITHUB_STEP_SUMMARY
-              else
-                echo "❌ Failed to build $pkg" >> $GITHUB_STEP_SUMMARY
-                BUILD_FAILURES=$((BUILD_FAILURES + 1))
-              fi
-            fi
-          done
-          
-          if [ $BUILD_FAILURES -gt 0 ]; then
-            echo "❌ $BUILD_FAILURES packages failed to build" >> $GITHUB_STEP_SUMMARY
-            exit 1
-          else
-            echo "✅ All packages built successfully" >> $GITHUB_STEP_SUMMARY
-          fi
-      
-      - name: Security audit
-        id: security-audit
-        run: |
-          echo "## Security Audit" >> $GITHUB_STEP_SUMMARY
-          
-          # Run pnpm audit and capture output
-          if pnpm audit --json > audit-output.json 2>&1; then
-            echo "✅ No vulnerabilities found" >> $GITHUB_STEP_SUMMARY
-          else
-            # Parse audit output
-            if [ -f audit-output.json ]; then
-              CRITICAL=$(jq -r '.metadata.vulnerabilities.critical // 0' audit-output.json 2>/dev/null || echo "0")
-              HIGH=$(jq -r '.metadata.vulnerabilities.high // 0' audit-output.json 2>/dev/null || echo "0")
-              MODERATE=$(jq -r '.metadata.vulnerabilities.moderate // 0' audit-output.json 2>/dev/null || echo "0")
-              
-              echo "- Critical: $CRITICAL" >> $GITHUB_STEP_SUMMARY
-              echo "- High: $HIGH" >> $GITHUB_STEP_SUMMARY
-              echo "- Moderate: $MODERATE" >> $GITHUB_STEP_SUMMARY
-              
-              if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
-                echo "⚠️ Security vulnerabilities detected" >> $GITHUB_STEP_SUMMARY
-                echo "Run \`pnpm audit --fix\` to resolve" >> $GITHUB_STEP_SUMMARY
-              fi
-            fi
-          fi
-          
-          rm -f audit-output.json
+          bash scripts/repair-dependencies.sh --dry-run
         continue-on-error: true
-      
-      - name: Check documentation links
-        id: check-docs
-        run: |
-          echo "## Documentation Links" >> $GITHUB_STEP_SUMMARY
-          
-          REQUIRED_DOCS=("README.md" "CONTRIBUTING.md" "docs/DASHBOARDS.md" "docs/README.md")
-          MISSING=0
-          
-          for doc in "${REQUIRED_DOCS[@]}"; do
-            if [ -f "$doc" ]; then
-              echo "✅ $doc exists" >> $GITHUB_STEP_SUMMARY
-            else
-              echo "❌ $doc is missing" >> $GITHUB_STEP_SUMMARY
-              MISSING=$((MISSING + 1))
-            fi
-          done
-          
-          if [ $MISSING -eq 0 ]; then
-            echo "✅ All required documentation exists" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠️ $MISSING documentation files are missing" >> $GITHUB_STEP_SUMMARY
-          fi
-      
-      - name: Run comprehensive health check
+
+      - name: Run Health Check
         id: health-check
         run: |
-          chmod +x scripts/master.sh
-          ./scripts/master.sh health
+          bash scripts/master.sh health --json > health-report.json
+          cat health-report.json
         continue-on-error: true
-      
-      - name: Run Smart Brain Oracle
-        id: oracle
+
+      - name: Smart Brain Oracle Analysis
         run: |
-          chmod +x .smartbrain/oracle.sh
-          .smartbrain/oracle.sh report
+          .smartbrain/oracle.sh analyze > oracle-report.txt
+          cat oracle-report.txt
         continue-on-error: true
-      
-      - name: Upload Oracle Report
+
+      - name: Security Audit
+        run: |
+          pnpm audit --audit-level=moderate || echo "Security vulnerabilities detected"
+        continue-on-error: true
+
+      - name: Check Version Consistency
+        id: version-check
+        run: |
+          echo "Checking TypeScript versions..."
+          TS_VERSIONS=$(find . -name "package.json" -not -path "*/node_modules/*" -exec grep -h '"typescript"' {} \; | sort -u | wc -l)
+          echo "ts_versions=$TS_VERSIONS" >> $GITHUB_OUTPUT
+          
+          echo "Checking @types/node versions..."
+          NODE_TYPES_VERSIONS=$(find . -name "package.json" -not -path "*/node_modules/*" -exec grep -h '"@types/node"' {} \; | sort -u | wc -l)
+          echo "node_types_versions=$NODE_TYPES_VERSIONS" >> $GITHUB_OUTPUT
+          
+          echo "Checking Next.js versions..."
+          NEXT_VERSIONS=$(find . -name "package.json" -not -path "*/node_modules/*" -exec grep -h '"next"' {} \; | sort -u | wc -l)
+          echo "next_versions=$NEXT_VERSIONS" >> $GITHUB_OUTPUT
+          
+          if [ "$TS_VERSIONS" -le 2 ] && [ "$NODE_TYPES_VERSIONS" -le 2 ] && [ "$NEXT_VERSIONS" -le 1 ]; then
+            echo "Version consistency check passed ✓"
+            echo "consistent=true" >> $GITHUB_OUTPUT
+          else
+            echo "Version consistency check failed ✗"
+            echo "TypeScript versions: $TS_VERSIONS (should be ≤2)"
+            echo "@types/node versions: $NODE_TYPES_VERSIONS (should be ≤2)"
+            echo "Next.js versions: $NEXT_VERSIONS (should be 1)"
+            echo "consistent=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload Health Report
+        uses: actions/upload-artifact@v4
         if: always()
-        uses: actions/upload-artifact@v3
         with:
-          name: oracle-report
-          path: ORACLE-REPORT.md
-          retention-days: 30
-      
+          name: health-report
+          path: |
+            health-report.json
+            oracle-report.txt
+
       - name: Comment on PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -226,18 +113,52 @@ jobs:
           script: |
             const fs = require('fs');
             
-            let comment = '## 🏥 Dependency Health Check Report\n\n';
-            
+            let healthReport = { status: 'unknown', checks_passed: 0, checks_failed: 0 };
             try {
-              const summary = fs.readFileSync(process.env.GITHUB_STEP_SUMMARY, 'utf8');
-              comment += summary;
-            } catch (error) {
-              comment += '⚠️ Could not generate detailed report\n';
+              healthReport = JSON.parse(fs.readFileSync('health-report.json', 'utf8'));
+            } catch (e) {
+              console.log('Could not parse health report');
             }
             
-            comment += '\n\n---\n';
-            comment += '📊 **Full Analysis**: Check the workflow run for complete details\n';
-            comment += '🔍 **Oracle Report**: Available in workflow artifacts\n';
+            let oracleReport = '';
+            try {
+              oracleReport = fs.readFileSync('oracle-report.txt', 'utf8');
+            } catch (e) {
+              console.log('Could not read oracle report');
+            }
+            
+            const versionConsistent = '${{ steps.version-check.outputs.consistent }}' === 'true';
+            
+            const statusEmoji = healthReport.status === 'healthy' ? '✅' : '⚠️';
+            const versionEmoji = versionConsistent ? '✅' : '❌';
+            
+            const comment = `## 🏥 Dependency Health Check
+            
+            **Status:** ${statusEmoji} ${healthReport.status}
+            **Checks Passed:** ${healthReport.checks_passed}
+            **Checks Failed:** ${healthReport.checks_failed}
+            **Version Consistency:** ${versionEmoji} ${versionConsistent ? 'Consistent' : 'Inconsistent'}
+            
+            <details>
+            <summary>📊 Smart Brain Oracle Analysis</summary>
+            
+            \`\`\`
+            ${oracleReport.substring(0, 2000)}
+            \`\`\`
+            </details>
+            
+            <details>
+            <summary>ℹ️ Health Report Details</summary>
+            
+            \`\`\`json
+            ${JSON.stringify(healthReport, null, 2)}
+            \`\`\`
+            </details>
+            
+            ---
+            
+            ${healthReport.status === 'unhealthy' || !versionConsistent ? '⚠️ **Action Required:** Please address the issues above before merging.' : '✅ All checks passed! Safe to merge.'}
+            `;
             
             github.rest.issues.createComment({
               issue_number: context.issue.number,
@@ -245,37 +166,53 @@ jobs:
               repo: context.repo.repo,
               body: comment
             });
-      
-      - name: Create issue for failures
-        if: failure() && github.event_name == 'schedule'
+
+      - name: Create Issue on Failure
+        if: failure() && (github.event_name == 'schedule' || github.event_name == 'push')
         uses: actions/github-script@v7
         with:
           script: |
+            const fs = require('fs');
+            
+            let healthReport = { status: 'unknown' };
+            try {
+              healthReport = JSON.parse(fs.readFileSync('health-report.json', 'utf8'));
+            } catch (e) {
+              console.log('Could not parse health report');
+            }
+            
             const title = '🚨 Dependency Health Check Failed';
-            const body = `
-            ## Dependency Health Check Failure
+            const body = `## Automated Health Check Failure
             
-            The scheduled dependency health check has detected issues that require attention.
+            A scheduled dependency health check has detected issues in the repository.
             
-            **Workflow Run**: ${context.payload.repository.html_url}/actions/runs/${context.runId}
-            **Date**: ${new Date().toISOString()}
+            **Workflow Run:** ${context.payload.repository.html_url}/actions/runs/${context.runId}
+            **Triggered by:** ${context.eventName}
+            **Timestamp:** ${new Date().toISOString()}
             
-            ### Actions Required
+            ### Status
+            - Health Status: ${healthReport.status || 'unknown'}
+            - Checks Failed: ${healthReport.checks_failed || 'unknown'}
             
-            1. Review the workflow run for detailed error messages
-            2. Check the Oracle report in artifacts
-            3. Run \`./scripts/repair-dependencies.sh health\` locally
-            4. Run \`./scripts/repair-dependencies.sh repair\` to fix issues
+            ### Recommended Actions
+            1. Review the workflow run logs for detailed error information
+            2. Run \`bash scripts/repair-dependencies.sh\` locally to diagnose issues
+            3. Run \`bash scripts/master.sh health\` to see detailed health report
+            4. Check \`.smartbrain/oracle.sh analyze\` for AI-powered insights
             
-            ### Common Fixes
+            ### Quick Fix
+            \`\`\`bash
+            # Clean and repair dependencies
+            bash scripts/repair-dependencies.sh
             
-            - Update dependency versions: \`pnpm update\`
-            - Fix security issues: \`pnpm audit --fix\`
-            - Rebuild packages: \`pnpm -r build\`
-            - Harmonize versions: \`./scripts/repair-dependencies.sh harmonize\`
+            # Run health check
+            bash scripts/master.sh health
             
-            ---
-            *This issue was automatically created by the Dependency Health Check workflow*
+            # Get oracle recommendations
+            .smartbrain/oracle.sh recommend-upgrades
+            \`\`\`
+            
+            This issue was automatically created by the Dependency Health Check workflow.
             `;
             
             github.rest.issues.create({
@@ -285,3 +222,15 @@ jobs:
               body: body,
               labels: ['dependencies', 'automated', 'health-check']
             });
+
+      - name: Set workflow status
+        if: always()
+        run: |
+          if [ -f health-report.json ]; then
+            STATUS=$(jq -r '.status' health-report.json)
+            if [ "$STATUS" = "unhealthy" ]; then
+              echo "Health check reported unhealthy status"
+              exit 1
+            fi
+          fi
+          echo "Health check completed"

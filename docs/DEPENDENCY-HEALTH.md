@@ -1,603 +1,396 @@
-# Dependency Health Monitoring
-
-> Comprehensive guide to maintaining repository health through automated dependency management
-
-**Version:** 1.0.0  
-**Last Updated:** 2026-01-06
-
----
+# Dependency Health Monitoring System
 
 ## Overview
 
-The CastQuest Frames repository includes a comprehensive dependency health monitoring system that ensures consistency, security, and optimal performance across the monorepo.
+The CastQuest Frames repository includes a comprehensive dependency health monitoring system that ensures consistency, security, and reliability across the monorepo workspace.
 
-### Key Features
+## Components
 
-- ✅ **Automated Dependency Scanning** - Daily health checks via GitHub Actions
-- ✅ **Version Harmonization** - Consistent dependency versions across packages
-- ✅ **Security Monitoring** - Automated vulnerability detection
-- ✅ **Smart Brain Oracle** - AI-powered insights and recommendations
-- ✅ **Pre-commit Hooks** - Prevent broken dependencies from being committed
-- ✅ **Repair Scripts** - Automated fixes for common issues
+### 1. Repair Script (`scripts/repair-dependencies.sh`)
 
----
-
-## Architecture
-
-### System Components
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                  Dependency Health System                    │
-├─────────────────────────────────────────────────────────────┤
-│                                                               │
-│  ┌──────────────────┐      ┌──────────────────┐            │
-│  │  Pre-commit      │      │  GitHub Actions  │            │
-│  │  Hooks           │      │  Workflow        │            │
-│  │  (.husky)        │      │  (CI/CD)         │            │
-│  └────────┬─────────┘      └────────┬─────────┘            │
-│           │                         │                       │
-│           └─────────┬───────────────┘                       │
-│                     │                                       │
-│           ┌─────────▼─────────┐                            │
-│           │   Repair Script    │                            │
-│           │  (bash script)     │                            │
-│           └─────────┬─────────┘                            │
-│                     │                                       │
-│           ┌─────────▼─────────┐                            │
-│           │  Smart Brain       │                            │
-│           │  Oracle            │                            │
-│           │  (AI insights)     │                            │
-│           └─────────┬─────────┘                            │
-│                     │                                       │
-│           ┌─────────▼─────────┐                            │
-│           │  Master.sh         │                            │
-│           │  Health Check      │                            │
-│           └───────────────────┘                            │
-│                                                               │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Tools & Scripts
-
-### 1. Repair Dependencies Script
-
-**Location:** `scripts/repair-dependencies.sh`
-
-Comprehensive tool for dependency management and repair.
-
-#### Usage
+The automated repair script performs comprehensive dependency maintenance:
 
 ```bash
-# Run full health check
-./scripts/repair-dependencies.sh health
+# Run full repair with automatic fixes
+bash scripts/repair-dependencies.sh
 
-# Full repair workflow
-./scripts/repair-dependencies.sh repair
+# Dry run to see what would be changed
+DRY_RUN=true bash scripts/repair-dependencies.sh
 
-# Clean dependencies
-./scripts/repair-dependencies.sh clean
-
-# Install dependencies
-./scripts/repair-dependencies.sh install
-
-# Build packages in order
-./scripts/repair-dependencies.sh build
-
-# Check version consistency
-./scripts/repair-dependencies.sh harmonize
-
-# Dry run mode
-DRY_RUN=true ./scripts/repair-dependencies.sh repair
+# Verbose output for debugging
+VERBOSE=true bash scripts/repair-dependencies.sh
 ```
 
-#### Features
+**Features:**
+- Clean dependency installation (removes all node_modules)
+- Version harmonization automation
+- Build packages in dependency order
+- Workspace link verification
+- Broken symlink detection
+- package.json validation
+- Missing dependency scanning
+- Colored terminal output for easy reading
+- Exit codes suitable for CI/CD integration
 
-- **Clean Installation**: Removes node_modules and reinstalls
-- **Version Harmonization**: Ensures consistent versions
-- **Build Order Validation**: Builds in correct dependency order
-- **Workspace Link Verification**: Checks pnpm workspace links
-- **Documentation Checks**: Validates required docs exist
-- **Broken Symlink Detection**: Finds and reports broken links
-- **Port Conflict Detection**: Checks if ports are in use
-- **Comprehensive Health Check**: Runs all validations
+### 2. Health Check Command (`scripts/master.sh health`)
 
-### 2. Smart Brain Oracle
-
-**Location:** `.smartbrain/oracle.sh`
-
-AI-powered repository insights and recommendations.
-
-#### Usage
+The master orchestrator script includes comprehensive health checks:
 
 ```bash
-# Run all analyses
-.smartbrain/oracle.sh all
+# Run all health checks
+bash scripts/master.sh health
 
+# Get JSON output for CI/CD
+bash scripts/master.sh health --json > health-report.json
+
+# Auto-repair issues found
+bash scripts/master.sh health --fix
+```
+
+**Health Checks Include:**
+1. **Package.json Validation** - Ensures all package.json files are valid JSON
+2. **Workspace Dependencies** - Verifies all workspace links are correct
+3. **Build Artifacts** - Checks that all packages build successfully
+4. **Port Conflicts** - Detects if ports 3000, 3001, 3010 are available
+5. **TypeScript Configs** - Validates tsconfig.json consistency
+6. **Broken Symlinks** - Finds and reports broken symbolic links
+7. **Environment Files** - Checks for required .env files
+8. **Service Startup** - Tests that services can start properly
+9. **Version Consistency** - Ensures dependency versions match across workspace
+10. **Security Audit** - Runs pnpm audit for vulnerabilities
+
+### 3. Smart Brain Oracle (`.smartbrain/oracle.sh`)
+
+AI-powered repository insights and maintenance predictions:
+
+```bash
 # Analyze dependency health
 .smartbrain/oracle.sh analyze
 
-# Check security vulnerabilities
-.smartbrain/oracle.sh security
+# Get upgrade recommendations
+.smartbrain/oracle.sh recommend-upgrades
 
-# Recommend upgrades
-.smartbrain/oracle.sh upgrades
+# Security vulnerability scan
+.smartbrain/oracle.sh security-scan
 
-# Generate comprehensive report
-.smartbrain/oracle.sh report
+# Visualize dependency graph
+.smartbrain/oracle.sh visualize-deps
+
+# Performance analysis
+.smartbrain/oracle.sh performance
+
+# Predict impact of changes
+.smartbrain/oracle.sh predict-impact package-name@version
 ```
 
-#### Features
+**Features:**
+- Dependency intelligence with compatibility analysis
+- Security analysis with severity scores
+- Performance optimization suggestions
+- Monorepo health monitoring
+- Predictive maintenance
+- Integration with existing Smart Brain validation
 
-- **Dependency Health Analysis**: Version consistency checks
-- **Security Vulnerability Detection**: Scans for known issues
-- **Version Upgrade Recommendations**: Suggests compatible upgrades
-- **Deprecated Package Monitoring**: Tracks obsolete packages
-- **Performance Suggestions**: Optimization recommendations
-- **Monorepo Structure Analysis**: Architecture insights
-- **Predictive Warnings**: Proactive maintenance alerts
-- **Dependency Graph Visualization**: Visual representation
-- **Smart Conflict Resolution**: Intelligent dependency fixing
+### 4. CI/CD Automation (`.github/workflows/dependency-health.yml`)
 
-### 3. Master.sh Health Check
+Automated health checks run on:
+- Every push to main branch
+- Every pull request
+- Daily at 6 AM UTC
+- Manual workflow dispatch
 
-**Location:** `scripts/master.sh`
+**Actions Performed:**
+- Full health check execution
+- Smart Brain oracle analysis
+- Security audit with pnpm audit
+- Version consistency validation
+- PR comments with health status
+- Auto-create issues on critical failures
+- Generate and upload health reports
 
-Enhanced orchestrator with comprehensive health checks.
+### 5. Pre-commit Hooks (`.husky/pre-commit`)
 
-#### Usage
+Prevents problematic commits before they reach the repository:
 
 ```bash
-# Run comprehensive health check
-./scripts/master.sh health
+# Automatically runs on git commit
+git commit -m "Your changes"
 
-# Full audit
-./scripts/master.sh audit
-
-# Self-healing
-./scripts/master.sh heal
-
-# Integrity check
-./scripts/master.sh integrity
+# Skip hooks if needed (not recommended)
+git commit --no-verify -m "Emergency fix"
 ```
 
-#### Health Check Features
+**Validations:**
+- package.json syntax validation
+- Workspace dependency checks
+- TypeScript config validation
+- Linting on changed files
+- Smart Brain quick validation
 
-- Package.json validation (valid JSON)
-- Workspace dependency verification
-- Build artifact checks (dist/ directories)
-- Port conflict detection (3000, 3001, 3010, 4000)
-- TypeScript version consistency
-- Broken symlink detection
-- Environment file verification
-- Linting validation
-- Type checking
-- Dependency version consistency reporting
+## Dependency Version Policies
 
-### 4. Pre-commit Hooks
+### Standard Versions
 
-**Location:** `.husky/pre-commit`
+The repository maintains consistent versions across all packages:
 
-Automated validation before commits.
+| Dependency | Version | Reason |
+|------------|---------|--------|
+| TypeScript | 5.3.3 | Stable, widely supported |
+| @types/node | 20.10.6 | Matches Node.js 20.x LTS |
+| Next.js | 14.2.18 | Latest stable 14.x with security patches |
+| React | 18.2.0 | Stable, production-ready |
+| Node.js | 20.19.6 | LTS version (see .nvmrc) |
+| pnpm | 9.0.0 | Latest with improved workspace support |
 
-#### Features
+### Version Consistency Rules
 
-- **Package.json Validation**: Ensures valid JSON
-- **Workspace Reference Checks**: Validates workspace:* syntax
-- **TypeScript Config Validation**: Checks tsconfig.json
-- **Linting**: Auto-fixes and re-stages files
-- **Dependency Consistency**: Prevents broken dependencies
+1. **Exact versions** for frameworks (React, Next.js) to avoid breaking changes
+2. **Caret ranges (^)** for tools and utilities to allow patch updates
+3. **Workspace protocol (workspace:*)** for internal packages
+4. **Aligned versions** across all apps and packages for shared dependencies
 
-#### Setup
+## Upgrade Procedures
+
+### Minor/Patch Updates
+
+For safe, incremental updates:
 
 ```bash
-# Install husky and hooks
-pnpm install
-pnpm run prepare
+# 1. Check for available updates
+pnpm outdated
 
-# Bypass hook (not recommended)
-git commit --no-verify
-```
+# 2. Update specific package
+pnpm update package-name --latest
 
-### 5. GitHub Actions Workflow
+# 3. Run repair script
+bash scripts/repair-dependencies.sh
 
-**Location:** `.github/workflows/dependency-health.yml`
-
-Automated CI/CD health checks.
-
-#### Triggers
-
-- **Push**: On main and develop branches
-- **Pull Request**: On main and develop branches
-- **Schedule**: Daily at 2 AM UTC
-- **Manual**: Via workflow_dispatch
-
-#### Features
-
-- Package.json validation
-- Dependency version consistency checks
-- Workspace link verification
-- Build tests for all packages
-- Security audit (pnpm audit)
-- Documentation link validation
-- PR comment with results
-- Auto-create issues for failures
-- Dependency health badge generation
-- Oracle report artifacts
-
----
-
-## Dependency Standards
-
-### Version Requirements
-
-| Package | Version | Reason |
-|---------|---------|--------|
-| **TypeScript** | 5.3.3 | Consistency across packages |
-| **@types/node** | 20.10.6 | Matches Node.js 20.x |
-| **Next.js** | 14.2.18+ | Security patches |
-| **React** | 18.2.0+ | Stable release |
-| **Node.js** | 20.x | Specified in .nvmrc |
-| **pnpm** | 9.x | Required for workspace |
-
-### Workspace Dependencies
-
-All internal packages should use `workspace:*` syntax:
-
-```json
-{
-  "dependencies": {
-    "@castquest/neo-ux-core": "workspace:*",
-    "@castquest/sdk": "workspace:*",
-    "@castquest/core-services": "workspace:*"
-  }
-}
-```
-
-### Build Order
-
-Packages must be built in dependency order:
-
-1. `packages/neo-ux-core` - UI components (no dependencies)
-2. `packages/sdk` - Protocol SDK (no internal deps)
-3. `packages/core-services` - Backend services
-4. `apps/admin` - Admin dashboard (depends on neo-ux-core, sdk, core-services)
-5. `apps/web` - User dashboard (depends on neo-ux-core)
-
----
-
-## Common Issues & Solutions
-
-### Issue: Version Mismatch
-
-**Symptoms:**
-- Multiple TypeScript versions detected
-- Build failures in CI
-
-**Solution:**
-```bash
-# Check versions
-./scripts/repair-dependencies.sh harmonize
-
-# Update manually if needed
-# Edit package.json files to use consistent versions
-pnpm install
-
-# Rebuild
+# 4. Test thoroughly
 pnpm -r build
+pnpm -r test
+
+# 5. Commit changes
+git add pnpm-lock.yaml package.json
+git commit -m "chore: update package-name to vX.Y.Z"
 ```
 
-### Issue: Workspace Links Broken
+### Major Updates
 
-**Symptoms:**
-- Import errors for @castquest/* packages
-- Module not found errors
+For breaking changes:
 
-**Solution:**
 ```bash
-# Clean and reinstall
-./scripts/repair-dependencies.sh clean
-./scripts/repair-dependencies.sh install
+# 1. Check Smart Brain oracle recommendations
+.smartbrain/oracle.sh recommend-upgrades
 
-# Verify links
-./scripts/repair-dependencies.sh verify-links
+# 2. Review breaking changes
+.smartbrain/oracle.sh predict-impact package-name@new-version
+
+# 3. Create feature branch
+git checkout -b chore/update-package-name
+
+# 4. Update package.json manually
+# Edit the version in package.json
+
+# 5. Run full repair and validation
+bash scripts/repair-dependencies.sh
+bash scripts/master.sh health
+
+# 6. Fix any breaking changes
+# Update code as needed
+
+# 7. Test comprehensively
+pnpm -r build
+pnpm -r test
+
+# 8. Create PR with full testing notes
 ```
 
-### Issue: Port Conflicts
+### Security Updates
 
-**Symptoms:**
-- EADDRINUSE errors
-- Dashboards won't start
+For urgent security patches:
 
-**Solution:**
 ```bash
-# Check ports
-./scripts/repair-dependencies.sh check-ports
+# 1. Check vulnerabilities
+pnpm audit
 
-# Kill processes (automatic in repair script)
-# Or manually:
-lsof -ti:3000 | xargs kill -9
-lsof -ti:3001 | xargs kill -9
-```
+# 2. Get oracle security analysis
+.smartbrain/oracle.sh security-scan
 
-### Issue: Build Artifacts Missing
-
-**Symptoms:**
-- Import errors
-- Module resolution failures
-
-**Solution:**
-```bash
-# Check artifacts
-./scripts/repair-dependencies.sh check-artifacts
-
-# Rebuild all packages
-./scripts/repair-dependencies.sh build
-
-# Or rebuild specific package
-cd packages/neo-ux-core && pnpm build
-```
-
-### Issue: Security Vulnerabilities
-
-**Symptoms:**
-- pnpm audit reports issues
-- GitHub Dependabot alerts
-
-**Solution:**
-```bash
-# Check vulnerabilities
-.smartbrain/oracle.sh security
-
-# Auto-fix vulnerabilities
+# 3. Apply security updates
 pnpm audit --fix
 
-# Manual updates if needed
-pnpm update <package-name>
-```
-
----
-
-## Best Practices
-
-### 1. Regular Health Checks
-
-Run health checks frequently:
-
-```bash
-# Daily
-./scripts/master.sh health
-
-# Weekly
-.smartbrain/oracle.sh all
-```
-
-### 2. Before Commits
-
-Always run pre-commit checks:
-
-```bash
-# Automatic with husky
-git commit -m "Your message"
-
-# Manual check
-./scripts/repair-dependencies.sh health
-```
-
-### 3. Before Pull Requests
-
-Validate everything works:
-
-```bash
-# Full validation
-./scripts/repair-dependencies.sh repair
-
-# Build all packages
+# 4. Verify no breaking changes
+bash scripts/repair-dependencies.sh
 pnpm -r build
 
-# Run health check
-./scripts/master.sh health
+# 5. Deploy hotfix if critical
 ```
 
-### 4. After Dependency Changes
+## Rollback Strategies
 
-When updating dependencies:
+### Quick Rollback
+
+If a dependency update causes issues:
 
 ```bash
-# Update dependencies
-pnpm update <package>
+# 1. Revert package.json changes
+git checkout HEAD~1 -- package.json pnpm-lock.yaml
 
-# Verify consistency
-./scripts/repair-dependencies.sh harmonize
+# 2. Clean install
+bash scripts/repair-dependencies.sh
 
-# Rebuild and test
+# 3. Verify system health
+bash scripts/master.sh health
+```
+
+### Full Rollback
+
+For more complex issues:
+
+```bash
+# 1. Identify last known good commit
+git log --oneline --grep="dependency"
+
+# 2. Create rollback branch
+git checkout -b hotfix/rollback-dependencies
+
+# 3. Revert to specific commit
+git revert <commit-hash>
+
+# 4. Clean and rebuild
+bash scripts/repair-dependencies.sh
 pnpm -r build
-pnpm test
+
+# 5. Create emergency PR
 ```
-
-### 5. Monitoring
-
-Check automated reports:
-
-- Review GitHub Actions workflow results
-- Check Oracle reports in artifacts
-- Monitor dependency health badge
-- Review auto-created issues
-
----
-
-## Automation & CI/CD
-
-### GitHub Actions Integration
-
-The dependency health workflow runs automatically:
-
-```yaml
-# .github/workflows/dependency-health.yml
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
-  schedule:
-    - cron: '0 2 * * *'  # Daily at 2 AM UTC
-```
-
-### Features
-
-- **PR Comments**: Automatic health reports on PRs
-- **Issue Creation**: Auto-creates issues for failures
-- **Artifacts**: Oracle reports saved for 30 days
-- **Health Badge**: Status badge for README
-
-### Integration with Smart Brain
-
-The health system integrates with Smart Brain:
-
-```bash
-# Smart Brain validation before commit
-.smartbrain/brain.sh validate
-
-# Combined workflow
-.smartbrain/oracle.sh all && ./scripts/master.sh health
-```
-
----
-
-## Metrics & Monitoring
-
-### Health Indicators
-
-| Metric | Target | Warning | Critical |
-|--------|--------|---------|----------|
-| **Dependency Consistency** | 100% | < 100% | < 90% |
-| **Security Vulnerabilities** | 0 | 1-3 moderate | 1+ critical/high |
-| **Build Success Rate** | 100% | < 100% | < 90% |
-| **Broken Links** | 0 | 1-2 | 3+ |
-| **TypeScript Errors** | 0 | 1-5 | 6+ |
-| **Port Conflicts** | 0 | 1 | 2+ |
-
-### Reporting
-
-- **Daily**: Automated health check report
-- **Weekly**: Oracle comprehensive analysis
-- **On-demand**: Manual health checks
-- **PR**: Health status in PR comments
-
----
 
 ## Troubleshooting
 
-### Debug Mode
+### Common Issues
 
-Enable verbose logging:
-
-```bash
-# Repair script
-VERBOSE=true ./scripts/repair-dependencies.sh health
-
-# Dry run mode
-DRY_RUN=true ./scripts/repair-dependencies.sh repair
-```
-
-### Check Logs
-
-Review detailed logs:
+#### Issue: "Workspace dependency not found"
 
 ```bash
-# GitHub Actions logs
-# Visit: https://github.com/CastQuest/castquest-frames/actions
-
-# Oracle reports
-# Check: ORACLE-REPORT.md
-
-# Pre-commit logs
-# Shown in terminal during commit
-```
-
-### Manual Intervention
-
-If automated tools fail:
-
-```bash
-# Reset everything
+# Solution: Clean and rebuild workspace links
 rm -rf node_modules
-rm pnpm-lock.yaml
-pnpm install
-pnpm -r build
-
-# Verify manually
-./scripts/master.sh health
-.smartbrain/oracle.sh all
+bash scripts/repair-dependencies.sh
 ```
 
----
-
-## Configuration
-
-### Environment Variables
+#### Issue: "TypeScript version mismatch"
 
 ```bash
-# Repair script
-export DRY_RUN=true          # Don't make changes
-export VERBOSE=true          # Detailed logging
-export PNPM=/path/to/pnpm   # Custom pnpm path
-
-# Pre-commit hooks
-export HUSKY=0               # Disable husky
+# Solution: Harmonize TypeScript versions
+# Manually edit package.json files to use 5.3.3
+# Then run:
+pnpm install
+bash scripts/repair-dependencies.sh
 ```
 
-### Customization
+#### Issue: "Build fails after dependency update"
 
-Modify scripts for your needs:
+```bash
+# Solution: Clear build cache and rebuild
+find . -name "dist" -type d -not -path "*/node_modules/*" -exec rm -rf {} +
+pnpm -r build
+```
 
-- **Repair Script**: Edit `scripts/repair-dependencies.sh`
-- **Oracle Logic**: Edit `.smartbrain/oracle.sh`
-- **Health Checks**: Edit `scripts/master.sh`
-- **Pre-commit Rules**: Edit `.husky/pre-commit`
-- **CI Workflow**: Edit `.github/workflows/dependency-health.yml`
+#### Issue: "Port already in use"
+
+```bash
+# Solution: Clean ports using master script
+bash scripts/master.sh clean-ports
+```
+
+### Getting Help
+
+1. **Check Health Report**: Run `bash scripts/master.sh health --json` for detailed diagnostics
+2. **Oracle Analysis**: Run `.smartbrain/oracle.sh analyze` for AI-powered insights
+3. **View Logs**: Check `/tmp/repair-*.log` for detailed error information
+4. **CI/CD Reports**: Review GitHub Actions workflow runs for automated health checks
+
+## Integration with Smart Brain
+
+The dependency health system integrates with the existing Smart Brain validation framework:
+
+- **Validation Rules**: Uses same rule framework as `.smartbrain/brain.sh`
+- **Event-Driven**: Triggers Smart Brain agents on dependency changes
+- **Pattern Recognition**: Learns from past dependency issues
+- **Predictive Analysis**: Forecasts potential problems before they occur
+
+### Smart Brain Oracle Features
+
+1. **Dependency Intelligence**
+   - Analyze dependency health scores
+   - Suggest version upgrades with compatibility analysis
+   - Detect deprecated packages with alternatives
+   - Predict breaking changes before upgrading
+
+2. **Security Analysis**
+   - Vulnerability scanning with severity scores
+   - CVE tracking and alerting
+   - License compliance checking
+   - Supply chain risk assessment
+
+3. **Performance Optimization**
+   - Bundle size analysis
+   - Unused dependency detection
+   - Duplicate package identification
+   - Tree-shaking opportunities
+
+4. **Monorepo Health**
+   - Workspace structure optimization
+   - Circular dependency detection
+   - Build order optimization
+   - Package boundary violations
+
+## Best Practices
+
+1. **Run health checks before committing**: Use pre-commit hooks
+2. **Review oracle recommendations weekly**: Check for security updates
+3. **Test after every update**: Run full build and test suite
+4. **Document breaking changes**: Update CHANGELOG.md
+5. **Use feature branches**: Never update dependencies directly on main
+6. **Monitor CI/CD**: Watch for automated health check failures
+7. **Keep dependencies minimal**: Only add what's truly needed
+8. **Prefer stable versions**: Avoid experimental or beta packages
+9. **Update regularly**: Don't let dependencies get too stale
+10. **Use workspace protocol**: For internal package dependencies
+
+## Monitoring Dashboard
+
+The admin dashboard (port 3001) includes a dependency health section:
+
+- **Real-time Health Score**: Visual indicator of overall health
+- **Outdated Packages**: List of packages with available updates
+- **Security Vulnerabilities**: Critical CVEs requiring attention
+- **Build Status**: Current build health across packages
+- **Update History**: Timeline of recent dependency changes
+
+Access at: `http://localhost:3001/dashboard/dependencies`
+
+## Resources
+
+- **Repair Script**: `scripts/repair-dependencies.sh`
+- **Health Check**: `scripts/master.sh health`
+- **Smart Brain Oracle**: `.smartbrain/oracle.sh`
+- **CI/CD Workflow**: `.github/workflows/dependency-health.yml`
+- **Pre-commit Hook**: `.husky/pre-commit`
+- **Dashboard Docs**: [DASHBOARDS.md](./DASHBOARDS.md)
+- **Contributing Guide**: [CONTRIBUTING.md](../CONTRIBUTING.md)
+
+## Maintenance Schedule
+
+- **Daily**: Automated CI/CD health checks
+- **Weekly**: Manual review of oracle recommendations
+- **Monthly**: Review and update outdated dependencies
+- **Quarterly**: Major version upgrade planning
+- **As Needed**: Security patches and critical updates
 
 ---
 
-## Support & Resources
-
-### Documentation
-
-- **Main README**: [README.md](../README.md)
-- **Dashboards Guide**: [DASHBOARDS.md](./DASHBOARDS.md)
-- **Smart Brain**: [.smartbrain/README.md](../.smartbrain/README.md)
-- **Contributing**: [CONTRIBUTING.md](../CONTRIBUTING.md)
-
-### Scripts
-
-- `./scripts/repair-dependencies.sh --help`
-- `.smartbrain/oracle.sh --help`
-- `./scripts/master.sh --help`
-
-### Community
-
-- **Issues**: [GitHub Issues](https://github.com/CastQuest/castquest-frames/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/CastQuest/castquest-frames/discussions)
-- **Discord**: Community server (link in README)
-
----
-
-## Changelog
-
-### v1.0.0 (2026-01-06)
-
-- ✅ Initial release of dependency health system
-- ✅ Repair dependencies script
-- ✅ Smart Brain Oracle integration
-- ✅ Enhanced master.sh health checks
-- ✅ Pre-commit hooks with validation
-- ✅ GitHub Actions workflow
-- ✅ Comprehensive documentation
-
----
-
-**Maintained by**: CastQuest Team  
-**License**: MIT  
-**Repository**: [castquest-frames](https://github.com/CastQuest/castquest-frames)
+For questions or issues with the dependency health system, please:
+1. Check this documentation first
+2. Run the repair script with `--verbose` flag
+3. Review CI/CD workflow logs
+4. Consult the Smart Brain oracle
+5. Create an issue on GitHub with full health report

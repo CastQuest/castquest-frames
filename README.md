@@ -1,9 +1,9 @@
 # CAST QUEST Frames
 
-![Dependency Health](https://img.shields.io/badge/dependencies-healthy-success)
-![Build Status](https://img.shields.io/badge/build-passing-success)
-![Node Version](https://img.shields.io/badge/node-20+-green)
-![pnpm Version](https://img.shields.io/badge/pnpm-9+-blue)
+![Dependency Health](https://img.shields.io/badge/dependency--health-passing-brightgreen)
+![Build Status](https://github.com/CastQuest/castquest-frames/workflows/CI/badge.svg)
+![Node Version](https://img.shields.io/badge/node-20.19.6-green)
+![pnpm Version](https://img.shields.io/badge/pnpm-9.0.0-blue)
 
 CAST QUEST Frames is a Web3-native social photo protocol that feels like Instagram, mints like Zora, extends like Farcaster Frames, and builds like Remix — powered by a Smart Brain multi-agent AI.
 
@@ -127,7 +127,47 @@ cd apps/admin && pnpm dev -- -p 3010
 
 📖 **Full Documentation:** See [docs/DASHBOARDS.md](./docs/DASHBOARDS.md) for complete setup, configuration, deployment, and troubleshooting guides.
 
-## �💸 Sponsors & Partners
+## 🏥 Repository Health
+
+The CastQuest Frames repository includes a comprehensive dependency health monitoring system to ensure consistency, security, and reliability.
+
+### Health Check Commands
+
+```bash
+# Run comprehensive health check
+bash scripts/master.sh health
+
+# Run automated repair
+bash scripts/repair-dependencies.sh
+
+# Get AI-powered insights
+.smartbrain/oracle.sh analyze
+
+# Get upgrade recommendations
+.smartbrain/oracle.sh recommend-upgrades
+
+# Security vulnerability scan
+.smartbrain/oracle.sh security-scan
+```
+
+### Automated Monitoring
+
+- **CI/CD Health Checks**: Automated health checks run on every push, PR, and daily at 6 AM UTC
+- **Pre-commit Hooks**: Validate changes before they reach the repository
+- **Smart Brain Oracle**: AI-powered dependency intelligence and predictive maintenance
+
+### Key Features
+
+- ✅ **Version Harmonization**: TypeScript 5.3.3, @types/node 20.10.6, Next.js 14.2.35 (secure)
+- 🔒 **Security Scanning**: Automated vulnerability detection with pnpm audit
+- 📊 **Health Scoring**: Real-time repository health metrics
+- 🤖 **AI Insights**: Smart Brain Oracle for predictive maintenance
+- 🛠️ **Auto-Repair**: One-command dependency repair script
+- 📝 **Comprehensive Reports**: JSON output for CI/CD integration
+
+📖 **Full Documentation:** See [docs/DEPENDENCY-HEALTH.md](./docs/DEPENDENCY-HEALTH.md) for detailed health monitoring guide.
+
+## 💸 Sponsors & Partners
 
 Site: https://castquest.xyz (placeholder)
 Docs: https://docs.castquest.xyz (placeholder)

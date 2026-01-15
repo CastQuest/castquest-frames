@@ -1,220 +1,266 @@
-"use client";
+import { Metadata } from 'next';
+import Link from 'next/link';
+import {
+  Activity,
+  Users,
+  Zap,
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
+  ArrowRight,
+} from 'lucide-react';
 
-import { useState } from "react";
-import { GlowButton, DashboardGrid, DashboardStat } from "@castquest/neo-ux-core";
-import { FrameCard, QuestCard, MediaCard } from "../../components/Cards";
-import { useMockFrames, useMockQuests, useMockMedia, useMockStats } from "../../hooks/useMockData";
-import { neo } from "@castquest/neo-ux-core";
+export const metadata: Metadata = {
+  title: 'Dashboard Overview | CastQuest',
+  description: 'Overview of your CastQuest dashboard with key metrics and activity',
+};
 
 export default function DashboardOverview() {
-  const { frames, loading: framesLoading } = useMockFrames();
-  const { quests, loading: questsLoading } = useMockQuests();
-  const { media, loading: mediaLoading } = useMockMedia();
-  const { stats } = useMockStats();
-  const [activeTab, setActiveTab] = useState<"frames" | "quests" | "media">("frames");
+  // Placeholder data
+  const metrics = [
+    {
+      label: 'Active Quests',
+      value: '24',
+      change: '+12%',
+      trend: 'up' as const,
+      icon: Zap,
+      color: 'text-primary',
+    },
+    {
+      label: 'Total Frames',
+      value: '156',
+      change: '+8%',
+      trend: 'up' as const,
+      icon: Activity,
+      color: 'text-success',
+    },
+    {
+      label: 'Participants',
+      value: '1,247',
+      change: '+23%',
+      trend: 'up' as const,
+      icon: Users,
+      color: 'text-secondary',
+    },
+    {
+      label: 'Treasury Balance',
+      value: '$45.2K',
+      change: '-2%',
+      trend: 'down' as const,
+      icon: DollarSign,
+      color: 'text-warning',
+    },
+  ];
+
+  const recentActivity = [
+    {
+      id: '1',
+      user: '0x1234...5678',
+      action: 'Completed Quest: Welcome to CastQuest',
+      timestamp: '2 minutes ago',
+    },
+    {
+      id: '2',
+      user: '0x8765...4321',
+      action: 'Minted Frame NFT #156',
+      timestamp: '15 minutes ago',
+    },
+    {
+      id: '3',
+      user: '0x9999...1111',
+      action: 'Created new Quest: Share Your Story',
+      timestamp: '1 hour ago',
+    },
+    {
+      id: '4',
+      user: '0x2222...3333',
+      action: 'Completed Quest: First Frame',
+      timestamp: '2 hours ago',
+    },
+    {
+      id: '5',
+      user: '0x4444...5555',
+      action: 'Joined Treasury Pool',
+      timestamp: '3 hours ago',
+    },
+  ];
+
+  const topQuests = [
+    {
+      id: '1',
+      name: 'Welcome to CastQuest',
+      participants: 456,
+      status: 'active',
+      reward: '100 CAST',
+    },
+    {
+      id: '2',
+      name: 'First Frame Challenge',
+      participants: 324,
+      status: 'active',
+      reward: '250 CAST',
+    },
+    {
+      id: '3',
+      name: 'Share Your Story',
+      participants: 189,
+      status: 'active',
+      reward: '500 CAST',
+    },
+  ];
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-neutral-900 to-black">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(16,185,129,0.1),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(139,92,246,0.1),transparent_50%)]" />
-        </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-white">Dashboard Overview</h1>
+        <p className="mt-2 text-neutral-400">
+          Welcome back! Here's what's happening with your quests and frames.
+        </p>
+      </div>
 
-        {/* Grid Pattern Overlay */}
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: 'linear-gradient(rgba(16,185,129,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.1) 1px, transparent 1px)',
-          backgroundSize: '50px 50px'
-        }} />
-
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-          <div className={`inline-block mb-6 px-4 py-2 rounded-full border ${neo.colors.border.glow} ${neo.glow.success} bg-emerald-500/10`}>
-            <span className={`text-sm font-bold ${neo.colors.text.accent} uppercase tracking-wide`}>
-              🚀 Decentralized Protocol Universe
-            </span>
-          </div>
-          
-          <h1 className={`text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent ${neo.animation.pulse}`}>
-            CastQuest
-          </h1>
-          
-          <p className={`text-xl md:text-2xl ${neo.colors.text.secondary} mb-4 max-w-3xl mx-auto`}>
-            Create, Cast, and Conquer in the Sovereign Web3 Media Hub
-          </p>
-          
-          <p className={`text-sm ${neo.colors.text.tertiary} mb-8 max-w-2xl mx-auto`}>
-            Powered by Farcaster, Zora, Solana, BASE, and the Neo Glow Protocol. 
-            Build frames, complete quests, mint NFTs, and earn rewards in the decentralized ecosystem.
-          </p>
-
-          <div className="flex gap-4 justify-center mb-12">
-            <GlowButton onClick={() => window.location.href = "/dashboard/quests"}>
-              🎯 View Quests
-            </GlowButton>
-            <GlowButton onClick={() => window.location.href = "/dashboard/builder"}>
-              ⚡ Frame Builder
-            </GlowButton>
-          </div>
-
-          {/* Protocol Stats */}
-          <div className={`inline-block border ${neo.colors.border.glow} rounded-lg p-6 bg-black/40 backdrop-blur-sm ${neo.glow.idle}`}>
-            <DashboardGrid>
-              <DashboardStat 
-                label="Total Frames" 
-                value={stats?.totalFrames.toString() || "0"} 
-                trend="up"
-              />
-              <DashboardStat 
-                label="Live Frames" 
-                value={stats?.liveFrames.toString() || "0"} 
-                trend="up"
-              />
-              <DashboardStat 
-                label="Active Quests" 
-                value={stats?.activeQuests.toString() || "0"} 
-                trend="neutral"
-              />
-              <DashboardStat 
-                label="Total Participants" 
-                value={stats?.totalParticipants.toLocaleString() || "0"} 
-                trend="up"
-              />
-            </DashboardGrid>
-          </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-          <div className={`${neo.animation.bounce} ${neo.colors.text.tertiary}`}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-          </div>
-        </div>
-      </section>
-
-      {/* Content Sections */}
-      <section className="max-w-7xl mx-auto px-6 py-16">
-        {/* Tab Navigation */}
-        <div className="flex justify-center gap-4 mb-12">
-          {[
-            { id: "frames", label: "🖼️ Frames", count: frames.length },
-            { id: "quests", label: "🎯 Quests", count: quests.length },
-            { id: "media", label: "📺 Media", count: media.length }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                activeTab === tab.id
-                  ? `${neo.colors.text.primary} bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border ${neo.colors.border.glow} ${neo.glow.active}`
-                  : `${neo.colors.text.tertiary} border border-neutral-800 hover:border-neutral-700`
-              }`}
+      {/* Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {metrics.map((metric) => {
+          const Icon = metric.icon;
+          const TrendIcon = metric.trend === 'up' ? TrendingUp : TrendingDown;
+          return (
+            <div
+              key={metric.label}
+              className="bg-neutral-950 border border-neutral-800 rounded-lg p-6 hover:border-neutral-700 transition-colors"
             >
-              {tab.label}
-              <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
-                activeTab === tab.id ? "bg-emerald-500/20 text-emerald-400" : "bg-neutral-800 text-neutral-500"
-              }`}>
-                {tab.count}
-              </span>
-            </button>
-          ))}
+              <div className="flex items-center justify-between mb-4">
+                <Icon className={`${metric.color}`} size={24} />
+                <span
+                  className={`flex items-center gap-1 text-sm ${
+                    metric.trend === 'up' ? 'text-success' : 'text-error'
+                  }`}
+                >
+                  <TrendIcon size={16} />
+                  {metric.change}
+                </span>
+              </div>
+              <div className="text-3xl font-bold text-white mb-1">
+                {metric.value}
+              </div>
+              <div className="text-sm text-neutral-400">{metric.label}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Quick Actions */}
+      <div className="bg-neutral-950 border border-neutral-800 rounded-lg p-6">
+        <h2 className="text-xl font-bold text-white mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Link
+            href="/dashboard/quests/create"
+            className="flex items-center justify-between p-4 bg-neutral-900 hover:bg-neutral-800 rounded-lg transition-colors group"
+          >
+            <span className="text-white font-medium">Create New Quest</span>
+            <ArrowRight
+              size={20}
+              className="text-neutral-400 group-hover:text-primary transition-colors"
+            />
+          </Link>
+          <Link
+            href="/dashboard/builder"
+            className="flex items-center justify-between p-4 bg-neutral-900 hover:bg-neutral-800 rounded-lg transition-colors group"
+          >
+            <span className="text-white font-medium">Build a Frame</span>
+            <ArrowRight
+              size={20}
+              className="text-neutral-400 group-hover:text-primary transition-colors"
+            />
+          </Link>
+          <Link
+            href="/dashboard/treasury"
+            className="flex items-center justify-between p-4 bg-neutral-900 hover:bg-neutral-800 rounded-lg transition-colors group"
+          >
+            <span className="text-white font-medium">View Treasury</span>
+            <ArrowRight
+              size={20}
+              className="text-neutral-400 group-hover:text-primary transition-colors"
+            />
+          </Link>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Activity */}
+        <div className="bg-neutral-950 border border-neutral-800 rounded-lg p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-white">Recent Activity</h2>
+            <Link
+              href="/dashboard/activity"
+              className="text-sm text-primary hover:text-primary/80 transition-colors"
+            >
+              View All
+            </Link>
+          </div>
+          <div className="space-y-4">
+            {recentActivity.map((activity) => (
+              <div
+                key={activity.id}
+                className="flex items-start gap-3 pb-4 border-b border-neutral-800 last:border-0 last:pb-0"
+              >
+                <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-white">{activity.action}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-xs text-neutral-400">
+                      {activity.user}
+                    </span>
+                    <span className="text-xs text-neutral-600">•</span>
+                    <span className="text-xs text-neutral-400">
+                      {activity.timestamp}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Frames Grid */}
-        {activeTab === "frames" && (
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className={`text-2xl font-bold ${neo.colors.text.primary}`}>
-                Featured Frames
-              </h2>
-              <span className={`text-sm ${neo.colors.text.tertiary}`}>
-                {framesLoading ? "Loading..." : `${frames.length} frames available`}
-              </span>
-            </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {frames.map((frame) => (
-                <FrameCard
-                  key={frame.id}
-                  frame={frame}
-                  onView={() => console.log("View frame:", frame.id)}
-                  onCast={() => console.log("Cast frame:", frame.id)}
-                />
-              ))}
-            </div>
+        {/* Top Performing Quests */}
+        <div className="bg-neutral-950 border border-neutral-800 rounded-lg p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-white">
+              Top Performing Quests
+            </h2>
+            <Link
+              href="/dashboard/quests"
+              className="text-sm text-primary hover:text-primary/80 transition-colors"
+            >
+              View All
+            </Link>
           </div>
-        )}
-
-        {/* Quests Grid */}
-        {activeTab === "quests" && (
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className={`text-2xl font-bold ${neo.colors.text.primary}`}>
-                Active Quests
-              </h2>
-              <span className={`text-sm ${neo.colors.text.tertiary}`}>
-                {questsLoading ? "Loading..." : `${quests.filter(q => q.status === "active").length} active`}
-              </span>
-            </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {quests.map((quest) => (
-                <QuestCard
-                  key={quest.id}
-                  quest={quest}
-                  onStart={() => console.log("Start quest:", quest.id)}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Media Grid */}
-        {activeTab === "media" && (
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className={`text-2xl font-bold ${neo.colors.text.primary}`}>
-                Protocol Media
-              </h2>
-              <span className={`text-sm ${neo.colors.text.tertiary}`}>
-                {mediaLoading ? "Loading..." : `${media.length} items`}
-              </span>
-            </div>
-            <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-4">
-              {media.map((item) => (
-                <MediaCard
-                  key={item.id}
-                  media={item}
-                  onPlay={() => console.log("Play media:", item.id)}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-      </section>
-
-      {/* CTA Section */}
-      <section className={`max-w-5xl mx-auto px-6 py-16 mb-16`}>
-        <div className={`border ${neo.colors.border.glow} rounded-2xl p-12 bg-gradient-to-br from-purple-500/10 to-cyan-500/10 ${neo.glow.active} text-center`}>
-          <h2 className={`text-3xl font-bold ${neo.colors.text.primary} mb-4`}>
-            Ready to Build on CastQuest?
-          </h2>
-          <p className={`text-lg ${neo.colors.text.secondary} mb-8 max-w-2xl mx-auto`}>
-            Join the decentralized protocol universe. Create frames, complete quests, 
-            mint NFTs, and earn rewards across Farcaster, Zora, Solana, and BASE.
-          </p>
-          <div className="flex gap-4 justify-center">
-            <GlowButton onClick={() => window.location.href = "/dashboard/builder"}>
-              🚀 Get Started
-            </GlowButton>
-            <button className={`px-6 py-3 rounded-lg font-semibold border ${neo.colors.border.glow} ${neo.colors.text.secondary} hover:${neo.colors.text.primary} transition-all`}>
-              📚 View Docs
-            </button>
+          <div className="space-y-4">
+            {topQuests.map((quest) => (
+              <Link
+                key={quest.id}
+                href={`/dashboard/quests/${quest.id}`}
+                className="block p-4 bg-neutral-900 hover:bg-neutral-800 rounded-lg transition-colors"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <h3 className="font-medium text-white">{quest.name}</h3>
+                  <span className="px-2 py-1 text-xs rounded bg-success/10 text-success border border-success/30">
+                    {quest.status}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-neutral-400">
+                    {quest.participants} participants
+                  </span>
+                  <span className="text-primary font-medium">
+                    {quest.reward}
+                  </span>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
