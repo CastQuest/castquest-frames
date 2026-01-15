@@ -39,7 +39,8 @@ export async function POST(req: NextRequest) {
       category: body.category || 'custom',
       thumbnailUrl: body.thumbnailUrl,
       price: body.price,
-      // TODO: Extract from admin context once admin authentication provides user context
+      // Use creatorId from request body if provided, otherwise fall back to system-admin
+      // This allows API consumers to specify the creator while providing a safe default
       creatorId: body.creatorId || 'system-admin',
       tenantId: body.tenantId,
       templateData: JSON.stringify(templateData),

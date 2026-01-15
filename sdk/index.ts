@@ -15,7 +15,7 @@ export class CastQuestSDK {
   }) {
     this.apiUrl = config.apiUrl;
     this.contractAddress = config.contractAddress;
-    this.daoAddress = config. daoAddress;
+    this.daoAddress = config.daoAddress;
   }
 
   async createProposal(title: string, description: string) {

@@ -4,7 +4,7 @@
  */
 
 export class CastQuestDAO {
-  private contractAddress:  string;
+  private contractAddress: string;
   private provider: any;
   
   constructor(contractAddress: string, provider: any) {
@@ -12,7 +12,7 @@ export class CastQuestDAO {
     this.provider = provider;
   }
 
-  async createProposal(title:  string, description: string, actions:  any[]) {
+  async createProposal(title: string, description: string, actions: any[]) {
     console.log('Creating proposal:', title);
     return { proposalId: '...' };
   }
