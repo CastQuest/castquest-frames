@@ -380,6 +380,10 @@ EXAMPLES:
   ./scripts/master.sh health --fix
   ./scripts/master.sh oracle analyze
 
+ADDITIONAL TOOLS:
+  ./scripts/repair-dependencies.sh    Dependency repair and harmonization
+  .smartbrain/oracle.sh               AI-powered repository insights
+
 All operations are idempotent and non-destructive.
 No deletions, no structural changes unless explicitly approved.
 

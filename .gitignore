@@ -31,6 +31,7 @@ web-build/
 
 # Generated reports
 AUDIT-REPORT.md
+ORACLE-REPORT.md
 
 # Smart Brain cache
 .smartbrain/cache/
