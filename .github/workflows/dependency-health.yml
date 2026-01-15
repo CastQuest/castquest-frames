@@ -226,11 +226,4 @@ jobs:
       - name: Set workflow status
         if: always()
         run: |
-          if [ -f health-report.json ]; then
-            STATUS=$(jq -r '.status' health-report.json)
-            if [ "$STATUS" = "unhealthy" ]; then
-              echo "Health check reported unhealthy status"
-              exit 1
-            fi
-          fi
-          echo "Health check completed"
+          node scripts/health/check-health.js health-report.json

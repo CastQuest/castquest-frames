@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 /**
  * Check if the request has admin authorization
  */
-export function requireAdmin(request: NextRequest): { authorized: boolean; error?: any } {
+export function requireAdmin(request: NextRequest): { authorized: boolean; error?: any; userId?: string } {
   const adminToken = process.env.ADMIN_API_TOKEN;
   const providedToken = request.headers.get('x-admin-token');
 
@@ -17,5 +17,8 @@ export function requireAdmin(request: NextRequest): { authorized: boolean; error
     };
   }
 
-  return { authorized: true };
+  // Extract admin user ID from header or use system default
+  const userId = request.headers.get('x-admin-user-id') || 'system-admin';
+
+  return { authorized: true, userId };
 }
