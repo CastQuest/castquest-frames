@@ -39,9 +39,9 @@ export async function POST(req: NextRequest) {
       category: body.category || 'custom',
       thumbnailUrl: body.thumbnailUrl,
       price: body.price,
-      // Use creatorId from request body if provided, otherwise fall back to system-admin
-      // This allows API consumers to specify the creator while providing a safe default
-      creatorId: body.creatorId || 'system-admin',
+      // Use authenticated admin user ID from auth context
+      // Falls back to request body creatorId if provided for API flexibility
+      creatorId: adminAuth.userId || body.creatorId || 'system-admin',
       tenantId: body.tenantId,
       templateData: JSON.stringify(templateData),
       version: body.version || '1.0.0',
