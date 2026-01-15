@@ -108,6 +108,9 @@ CastQuest Ecosystem
 
 # Auto-deploy with validation
 .smartbrain/brain.sh auto
+
+# Run Smart Brain Oracle for insights
+.smartbrain/oracle.sh all
 ```
 
 ### Full Auto-Deploy Workflow
@@ -200,17 +203,80 @@ Protected Paths:
 
 ## Integration with Master.sh
 
-The Smart Brain works seamlessly with `scripts/master.sh`:
+The Smart Brain works seamlessly with `scripts/master.sh` and the Oracle:
 
 ```bash
 # Use Smart Brain for git operations
 .smartbrain/brain.sh auto
 
+# Use Oracle for dependency insights
+.smartbrain/oracle.sh all
+
 # Use master.sh for system operations
 scripts/master.sh deploy production
 scripts/master.sh workers start
 scripts/master.sh monitor
+
+# Combined health workflow
+.smartbrain/oracle.sh all && scripts/master.sh health
 ```
+
+## Smart Brain Oracle
+
+The Smart Brain Oracle provides AI-powered repository insights:
+
+### Features
+
+- **Dependency Health Analysis**: Version consistency and compatibility checks
+- **Security Vulnerability Detection**: Automated scanning for known issues
+- **Version Upgrade Recommendations**: Intelligent upgrade suggestions with compatibility analysis
+- **Deprecated Package Monitoring**: Track and alert on obsolete packages
+- **Performance Improvement Suggestions**: Optimization recommendations
+- **Monorepo Structure Analysis**: Architecture insights and improvements
+- **Predictive Maintenance Warnings**: Proactive alerts before issues arise
+- **Dependency Graph Visualization**: Visual representation of relationships
+- **Smart Conflict Resolution**: Intelligent dependency conflict fixing
+
+### Oracle Usage
+
+```bash
+# Run all analyses
+.smartbrain/oracle.sh all
+
+# Specific analyses
+.smartbrain/oracle.sh analyze        # Dependency health
+.smartbrain/oracle.sh security       # Security scan
+.smartbrain/oracle.sh upgrades       # Upgrade recommendations
+.smartbrain/oracle.sh deprecated     # Deprecated packages
+.smartbrain/oracle.sh performance    # Performance tips
+.smartbrain/oracle.sh structure      # Monorepo analysis
+.smartbrain/oracle.sh warnings       # Predictive warnings
+.smartbrain/oracle.sh graph          # Dependency graph
+.smartbrain/oracle.sh conflicts      # Conflict resolution
+.smartbrain/oracle.sh integration    # System integration status
+.smartbrain/oracle.sh report         # Comprehensive report
+
+# View generated report
+cat ORACLE-REPORT.md
+```
+
+### Oracle Integration with CI/CD
+
+The Oracle is integrated into the GitHub Actions workflow:
+
+```yaml
+# .github/workflows/dependency-health.yml
+- name: Run Smart Brain Oracle
+  run: .smartbrain/oracle.sh report
+
+- name: Upload Oracle Report
+  uses: actions/upload-artifact@v3
+  with:
+    name: oracle-report
+    path: ORACLE-REPORT.md
+```
+
+See [docs/DEPENDENCY-HEALTH.md](../docs/DEPENDENCY-HEALTH.md) for comprehensive documentation.
 
 ## Configuration
 
