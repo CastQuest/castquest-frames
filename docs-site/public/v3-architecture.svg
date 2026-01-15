@@ -1,0 +1,182 @@
+<svg viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#A78BFA" />
+      <stop offset="50%" style="stop-color:#EC4899" />
+      <stop offset="100%" style="stop-color:#67E8F9" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="layer1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3B82F6" />
+      <stop offset="100%" style="stop-color:#8B5CF6" />
+    </linearGradient>
+    <linearGradient id="layer2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8B5CF6" />
+      <stop offset="100%" style="stop-color:#EC4899" />
+    </linearGradient>
+    <linearGradient id="layer3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#EC4899" />
+      <stop offset="100%" style="stop-color:#F43F5E" />
+    </linearGradient>
+    <linearGradient id="layer4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#F43F5E" />
+      <stop offset="100%" style="stop-color:#F59E0B" />
+    </linearGradient>
+    <linearGradient id="layer5" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#F59E0B" />
+      <stop offset="100%" style="stop-color:#10B981" />
+    </linearGradient>
+    <linearGradient id="layer6" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10B981" />
+      <stop offset="100%" style="stop-color:#06B6D4" />
+    </linearGradient>
+    <linearGradient id="layer7" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#06B6D4" />
+      <stop offset="100%" style="stop-color:#3B82F6" />
+    </linearGradient>
+  </defs>
+  
+  <style>
+    text { font-family: system-ui, sans-serif; }
+    .layer-rect { transition: all 0.3s; cursor: pointer; }
+    .layer-rect:hover { filter: brightness(1.2); }
+    .layer-label { font-weight: 600; }
+    .layer-content { font-size: 14px; }
+  </style>
+  
+  <!-- Title -->
+  <text x="600" y="50" text-anchor="middle" font-size="32" font-weight="bold" fill="url(#titleGradient)" filter="url(#glow)">
+    CASTQUEST V3 ARCHITECTURE
+  </text>
+  <text x="600" y="75" text-anchor="middle" font-size="14" fill="#94A3B8">
+    Autonomous Creative Economy — 7-Layer Stack
+  </text>
+
+  <!-- Layer 1: Interface -->
+  <rect class="layer-rect" x="100" y="110" width="1000" height="85" fill="#111827" stroke="url(#layer1)" stroke-width="3" rx="12"/>
+  <text x="600" y="138" text-anchor="middle" fill="url(#layer1)" font-size="16" class="layer-label">
+    LAYER 1: INTERFACE LAYER
+  </text>
+  <text x="600" y="160" text-anchor="middle" fill="#E5E7EB" font-size="13" class="layer-content">
+    Web App (User/Admin/Dev Dashboards) • L3 UIs • Bots (Farcaster, X, Discord)
+  </text>
+  <text x="600" y="180" text-anchor="middle" fill="#9CA3AF" font-size="11">
+    Next.js 14 • AI-Generated UI/UX • Multi-Platform Access
+  </text>
+
+  <!-- Layer 2: AI Builder -->
+  <rect class="layer-rect" x="100" y="210" width="1000" height="85" fill="#111827" stroke="url(#layer2)" stroke-width="3" rx="12"/>
+  <text x="600" y="238" text-anchor="middle" fill="url(#layer2)" font-size="16" class="layer-label">
+    LAYER 2: AI BUILDER LAYER
+  </text>
+  <text x="600" y="260" text-anchor="middle" fill="#E5E7EB" font-size="13" class="layer-content">
+    Code Builder • Frame Builder • Game Builder • UI Builder (V3)
+  </text>
+  <text x="600" y="280" text-anchor="middle" fill="#9CA3AF" font-size="11">
+    AI-Powered Content Generation • Template System • One-Click Deploy
+  </text>
+
+  <!-- Layer 3: Agent -->
+  <rect class="layer-rect" x="100" y="310" width="1000" height="85" fill="#111827" stroke="url(#layer3)" stroke-width="3" rx="12"/>
+  <text x="600" y="338" text-anchor="middle" fill="url(#layer3)" font-size="16" class="layer-label">
+    LAYER 3: AGENT LAYER (11 AI AGENTS)
+  </text>
+  <text x="600" y="360" text-anchor="middle" fill="#E5E7EB" font-size="13" class="layer-content">
+    Creation • Pricing • Auction • Curation • Fraud • Sync • UI • Portfolio • Social
+  </text>
+  <text x="600" y="380" text-anchor="middle" fill="#9CA3AF" font-size="11">
+    Autonomous Operations • Permission-Scoped • Logged & Auditable
+  </text>
+
+  <!-- Layer 4: Protocol -->
+  <rect class="layer-rect" x="100" y="410" width="1000" height="85" fill="#111827" stroke="url(#layer4)" stroke-width="3" rx="12"/>
+  <text x="600" y="438" text-anchor="middle" fill="url(#layer4)" font-size="16" class="layer-label">
+    LAYER 4: PROTOCOL LAYER
+  </text>
+  <text x="600" y="460" text-anchor="middle" fill="#E5E7EB" font-size="13" class="layer-content">
+    6 Tokens: CAST • QUEST • MEDIA • FRAM • GAME • CODE
+  </text>
+  <text x="600" y="480" text-anchor="middle" fill="#9CA3AF" font-size="11">
+    UserProfile.sol • SubDAOFactory.sol • BuybackRouter.sol • AIDaoConstitution.sol
+  </text>
+
+  <!-- Layer 5: Multi-Chain -->
+  <rect class="layer-rect" x="100" y="510" width="1000" height="85" fill="#111827" stroke="url(#layer5)" stroke-width="3" rx="12"/>
+  <text x="600" y="538" text-anchor="middle" fill="url(#layer5)" font-size="16" class="layer-label">
+    LAYER 5: MULTI-CHAIN + L3 LAYER
+  </text>
+  <text x="600" y="560" text-anchor="middle" fill="#E5E7EB" font-size="13" class="layer-content">
+    Base (L2) • Optimism • Arbitrum • Solana • Creator L3s
+  </text>
+  <text x="600" y="580" text-anchor="middle" fill="#9CA3AF" font-size="11">
+    RollupFactory • L3Bridge • Wormhole Integration • Cross-Chain Sync
+  </text>
+
+  <!-- Layer 6: Marketplace -->
+  <rect class="layer-rect" x="100" y="610" width="1000" height="85" fill="#111827" stroke="url(#layer6)" stroke-width="3" rx="12"/>
+  <text x="600" y="638" text-anchor="middle" fill="url(#layer6)" font-size="16" class="layer-label">
+    LAYER 6: MARKETPLACE LAYER
+  </text>
+  <text x="600" y="660" text-anchor="middle" fill="#E5E7EB" font-size="13" class="layer-content">
+    Global Marketplace • L3 Marketplace • Solana Marketplace • Sponsor Marketplace (V3)
+  </text>
+  <text x="600" y="680" text-anchor="middle" fill="#9CA3AF" font-size="11">
+    Unified Order Books • Atomic Cross-Chain Swaps • SponsorToken Trading
+  </text>
+
+  <!-- Layer 7: Governance -->
+  <rect class="layer-rect" x="100" y="710" width="1000" height="85" fill="#111827" stroke="url(#layer7)" stroke-width="3" rx="12"/>
+  <text x="600" y="738" text-anchor="middle" fill="url(#layer7)" font-size="16" class="layer-label">
+    LAYER 7: GOVERNANCE + TREASURY LAYER
+  </text>
+  <text x="600" y="760" text-anchor="middle" fill="#E5E7EB" font-size="13" class="layer-content">
+    CAST Voting • AI DAO Constitution • Autonomous Treasury
+  </text>
+  <text x="600" y="780" text-anchor="middle" fill="#9CA3AF" font-size="11">
+    GovernanceV2.sol • Yield Optimization • Sponsor Participation
+  </text>
+
+  <!-- Connection Arrows -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <polygon points="0 0, 10 5, 0 10" fill="#A78BFA" />
+    </marker>
+  </defs>
+  
+  <path d="M 600 195 L 600 210" stroke="#A78BFA" stroke-width="2" fill="none" marker-end="url(#arrowhead)" opacity="0.6"/>
+  <path d="M 600 295 L 600 310" stroke="#EC4899" stroke-width="2" fill="none" marker-end="url(#arrowhead)" opacity="0.6"/>
+  <path d="M 600 395 L 600 410" stroke="#F43F5E" stroke-width="2" fill="none" marker-end="url(#arrowhead)" opacity="0.6"/>
+  <path d="M 600 495 L 600 510" stroke="#F59E0B" stroke-width="2" fill="none" marker-end="url(#arrowhead)" opacity="0.6"/>
+  <path d="M 600 595 L 600 610" stroke="#10B981" stroke-width="2" fill="none" marker-end="url(#arrowhead)" opacity="0.6"/>
+  <path d="M 600 695 L 600 710" stroke="#06B6D4" stroke-width="2" fill="none" marker-end="url(#arrowhead)" opacity="0.6"/>
+
+  <!-- Version Badge -->
+  <g transform="translate(50, 830)">
+    <rect width="120" height="40" rx="20" fill="#111827" stroke="url(#titleGradient)" stroke-width="2"/>
+    <text x="60" y="18" text-anchor="middle" fill="url(#titleGradient)" font-size="11" font-weight="bold">
+      VERSION
+    </text>
+    <text x="60" y="32" text-anchor="middle" fill="#E5E7EB" font-size="16" font-weight="bold">
+      V3.0.0
+    </text>
+  </g>
+
+  <!-- Stats -->
+  <g transform="translate(950, 820)">
+    <text x="0" y="0" fill="#9CA3AF" font-size="11">11 AI Agents</text>
+    <text x="0" y="20" fill="#9CA3AF" font-size="11">6 Core Tokens</text>
+    <text x="0" y="40" fill="#9CA3AF" font-size="11">5+ Chain Support</text>
+    <text x="0" y="60" fill="#9CA3AF" font-size="11">Multi-Chain Marketplace</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="880" text-anchor="middle" fill="#64748B" font-size="10">
+    docs.castquest.xyz/v3/architecture • github.com/CastQuest/castquest-frames
+  </text>
+</svg>
