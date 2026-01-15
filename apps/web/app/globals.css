@@ -13,6 +13,80 @@ body {
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "Segoe UI", sans-serif;
+  background: #020617;
+  color: #e5e7eb;
+}
+
+/* === V3 AURA / FX / GLOW / NEO AESTHETIC ================================== */
+
+:root {
+  --aura-purple: 159 88% 62%;
+  --aura-pink: 316 73% 69%;
+  --aura-cyan: 189 94% 63%;
+  --neo-green: 142 76% 36%;
+  --neo-blue: 217 91% 60%;
+  --glow-intensity: 0.6;
+}
+
+/* Aura Glow Effect */
+.aura-glow {
+  position: relative;
+}
+
+.aura-glow::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    45deg,
+    hsl(var(--aura-purple)),
+    hsl(var(--aura-pink)),
+    hsl(var(--aura-cyan))
+  );
+  border-radius: inherit;
+  opacity: 0;
+  filter: blur(20px);
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.aura-glow:hover::before {
+  opacity: var(--glow-intensity);
+}
+
+/* Neo Border */
+.neo-border {
+  border: 2px solid hsl(var(--neo-blue));
+  box-shadow: 
+    0 0 10px hsl(var(--neo-blue) / 0.3),
+    inset 0 0 10px hsl(var(--neo-blue) / 0.1);
+}
+
+/* FX Glass */
+.fx-glass {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+/* Animated Gradient Text */
+.gradient-text {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--aura-purple)),
+    hsl(var(--aura-pink)),
+    hsl(var(--aura-cyan))
+  );
+  background-size: 200% 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 3s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 /* === CORE AESTHETIC ======================================================= */
