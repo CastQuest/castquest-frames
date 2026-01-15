@@ -1,4 +1,4 @@
-﻿node_modules
+node_modules
 dist
 .env
 .env.*
@@ -38,6 +38,10 @@ AUDIT-REPORT.md
 
 # Turbo
 .turbo
+
+# Supabase
+supabase/.branches
+supabase/.temp
 
 # Supabase
 supabase/.branches
