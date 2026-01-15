@@ -92,7 +92,7 @@ jobs:
         continue-on-error: true
       
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.4.3
         if: always()
         with:
           name: v3-build-artifacts
@@ -157,7 +157,7 @@ jobs:
     
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: v3-build-artifacts
       
