@@ -24,6 +24,7 @@ export default defineConfig({
     logo: '/logo.svg',
     
     nav: [
+      { text: 'V3', link: '/v3/index' },
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'Architecture', link: '/architecture/overview' },
       { text: 'API Reference', link: '/api/overview' },
@@ -32,6 +33,32 @@ export default defineConfig({
     ],
 
     sidebar: {
+      '/v3/': [
+        {
+          text: 'CastQuest V3',
+          items: [
+            { text: 'Overview', link: '/v3/index' },
+            { text: 'Architecture', link: '/v3/architecture' }
+          ]
+        },
+        {
+          text: 'Protocol',
+          items: [
+            { text: 'Constitution', link: '/v3/protocol/constitution' },
+            { text: 'AI DAO Constitution', link: '/v3/protocol/ai-dao-constitution' }
+          ]
+        },
+        {
+          text: 'Core Concepts',
+          items: [
+            { text: 'Tokenomics', link: '/v3/overview/tokenomics' },
+            { text: 'Agents', link: '/v3/agents/overview' },
+            { text: 'Marketplace', link: '/v3/marketplace/overview' },
+            { text: 'Builders', link: '/v3/builders/overview' }
+          ]
+        }
+      ],
+
       '/guide/': [
         {
           text: 'Getting Started',
