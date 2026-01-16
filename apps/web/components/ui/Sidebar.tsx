@@ -3,17 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navItems = [
+interface SidebarProps {
+  menuItems?: Array<{ label: string; icon: string; href: string; active?: boolean }>;
+}
+
+// Default navigation items - can be overridden by props
+const defaultNavItems = [
   { href: "/dashboard", label: "User Dashboard", icon: "📊" },
   { href: "/admin", label: "Admin Dashboard", icon: "⚙️" },
   { href: "/dev", label: "Dev Dashboard", icon: "🔧" },
-  { href: "/", label: "Home", icon: "🏠" },
-  { href: "/frames", label: "Frames", icon: "🖼️" },
-  { href: "/quests", label: "Quests", icon: "🎯" },
 ];
 
-export function Sidebar() {
+export function Sidebar({ menuItems }: SidebarProps) {
   const pathname = usePathname();
+  const navItems = menuItems || defaultNavItems;
 
   return (
     <aside className="cq-sidebar w-64 border-r border-slate-800 fx-glass">
@@ -22,7 +25,7 @@ export function Sidebar() {
       </div>
       <nav className="flex flex-col gap-1 px-2 pb-4">
         {navItems.map((item) => {
-          const active = pathname === item.href;
+          const active = pathname === item.href || item.active;
           return (
             <Link
               key={item.href}

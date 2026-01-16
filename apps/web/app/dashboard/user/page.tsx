@@ -1,6 +1,6 @@
-import { ShellLayout } from "../../components/layout/ShellLayout";
-import { Card } from "../../components/ui/Card";
-import { Metric } from "../../components/ui/Metric";
+import { ShellLayout } from "../../../components/layout/ShellLayout";
+import { Card } from "../../../components/ui/Card";
+import { Metric } from "../../../components/ui/Metric";
 
 export default function UserDashboardPage() {
   return (

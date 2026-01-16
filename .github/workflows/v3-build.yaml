@@ -86,14 +86,12 @@ jobs:
           echo "🚀 Building web application..."
           pnpm --filter @castquest/web build
           echo "✅ Web app built successfully"
-        continue-on-error: true
       
       - name: Build admin app
         run: |
           echo "⚙️ Building admin application..."
           pnpm --filter @castquest/admin build
           echo "✅ Admin app built successfully"
-        continue-on-error: true
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4.4.3
