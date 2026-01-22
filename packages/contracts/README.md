@@ -213,3 +213,67 @@ import MediaMarket from '@castquest/contracts/out/MediaMarket.sol/MediaMarket.js
 ## License
 
 MIT
+
+## V3 Enhancements
+
+CastQuest V3 adds significant new features:
+
+### New Contracts
+
+- **QuestToken**: Quest completion rewards (ERC-721)
+- **GameToken**: Game asset management (ERC-721)
+- **CodeToken**: AI-generated code NFTs (ERC-721)
+- **SponsorToken**: Creator sponsorship system (ERC-20)
+- **FeeManagerV3**: Transparent fee management with governance
+- **Marketplace**: Unified marketplace for all tokens
+- **GovernanceV2**: Enhanced DAO with timelocks
+
+### Transparent Fee Structure
+
+V3 introduces a transparent, governance-controlled fee structure:
+
+- **Protocol Fee**: 2.5% (250 bps) → Protocol treasury
+- **Developer Fee**: 0.5% (50 bps) → Developer treasury (monads.skr / solanamobile.base.eth)
+- **Treasury Fee**: 2.0% (200 bps) → DAO treasury
+- **Total**: 5.0% (500 bps)
+
+All fees are:
+- ✅ Publicly documented
+- ✅ On-chain and auditable
+- ✅ Adjustable by governance (48-hour timelock)
+- ✅ Capped at 10% maximum
+
+See [Fee Structure Documentation](../../docs/FEE_STRUCTURE.md) for complete details.
+
+### Deployment Scripts
+
+V3 includes production-ready deployment scripts:
+
+```bash
+# Deploy to testnet
+bash ../../scripts/deploy-testnet.sh
+
+# Deploy to mainnet (requires confirmation)
+bash ../../scripts/deploy-mainnet.sh
+
+# Extract ABIs for frontend
+bash ../../scripts/extract-abis.sh
+```
+
+### Documentation
+
+- [API Reference V3](../../docs/API_REFERENCE_V3.md) - Complete API documentation
+- [Deployment Guide V3](../../docs/DEPLOYMENT_GUIDE_V3.md) - Step-by-step deployment
+- [Fee Structure](../../docs/FEE_STRUCTURE.md) - Transparent fee breakdown
+- [Architecture Overview](../../docs/SYSTEM-OVERVIEW.md) - System architecture
+
+### CI/CD
+
+V3 includes automated deployment via GitHub Actions:
+
+- Automated contract deployment
+- ABI extraction
+- Frontend deployment
+- Post-deployment verification
+
+See `.github/workflows/deploy-v3.yml` for configuration.
