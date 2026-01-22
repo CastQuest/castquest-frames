@@ -30,4 +30,9 @@ export { MediaService } from './modules/media/service';
 export { RiskService } from './modules/risk/service';
 export { UserService } from './modules/users/service';
 export { WalletService } from './modules/wallets/service';
+export { FramesService } from './modules/frames/service';
+export { QuestsService } from './modules/quests/service';
+export { LeaderboardService } from './modules/leaderboard/service';
+export { AnalyticsService } from './modules/analytics/service';
+export { AuthService } from './modules/auth/service';
 

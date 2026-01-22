@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@castquest/core-services": "workspace:*",
     "@castquest/neo-ux-core": "workspace:*",
     "@tanstack/react-table": "^8.21.3",
     "framer-motion": "^10.16.0",

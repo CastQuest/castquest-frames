@@ -172,6 +172,7 @@ export class UserService {
    * Remove sensitive data from user object
    */
   private sanitizeUser(user: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...sanitized } = user;
     return sanitized;
   }

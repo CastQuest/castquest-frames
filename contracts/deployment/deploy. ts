@@ -1,0 +1,25 @@
+﻿/**
+ * CastQuest Smart Contracts Deployment Script
+ * PR #6 - Contracts Deployment
+ */
+
+import { ethers } from "hardhat";
+
+async function main() {
+  console.log("🚀 Starting CastQuest contracts deployment...");
+  
+  // Deploy Quest Contract
+  const QuestContract = await ethers.getContractFactory("CastQuest");
+  const quest = await QuestContract.deploy();
+  await quest.deployed();
+  console.log("Quest Contract deployed to:", quest.address);
+  
+  console.log("✅ Contracts deployed successfully!");
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

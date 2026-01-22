@@ -1,50 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { QuestsService } from '@castquest/core-services';
 
-// Mock data for quests
-const mockQuests = Array.from({ length: 30 }, (_, i) => ({
-  id: `quest-${i + 1}`,
-  name: `Quest ${i + 1}`,
-  status: ['active', 'completed', 'failed', 'pending'][i % 4],
-  frameId: i % 3 === 0 ? `frame-${i + 1}` : undefined,
-  progress: Math.floor(Math.random() * 100),
-  totalSteps: 5 + Math.floor(Math.random() * 10),
-  reward: {
-    type: ['token', 'nft', 'points'][i % 3],
-    amount: 10 + Math.floor(Math.random() * 90),
-  },
-  createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-  updatedAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-  completedAt: i % 4 === 1 ? new Date(Date.now() - Math.random() * 3 * 24 * 60 * 60 * 1000).toISOString() : undefined,
-}));
+// Lazy initialization to avoid build-time errors
+let questsService: QuestsService | null = null;
+
+function getQuestsService(): QuestsService {
+  if (!questsService) {
+    questsService = new QuestsService();
+  }
+  return questsService;
+}
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = parseInt(searchParams.get('page') || '1');
-    const perPage = parseInt(searchParams.get('perPage') || '10');
-    const status = searchParams.get('status');
+    const difficulty = searchParams.get('difficulty') || undefined;
+    const category = searchParams.get('category') || undefined;
+    const status = searchParams.get('status') || undefined;
+    const limit = parseInt(searchParams.get('limit') || '50');
+    const offset = parseInt(searchParams.get('offset') || '0');
 
-    let filtered = [...mockQuests];
-    
-    if (status) {
-      filtered = filtered.filter(q => q.status === status);
-    }
-
-    const start = (page - 1) * perPage;
-    const end = start + perPage;
-    const paginated = filtered.slice(start, end);
+    const quests = await getQuestsService().listQuests({
+      difficulty,
+      category,
+      status,
+      limit,
+      offset,
+    });
 
     return NextResponse.json({
       success: true,
-      data: paginated,
-      pagination: {
-        page,
-        perPage,
-        total: filtered.length,
-        totalPages: Math.ceil(filtered.length / perPage),
-      },
+      data: quests,
+      count: quests.length,
     });
   } catch (error: any) {
+    console.error('Error listing quests:', error);
     return NextResponse.json(
       { success: false, error: error.message || 'Failed to fetch quests' },
       { status: 500 }
@@ -56,31 +46,38 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    if (!body.name) {
+    // Validate required fields
+    if (!body.title || !body.difficulty || !body.category || !body.rewardType || !body.requirementType || !body.requirementData) {
       return NextResponse.json(
-        { success: false, error: 'Name is required' },
+        {
+          success: false,
+          error: 'Missing required fields: title, difficulty, category, rewardType, requirementType, or requirementData',
+        },
         { status: 400 }
       );
     }
 
-    const newQuest = {
-      id: `quest-${Date.now()}`,
-      name: body.name,
-      status: 'pending',
-      frameId: body.frameId,
-      progress: 0,
-      totalSteps: body.totalSteps || 5,
-      reward: body.reward,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    const quest = await getQuestsService().createQuest({
+      title: body.title,
+      description: body.description,
+      difficulty: body.difficulty,
+      category: body.category,
+      rewardType: body.rewardType,
+      rewardAmount: body.rewardAmount,
+      rewardData: body.rewardData ? JSON.stringify(body.rewardData) : undefined,
+      requirementType: body.requirementType,
+      requirementData: JSON.stringify(body.requirementData),
+      startDate: body.startDate ? new Date(body.startDate) : undefined,
+      endDate: body.endDate ? new Date(body.endDate) : undefined,
+    });
 
     return NextResponse.json({
       success: true,
-      data: newQuest,
+      data: quest,
       message: 'Quest created successfully',
-    });
+    }, { status: 201 });
   } catch (error: any) {
+    console.error('Error creating quest:', error);
     return NextResponse.json(
       { success: false, error: error.message || 'Failed to create quest' },
       { status: 500 }
