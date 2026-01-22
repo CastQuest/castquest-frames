@@ -33,3 +33,4 @@ export * from './permissions/PermissionsService';
 export * from './brain/SmartBrainEngine';
 export * from './oracle/OracleDBService';
 export * from './workers/AutonomousWorkerSystem';
+export * from './contracts';

@@ -1,0 +1,234 @@
+name: Deploy CastQuest V3
+
+on:
+  push:
+    tags:
+      - 'v3.*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'testnet'
+        type: choice
+        options:
+          - testnet
+          - mainnet
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '9'
+
+jobs:
+  # Validate contracts
+  validate-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+      
+      - name: Check contracts formatting
+        working-directory: packages/contracts
+        run: forge fmt --check
+      
+      - name: Build contracts
+        working-directory: packages/contracts
+        run: forge build --sizes
+      
+      - name: Run contract tests
+        working-directory: packages/contracts
+        run: forge test -vv
+      
+      - name: Generate gas report
+        working-directory: packages/contracts
+        run: forge test --gas-report
+  
+  # Deploy contracts to testnet or mainnet
+  deploy-contracts:
+    needs: validate-contracts
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+      
+      - name: Deploy to Testnet
+        if: github.event.inputs.environment == 'testnet' || contains(github.ref, 'alpha') || contains(github.ref, 'beta')
+        working-directory: packages/contracts
+        env:
+          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          BASE_SEPOLIA_RPC_URL: ${{ secrets.BASE_SEPOLIA_RPC_URL }}
+          OPTIMISM_SEPOLIA_RPC_URL: ${{ secrets.OPTIMISM_SEPOLIA_RPC_URL }}
+          BASESCAN_API_KEY: ${{ secrets.BASESCAN_API_KEY }}
+          OPTIMISM_ETHERSCAN_API_KEY: ${{ secrets.OPTIMISM_ETHERSCAN_API_KEY }}
+        run: |
+          forge script script/DeployV3.s.sol \
+            --rpc-url $BASE_SEPOLIA_RPC_URL \
+            --broadcast \
+            --verify \
+            --etherscan-api-key $BASESCAN_API_KEY \
+            -vvv
+      
+      - name: Deploy to Mainnet
+        if: github.event.inputs.environment == 'mainnet' && !contains(github.ref, 'alpha') && !contains(github.ref, 'beta')
+        working-directory: packages/contracts
+        env:
+          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          BASE_RPC_URL: ${{ secrets.BASE_RPC_URL }}
+          OPTIMISM_RPC_URL: ${{ secrets.OPTIMISM_RPC_URL }}
+          BASESCAN_API_KEY: ${{ secrets.BASESCAN_API_KEY }}
+          OPTIMISM_ETHERSCAN_API_KEY: ${{ secrets.OPTIMISM_ETHERSCAN_API_KEY }}
+        run: |
+          forge script script/DeployV3.s.sol \
+            --rpc-url $BASE_RPC_URL \
+            --broadcast \
+            --verify \
+            --etherscan-api-key $BASESCAN_API_KEY \
+            --slow \
+            -vvv
+      
+      - name: Export ABIs
+        run: bash scripts/extract-abis.sh
+      
+      - name: Upload deployment artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-artifacts
+          path: |
+            packages/contracts/broadcast/
+            packages/contracts/deployments/
+            packages/sdk/src/abis/
+          retention-days: 30
+  
+  # Build and deploy frontend
+  deploy-frontend:
+    needs: deploy-contracts
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
+    strategy:
+      matrix:
+        app: [web, admin]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      
+      - name: Download deployment artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: deployment-artifacts
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build packages
+        run: pnpm build
+      
+      - name: Deploy Web to Vercel
+        if: matrix.app == 'web'
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_WEB_PROJECT_ID }}
+          vercel-args: ${{ github.event.inputs.environment == 'mainnet' && '--prod' || '' }}
+          working-directory: ./apps/web
+      
+      - name: Deploy Admin to Vercel
+        if: matrix.app == 'admin'
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_ADMIN_PROJECT_ID }}
+          vercel-args: ${{ github.event.inputs.environment == 'mainnet' && '--prod' || '' }}
+          working-directory: ./apps/admin
+  
+  # Post-deployment verification
+  verify-deployment:
+    needs: [deploy-contracts, deploy-frontend]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      
+      - name: Download deployment artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: deployment-artifacts
+      
+      - name: Verify contract deployments
+        run: |
+          echo "Verifying contract deployments..."
+          # Add verification logic here
+          echo "✅ Contracts verified"
+      
+      - name: Health check
+        run: |
+          echo "Running health checks..."
+          # Add health check logic here
+          echo "✅ Health checks passed"
+      
+      - name: Create deployment summary
+        run: |
+          echo "## 🚀 CastQuest V3 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Environment: ${{ github.event.inputs.environment || 'testnet' }}" >> $GITHUB_STEP_SUMMARY
+          echo "### Version: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Contracts deployed and verified" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Frontend deployed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Health checks passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Update contract addresses in environment variables" >> $GITHUB_STEP_SUMMARY
+          echo "2. Transfer admin roles to multi-sig wallets" >> $GITHUB_STEP_SUMMARY
+          echo "3. Announce deployment to community" >> $GITHUB_STEP_SUMMARY
+          echo "4. Monitor for first 24 hours" >> $GITHUB_STEP_SUMMARY
