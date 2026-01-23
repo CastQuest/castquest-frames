@@ -6,6 +6,7 @@
 - Zero-risk automated commits, tags, and pushes
 - Protected core architecture
 - Protocol identity and concepts defined
+- **Smart Brain Automation**: Ongoing integration with development agents (castquest-code) for autonomous protocol evolution
 
 ---
 
@@ -122,7 +123,39 @@ contract MediaTokenFactory {
 }
 ```
 
-### Priority 3: Bonding Curve Market
+### Priority 3: Agentic Development Foundation
+
+**Integration with `castquest-code` for autonomous protocol expansion:**
+
+This priority establishes the foundation for AI-powered development workflows within the CastQuest protocol:
+
+- **Autonomous Protocol Expansion**: Integration with `castquest-code` (from SMSDAO) enables automated proposal and scaffolding of new protocol features, contracts, and extensions.
+  
+- **Automated Test Generation**: For "No External Dependency" custom contracts, development agents automatically generate comprehensive unit tests, ensuring code quality and security.
+
+- **CODE Token Reward Mechanism**: Define and implement the CODE token distribution system that rewards validated code contributions from:
+  - Autonomous builders and agents
+  - Smart contract generation and audits
+  - Protocol improvements and optimizations
+  - Documentation and testing contributions
+
+- **Smart Brain Integration**: The protocol's Smart Brain architecture coordinates with development agents to:
+  - Evaluate code quality and security
+  - Validate contributions before CODE token distribution
+  - Track contribution history and reputation
+  - Enable continuous, agent-assisted protocol evolution
+
+**Implementation Tasks**:
+- [ ] Define CODE token reward tiers and validation criteria
+- [ ] Integrate castquest-code agent framework
+- [ ] Build automated contract scaffolding pipeline
+- [ ] Implement test generation for custom contracts
+- [ ] Create contribution validation and audit system
+- [ ] Deploy CODE token minting logic in CodeEngine
+
+---
+
+### Priority 4: Bonding Curve Market
 
 **File**: `packages/contracts/contracts/MarketPlace.sol`
 
