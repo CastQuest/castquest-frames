@@ -48,8 +48,8 @@ contract Marketplace is ReentrancyGuard, AccessControl {
     /// @notice Fee manager address
     address public feeManager;
     
-    /// @notice Market fee in basis points (2.5%)
-    uint256 public marketFeeBps = 250;
+    /// @notice Market fee in basis points (5% total to match FeeManagerV3)
+    uint256 public marketFeeBps = 500;
     uint256 public constant BPS_DENOMINATOR = 10000;
     
     /// @notice Listing counter
@@ -98,11 +98,11 @@ contract Marketplace is ReentrancyGuard, AccessControl {
     }
     
     /**
-     * @notice List an item for sale
-     * @param tokenContract Token contract address
-     * @param tokenId Token ID (for NFTs) or 0 for ERC20
+     * @notice List an NFT for sale
+     * @param tokenContract NFT contract address
+     * @param tokenId Token ID
      * @param price Sale price in wei
-     * @param isNFT True for NFT (ERC721), false for ERC20
+     * @param isNFT Must be true (ERC-20 listings not supported)
      */
     function listItem(
         address tokenContract,
@@ -112,16 +112,15 @@ contract Marketplace is ReentrancyGuard, AccessControl {
     ) external nonReentrant returns (uint256) {
         require(tokenContract != address(0), Errors.ZERO_ADDRESS);
         require(price > 0, Errors.ZERO_AMOUNT);
+        require(isNFT, "ERC20 listings not supported");
         
-        if (isNFT) {
-            // Verify NFT ownership
-            require(
-                IERC721(tokenContract).ownerOf(tokenId) == msg.sender,
-                "Not token owner"
-            );
-            // Transfer NFT to marketplace
-            IERC721(tokenContract).transferFrom(msg.sender, address(this), tokenId);
-        }
+        // Verify NFT ownership
+        require(
+            IERC721(tokenContract).ownerOf(tokenId) == msg.sender,
+            "Not token owner"
+        );
+        // Transfer NFT to marketplace
+        IERC721(tokenContract).transferFrom(msg.sender, address(this), tokenId);
         
         uint256 listingId = ++_listingIdCounter;
         
@@ -160,23 +159,24 @@ contract Marketplace is ReentrancyGuard, AccessControl {
         uint256 fee = (listing.price * marketFeeBps) / BPS_DENOMINATOR;
         uint256 sellerAmount = listing.price - fee;
         
-        // Transfer item to buyer
-        if (listing.isNFT) {
-            IERC721(listing.tokenContract).transferFrom(
-                address(this),
-                msg.sender,
-                listing.tokenId
-            );
-        }
+        // Transfer NFT to buyer
+        IERC721(listing.tokenContract).transferFrom(
+            address(this),
+            msg.sender,
+            listing.tokenId
+        );
         
         // Transfer payment to seller
         (bool successSeller, ) = listing.seller.call{value: sellerAmount}("");
         require(successSeller, Errors.TRANSFER_FAILED);
         
-        // Transfer fee to fee manager
+        // Transfer fee to fee manager via collectFees
         if (fee > 0) {
-            (bool successFee, ) = feeManager.call{value: fee}("");
-            require(successFee, "Fee transfer failed");
+            // Note: Marketplace has OPERATOR_ROLE granted in deployment
+            (bool successFee, ) = feeManager.call{value: fee}(
+                abi.encodeWithSignature("collectFees(address,uint256)", address(0), fee)
+            );
+            require(successFee, "Fee collection failed");
         }
         
         // Record sale

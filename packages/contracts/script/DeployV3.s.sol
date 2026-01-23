@@ -91,7 +91,7 @@ contract DeployV3Script is Script {
         MediaTokenFactory factory = new MediaTokenFactory(
             address(registry),
             deployer,
-            address(feeManagerV3)
+            protocolTreasury  // Fee recipient should be treasury, not FeeManagerV3
         );
         console.log("  MediaTokenFactory:", address(factory));
         
@@ -131,8 +131,9 @@ contract DeployV3Script is Script {
         console.log("\nPhase 8: Configuring Permissions...");
         
         // Grant roles to factory
+        registry.grantRole(registry.FACTORY_ROLE(), address(factory));
         registry.grantRole(registry.OPERATOR_ROLE(), address(factory));
-        console.log("  Granted OPERATOR_ROLE to factory");
+        console.log("  Granted FACTORY_ROLE and OPERATOR_ROLE to factory");
         
         // Grant roles to quest/game/code systems
         registry.grantRole(registry.OPERATOR_ROLE(), address(questToken));

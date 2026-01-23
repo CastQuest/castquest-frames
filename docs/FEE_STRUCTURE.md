@@ -42,13 +42,13 @@ All trading fees are charged in basis points (bps), where 1 bps = 0.01%.
 ### Creation Fees (Token Minting)
 
 - **Factory Fee**: 0.001 ETH per token deployment
-  - **Distribution**: 
-    - 50% to protocol treasury
-    - 50% to developer treasury
+  - **Destination**: Protocol treasury
   - **Purpose**: 
     - Cover gas costs for token creation
     - Prevent spam token deployments
     - Support protocol infrastructure
+  
+  Note: Creation fees are sent directly to the protocol treasury and are separate from the FeeManagerV3 distribution system.
 
 ### Quest & Game Fees
 
@@ -92,7 +92,7 @@ All fee changes require governance approval and follow a strict timelock process
 
 ## Fee Distribution
 
-Fee distribution is automated and occurs on every transaction:
+Fee distribution occurs in two steps via the FeeManagerV3 contract:
 
 ```solidity
 // Example for a 1 ETH trade with 5% total fee
@@ -104,10 +104,10 @@ DAO Treasury: 0.02 ETH (2.0% of 1 ETH)
 Seller Receives: 0.95 ETH
 ```
 
-### Real-Time Distribution
-- Fees are split and distributed on every transaction
-- No batching or delay in fee collection
-- Transparent on-chain records via `FeesDistributed` events
+### Collection and Distribution Flow
+- **Step 1**: Fees are collected via `FeeManagerV3.collectFees()` and accumulated in `pendingFees` mapping
+- **Step 2**: Fees are distributed via `FeeManagerV3.distributeFees()` call, which sends funds to the three treasuries
+- All fee transactions are logged on-chain via `FeesCollected` and `FeesDistributed` events
 
 ## Developer Fee Transparency
 

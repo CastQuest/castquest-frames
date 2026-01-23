@@ -105,7 +105,7 @@ jobs:
         run: bash scripts/extract-abis.sh
       
       - name: Upload deployment artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: deployment-artifacts
           path: |
@@ -200,20 +200,36 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
       
       - name: Download deployment artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: deployment-artifacts
       
       - name: Verify contract deployments
         run: |
           echo "Verifying contract deployments..."
-          # Add verification logic here
-          echo "✅ Contracts verified"
+          # Check if deployment artifacts exist
+          if [ ! -d "packages/contracts/broadcast" ]; then
+            echo "❌ No deployment artifacts found"
+            exit 1
+          fi
+          
+          # Check if ABIs were extracted
+          if [ ! -d "packages/sdk/src/abis" ]; then
+            echo "❌ ABIs not extracted"
+            exit 1
+          fi
+          
+          echo "✅ Deployment artifacts verified"
       
       - name: Health check
         run: |
           echo "Running health checks..."
-          # Add health check logic here
+          # Verify SDK builds successfully with new contracts
+          cd packages/sdk
+          pnpm build || {
+            echo "❌ SDK build failed"
+            exit 1
+          }
           echo "✅ Health checks passed"
       
       - name: Create deployment summary
