@@ -6,11 +6,12 @@
 - Zero-risk automated commits, tags, and pushes
 - Protected core architecture
 - Protocol identity and concepts defined
-- **Smart Brain Automation**: Ongoing integration with development agents (castquest-code) for autonomous protocol evolution
 
 ---
 
 ## 🚀 Phase 2: Core Contracts (NEXT)
+
+**Note**: Phase 2 includes ongoing integration with development agents (castquest-code) for autonomous protocol evolution, building upon the Smart Brain foundation established in Phase 1.
 
 ### Priority 1: CAST Token Implementation
 
@@ -158,7 +159,7 @@ This priority establishes the foundation for AI-powered development workflows wi
 
 ### Priority 4: Bonding Curve Market
 
-**File**: `packages/contracts/contracts/MarketPlace.sol`
+**File**: `packages/contracts/contracts/market/Marketplace.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
