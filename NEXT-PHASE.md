@@ -131,8 +131,8 @@ This priority establishes the foundation for AI-powered development workflows wi
 
 - **Autonomous Protocol Expansion**: Integration with `castquest-code` (from SMSDAO) enables automated proposal and scaffolding of new protocol features, contracts, and extensions.
   
-- **Automated Test Generation**: For custom contracts following V4's "No External Dependency" principle, development agents automatically generate comprehensive unit tests, ensuring code quality and security.
-  - V4 contracts avoid external dependencies: no OpenZeppelin imports, no proxies, and pure token operations
+- **Automated Test Generation**: For future V4-only custom contracts following a "reduced external dependency" principle, development agents automatically generate comprehensive unit tests, ensuring code quality and security.
+  - Target for V4-only custom contracts: minimize external dependencies (ideally no new OpenZeppelin imports, no proxies, and pure token operations), while allowing existing core contracts to continue using audited libraries like OpenZeppelin where appropriate
 
 - **CODE Token Reward Mechanism**: Define and implement the CODE token distribution system that rewards validated code contributions from:
   - Autonomous builders and agents
