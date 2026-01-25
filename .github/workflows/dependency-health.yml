@@ -47,6 +47,8 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+        # NOTE: If this fails with ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY,
+        # run locally: rm pnpm-lock.yaml && pnpm install --no-frozen-lockfile
 
       - name: Run Repair Script
         run: |
@@ -225,5 +227,7 @@ jobs:
 
       - name: Set workflow status
         if: always()
+        # Validates health-report.json and exits with appropriate status code
+        # The check-health.js script handles missing files and parse errors gracefully
         run: |
           node scripts/health/check-health.js health-report.json

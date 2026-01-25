@@ -97,8 +97,18 @@ clean_install() {
     }
     log_success "Successfully installed all dependencies"
     ISSUES_FIXED=$((ISSUES_FIXED + 1))
+    
+    # Validate lockfile integrity
+    log_info "Validating regenerated lockfile..."
+    if pnpm install --frozen-lockfile 2>&1; then
+      log_success "Lockfile is valid and consistent"
+    else
+      log_error "Lockfile validation failed - may need manual intervention"
+      return 1
+    fi
   else
     log_info "[DRY RUN] Would run: pnpm install"
+    log_info "[DRY RUN] Would validate lockfile with: pnpm install --frozen-lockfile"
   fi
 }
 
