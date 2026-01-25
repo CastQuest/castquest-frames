@@ -47,3 +47,4 @@ supabase/.temp
 # Supabase
 supabase/.branches
 supabase/.temp
+health-report.json
