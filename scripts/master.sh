@@ -45,9 +45,9 @@ ensure_pnpm_install() {
   if [[ -f "$ROOT_DIR/package.json" ]]; then
     log "Ensuring pnpm dependencies are installed (no destructive ops)."
     if [[ -f "$ROOT_DIR/pnpm-lock.yaml" ]]; then
-      $PNPM install --frozen-lockfile || $PNPM install || true
+      $PNPM install --frozen-lockfile >&2 || $PNPM install >&2 || true
     else
-      $PNPM install || true
+      $PNPM install >&2 || true
     fi
   fi
 }
