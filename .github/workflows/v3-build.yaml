@@ -7,6 +7,10 @@ on:
     branches: [main, v3]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -44,15 +48,15 @@ jobs:
       
       - name: Run Repair Script (Issue #66)
         run: |
-          bash scripts/repair-dependencies.sh --dry-run
-        continue-on-error: true
+          bash scripts/repair-dependencies.sh
+        continue-on-error: false
       
       - name: Comprehensive Health Check (Issue #66)
         id: health-check
         run: |
           bash scripts/master.sh health --json > health-report.json
           cat health-report.json
-        continue-on-error: true
+        continue-on-error: false
       
       - name: Smart Brain Oracle Analysis (Issue #66)
         run: |
@@ -72,8 +76,8 @@ jobs:
       - name: Type Check
         run: |
           echo "🔎 Running TypeScript type checks..."
-          pnpm typecheck || echo "⚠️ Type errors detected (non-blocking)"
-        continue-on-error: true
+          pnpm typecheck
+        continue-on-error: false
       
       - name: Build docs-site
         run: |
