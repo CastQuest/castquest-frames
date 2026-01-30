@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -41,16 +45,17 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm lint || echo "Lint failed, please fix locally."
-        continue-on-error: true
+        run: pnpm lint
+        continue-on-error: false
 
       - name: Typecheck
-        run: pnpm typecheck || echo "Typecheck failed, please fix locally."
-        continue-on-error: true
+        run: pnpm typecheck
+        continue-on-error: false
 
       - name: Test
-        run: pnpm test -- --watch=false || echo "Tests failed, please review."
-        continue-on-error: true
+        run: pnpm test
+        continue-on-error: false
 
       - name: Build packages
-        run: pnpm -r build || echo "Build failed, please review."
+        run: pnpm -r build
+        continue-on-error: false
