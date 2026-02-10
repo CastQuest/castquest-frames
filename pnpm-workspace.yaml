@@ -1,5 +1,6 @@
 packages:
   - apps/*
   - packages/*
+  # neo-ux-core lives under packages/neo-ux-core
   - docs-site
   - infra/*
