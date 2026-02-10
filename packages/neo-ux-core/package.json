@@ -1,26 +1,36 @@
 {
   "name": "@castquest/neo-ux-core",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "dev": "tsup src/index.ts --watch --dts",
+    "lint": "eslint src --ext .ts,.tsx"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "eslint": "^8.56.0",
+    "tsup": "^8.0.0",
+    "typescript": "5.3.3"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.js",
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     }
-  },
-  "scripts": {
-    "build": "tsc -p tsconfig.json"
-  },
-  "dependencies": {
-    "react": "^18.0.0"
-  },
-  "devDependencies": {
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "typescript": "5.3.3"
   }
 }

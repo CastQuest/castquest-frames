@@ -1,5 +1,9 @@
 export * from "./theme";
 
+// Theme system
+export * from "./theme/tokens";
+export * from "./theme/NeoThemeProvider";
+
 // Core glow components
 export * from "./components/GlowBadge";
 export * from "./components/GlowButton";
