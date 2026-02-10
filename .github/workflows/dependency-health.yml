@@ -116,7 +116,7 @@ jobs:
             
             const comment = `## 🏥 Dependency Health Check
             
-            **Status:** ✅ Healthy
+            **Status:** ${versionConsistent ? '✅ Healthy' : '⚠️ Inconsistent Versions Detected'}
             **Version Consistency:** ${versionEmoji} ${versionConsistent ? 'Consistent' : 'Inconsistent'}
             
             ### Version Summary
