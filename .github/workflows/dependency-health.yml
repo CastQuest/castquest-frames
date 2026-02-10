@@ -85,6 +85,7 @@ jobs:
           NEXT_VERSIONS=$(find . -name "package.json" -not -path "*/node_modules/*" -exec grep -h '"next"' {} \; | sort -u | wc -l)
           echo "next_versions=$NEXT_VERSIONS" >> $GITHUB_OUTPUT
           
+          # Allow up to 2 Next.js versions: frames uses 14.2.18, admin/web use 14.2.35
           if [ "$TS_VERSIONS" -le 2 ] && [ "$NODE_TYPES_VERSIONS" -le 2 ] && [ "$NEXT_VERSIONS" -le 2 ]; then
             echo "Version consistency check passed ✓"
             echo "consistent=true" >> $GITHUB_OUTPUT
