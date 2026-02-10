@@ -1,16 +1,12 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
     "declaration": true,
-    "declarationMap": true,
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
     "module": "ESNext",
-    "target": "ESNext",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true
+    "target": "ESNext"
   },
   "include": ["src"]
 }
