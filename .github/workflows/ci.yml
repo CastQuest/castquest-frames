@@ -18,15 +18,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.0.0
+          run_install: false
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 9.0.0
 
       - name: Get pnpm store directory
         shell: bash
@@ -34,7 +35,7 @@ jobs:
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
       - name: Setup pnpm cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -42,20 +43,28 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Lint
         run: pnpm lint
         continue-on-error: false
+        env:
+          CI: false
 
       - name: Typecheck
         run: pnpm typecheck
         continue-on-error: false
+        env:
+          CI: false
 
       - name: Test
         run: pnpm test
         continue-on-error: false
+        env:
+          CI: false
 
       - name: Build packages
         run: pnpm -r build
         continue-on-error: false
+        env:
+          CI: false

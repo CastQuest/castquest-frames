@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 interface SidebarProps {
-  menuItems?: Array<{ label: string; icon: string; href: string; active?: boolean }>;
+  menuItems?: Array<{ label: string; icon: string; href: string }>;
 }
 
 // Default navigation items - can be overridden by props
@@ -25,7 +25,7 @@ export function Sidebar({ menuItems }: SidebarProps) {
       </div>
       <nav className="flex flex-col gap-1 px-2 pb-4">
         {navItems.map((item) => {
-          const active = pathname === item.href || item.active;
+          const active = pathname === item.href;
           return (
             <Link
               key={item.href}
