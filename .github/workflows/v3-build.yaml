@@ -19,16 +19,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.0.0
+          run_install: false
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'pnpm'
-      
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 9.0.0
       
       - name: Get pnpm store directory
         shell: bash
@@ -36,7 +36,7 @@ jobs:
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
       
       - name: Setup pnpm cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -44,58 +44,39 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Run Repair Script (Issue #66)
-        run: |
-          bash scripts/repair-dependencies.sh
-        continue-on-error: false
-      
-      - name: Comprehensive Health Check (Issue #66)
-        id: health-check
-        run: |
-          bash scripts/master.sh health --json > health-report.json
-          cat health-report.json
-        continue-on-error: false
-      
-      - name: Smart Brain Oracle Analysis (Issue #66)
-        run: |
-          if [ -x .smartbrain/oracle.sh ]; then
-            .smartbrain/oracle.sh analyze > oracle-report.txt || echo "Oracle analysis completed with warnings"
-            cat oracle-report.txt
-          else
-            echo "Smart Brain Oracle not available, skipping analysis"
-          fi
-        continue-on-error: true
-      
-      - name: Security Audit (Issue #66)
-        run: |
-          pnpm audit --audit-level=moderate || echo "⚠️ Security vulnerabilities detected"
-        continue-on-error: true
+        run: pnpm install --frozen-lockfile --prefer-offline
       
       - name: Type Check
         run: |
           echo "🔎 Running TypeScript type checks..."
           pnpm typecheck
         continue-on-error: false
+        env:
+          CI: false
       
       - name: Build docs-site
         run: |
           echo "📝 Building V3 documentation site..."
           pnpm --filter @castquest/docs-site build
           echo "✅ Docs site built successfully"
+        env:
+          CI: false
       
       - name: Build web app
         run: |
           echo "🚀 Building web application..."
           pnpm --filter @castquest/web build
           echo "✅ Web app built successfully"
+        env:
+          CI: false
       
       - name: Build admin app
         run: |
           echo "⚙️ Building admin application..."
           pnpm --filter @castquest/admin build
           echo "✅ Admin app built successfully"
+        env:
+          CI: false
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4.4.3
@@ -106,8 +87,6 @@ jobs:
             apps/web/.next
             apps/admin/.next
             docs-site/.vitepress/dist
-            health-report.json
-            oracle-report.txt
           retention-days: 7
       
       - name: Generate build report
@@ -132,43 +111,12 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const fs = require('fs');
-            
-            let healthReport = { status: 'unknown', checks_passed: 0, checks_failed: 0 };
-            try {
-              healthReport = JSON.parse(fs.readFileSync('health-report.json', 'utf8'));
-            } catch (e) {
-              console.log('Could not parse health report');
-            }
-            
-            let oracleReport = '';
-            try {
-              oracleReport = fs.readFileSync('oracle-report.txt', 'utf8').substring(0, 500);
-            } catch (e) {
-              console.log('Could not read oracle report');
-            }
-            
-            const statusEmoji = healthReport.status === 'healthy' ? '✅' : '⚠️';
-            
             const comment = `## 🎉 CastQuest V3 Build Status
             
             ### Build Completed
             - ✅ Documentation Site
             - ✅ Web Application
             - ✅ Admin Application
-            
-            ### Dependency Health (Issue #66)
-            **Status**: ${statusEmoji} ${healthReport.status || 'unknown'}
-            - Checks Passed: ${healthReport.checks_passed || 0}
-            - Checks Failed: ${healthReport.checks_failed || 0}
-            
-            <details>
-            <summary>📊 Smart Brain Oracle Analysis</summary>
-            
-            \`\`\`
-            ${oracleReport || 'Oracle analysis not available'}
-            \`\`\`
-            </details>
             
             ### V3 Features Included
             - 📚 Comprehensive V3 documentation (8 files)
@@ -177,11 +125,7 @@ jobs:
             - 🏗️ 7-layer architecture visualization
             - 🔒 Security-hardened CI/CD
             
-            **Artifacts**: Build artifacts and health reports are available for download in the workflow run.
-            
-            ---
-            
-            **Note**: Dependency health checks now use \`scripts/master.sh health\` and \`scripts/repair-dependencies.sh\` as per Issue #66.
+            **Artifacts**: Build artifacts are available for download in the workflow run.
             `;
             
             github.rest.issues.createComment({

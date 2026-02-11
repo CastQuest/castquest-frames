@@ -3,23 +3,24 @@
   "version": "0.1.0",
   "description": "Official TypeScript SDK for the CastQuest Protocol",
   "private": true,
+  "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "docs": "typedoc",
     "docs:json": "typedoc --json ../../docs-site/sdk/api.json"
   },
   "devDependencies": {
     "@types/node": "20.10.6",
+    "tsc-alias": "^1.8.8",
     "typedoc": "^0.25.0",
     "typedoc-plugin-markdown": "^3.17.0",
     "typescript": "5.3.3"
