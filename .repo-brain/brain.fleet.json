@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -e
+
+FLEET_JSON=".repo-brain/brain.fleet.json"
+echo "[" > "$FLEET_JSON"
+
+for repo in ../*; do
+  if [[ -f "$repo/.repo-brain/diagnosis.json" ]]; then
+    cat "$repo/.repo-brain/diagnosis.json" >> "$FLEET_JSON"
+    echo "," >> "$FLEET_JSON"
+  fi
+done
+
+# Remove trailing comma and close array
+sed -i '$ s/,$//' "$FLEET_JSON"
+echo "]" >> "$FLEET_JSON"
+
+echo "🚀 Fleet updated: $FLEET_JSON"
