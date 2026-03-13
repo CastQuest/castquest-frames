@@ -3,6 +3,7 @@ dist
 .env
 .env.*
 .env.local
+!.env.example
 .DS_Store
 coverage
 

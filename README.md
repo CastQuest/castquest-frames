@@ -89,7 +89,7 @@ cd apps/web && pnpm dev
 ```
 
 ### 👑 Admin Dashboard
-**Port:** 3010 | **URL:** http://localhost:3010/dashboard
+**Port:** 3001 | **URL:** http://localhost:3001/dashboard
 
 A protocol management console with comprehensive monitoring:
 - 💎 **Token Management** - Monitor $CAST, $PIC, $VID, $AUDIO
@@ -103,29 +103,30 @@ A protocol management console with comprehensive monitoring:
 
 ```bash
 # Start admin dashboard
-cd apps/admin && pnpm dev -- -p 3010
-# Access: http://localhost:3010/dashboard
+cd apps/admin && pnpm dev
+# Access: http://localhost:3001/dashboard
 ```
 
 ### 🚀 Quick Start - Both Dashboards
 
 ```bash
-# Install dependencies
+# 1. Install dependencies
 pnpm install
 
-# Run both dashboards using self-healing script (recommended)
-chmod +x scripts/self-healing-ui.sh
-./scripts/self-healing-ui.sh
+# 2. Set up environment variables
+bash scripts/setup-env.sh
+# Then edit .env.local, apps/web/.env.local, apps/admin/.env.local with real values
 
-# Or run manually in separate terminals:
-# Terminal 1: User Dashboard
+# 3. Run both dashboards in separate terminals:
+# Terminal 1: User Dashboard (http://localhost:3000)
 cd apps/web && pnpm dev
 
-# Terminal 2: Admin Dashboard  
-cd apps/admin && pnpm dev -- -p 3010
+# Terminal 2: Admin Dashboard (http://localhost:3001)
+cd apps/admin && pnpm dev
 ```
 
 📖 **Full Documentation:** See [docs/DASHBOARDS.md](./docs/DASHBOARDS.md) for complete setup, configuration, deployment, and troubleshooting guides.
+See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) for production deployment instructions.
 
 ## 🏥 Repository Health
 

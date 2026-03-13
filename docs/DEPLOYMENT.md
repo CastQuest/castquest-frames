@@ -137,7 +137,7 @@ pnpm start
 
 # Test admin dashboard (in new terminal)
 cd apps/admin
-PORT=3010 pnpm start
+PORT=3001 pnpm start
 ```
 
 ### Production Build Checklist
@@ -375,7 +375,7 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
-ENV PORT 3010
+ENV PORT 3001
 
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nextjs -u 1001
@@ -386,7 +386,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/public ./public
 
 USER nextjs
 
-EXPOSE 3010
+EXPOSE 3001
 
 CMD ["node", "server.js"]
 ```
@@ -420,7 +420,7 @@ services:
       context: .
       dockerfile: apps/admin/Dockerfile
     ports:
-      - "3010:3010"
+      - "3001:3001"
     environment:
       - NODE_ENV=production
       - DATABASE_URL=${DATABASE_URL}
@@ -768,7 +768,7 @@ ENV NODE_OPTIONS="--max-old-space-size=2048"
 ```bash
 # Find and kill process
 lsof -ti:3000 | xargs kill -9
-lsof -ti:3010 | xargs kill -9
+lsof -ti:3001 | xargs kill -9
 ```
 
 ### Rollback Procedure
