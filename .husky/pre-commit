@@ -19,12 +19,16 @@ fi
 # 2. Check workspace dependencies if package.json changed
 if git diff --cached --name-only | grep -q "package.json\|pnpm-lock.yaml"; then
   echo "🔗 Checking workspace dependencies..."
-  pnpm list -r --depth 0 >/dev/null 2>&1 || {
-    echo "❌ Workspace dependency issues detected"
-    echo "Run 'bash scripts/repair-dependencies.sh' to fix"
-    exit 1
-  }
-  echo "✓ Workspace dependencies OK"
+  if ! command -v pnpm >/dev/null 2>&1; then
+    echo "⚠️  pnpm not in PATH — skipping workspace dependency check"
+  else
+    pnpm list -r --depth 0 >/dev/null 2>&1 || {
+      echo "❌ Workspace dependency issues detected"
+      echo "Run 'bash scripts/repair-dependencies.sh' to fix"
+      exit 1
+    }
+    echo "✓ Workspace dependencies OK"
+  fi
 fi
 
 # 3. Verify TypeScript configs if changed

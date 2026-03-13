@@ -1,0 +1,49 @@
+name: Cleanup Dependency Health Issues
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - name: Close stale health-check issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '🚨 Dependency Health Check Failed';
+            let page = 1;
+            let closed = 0;
+
+            while (true) {
+              const { data: issues } = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                labels: 'health-check',
+                per_page: 100,
+                page,
+              });
+
+              if (issues.length === 0) break;
+
+              for (const issue of issues) {
+                if (issue.title === title) {
+                  await github.rest.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    state: 'closed',
+                  });
+                  core.info(`Closed issue #${issue.number}: ${issue.title}`);
+                  closed++;
+                }
+              }
+
+              page++;
+            }
+
+            core.info(`Total issues closed: ${closed}`);

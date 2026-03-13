@@ -74,10 +74,15 @@ echo ""
 # ─────────────────────────────────────────────
 echo "▶  Step 4: Running Slither static analysis..."
 if command -v slither >/dev/null 2>&1; then
+  slither_exit=0
   slither . --config-file slither.config.json \
     --json "$AUDIT_DIR/slither_$TIMESTAMP.json" \
-    2>&1 | tee "$AUDIT_DIR/slither_$TIMESTAMP.log" || true
-  echo "  ✅ Slither analysis complete — see $AUDIT_DIR/slither_$TIMESTAMP.json"
+    2>&1 | tee "$AUDIT_DIR/slither_$TIMESTAMP.log" || slither_exit=$?
+  if [ "$slither_exit" -eq 0 ]; then
+    echo "  ✅ Slither analysis complete — see $AUDIT_DIR/slither_$TIMESTAMP.json"
+  else
+    echo "  ⚠️  Slither exited with code $slither_exit — review $AUDIT_DIR/slither_$TIMESTAMP.log for details"
+  fi
 else
   echo "  ⚠️  slither not found — install with: pip install slither-analyzer"
   echo "      Then re-run this script for full static analysis."
