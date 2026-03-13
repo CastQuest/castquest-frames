@@ -46,7 +46,7 @@ export function DashboardStat({ label, value, trend, icon, subtitle, trendValue 
         {icon && <span className="text-neutral-500">{icon}</span>}
       </div>
       <div className={`text-2xl font-bold ${trendColor}`}>{value}</div>
-      {trendValue && <p className="text-xs font-medium mt-1" style={{ color: trendColor.replace('text-', '') }}>{trendValue}</p>}
+      {trendValue && <p className={`text-xs font-medium mt-1 ${trendColor}`}>{trendValue}</p>}
       {subtitle && <p className="text-xs text-neutral-500 mt-1">{subtitle}</p>}
     </div>
   );

@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { db } from '../src/lib/db';
 import { MediaService } from '../src/modules/media/service';
 
-// Helper to create a chainable select mock that resolves to `data`
+// Creates a chainable Drizzle ORM select mock that resolves to `data`
 // Works for both db.select().from().where() and db.select().from().where().orderBy().limit().offset()
-function makeSelectChain(data: unknown[]) {
+function mockDrizzleSelectChain(data: unknown[]) {
   const promise = Promise.resolve(data);
   const chain: Record<string, unknown> = {
     then: promise.then.bind(promise),
@@ -57,7 +57,7 @@ describe('MediaService', () => {
         },
       ];
 
-      vi.mocked(db.select).mockReturnValue(makeSelectChain(mockMedia) as any);
+      vi.mocked(db.select).mockReturnValue(mockDrizzleSelectChain(mockMedia) as any);
 
       const result = await mediaService.search('sunset', 20, 0);
 
@@ -66,7 +66,7 @@ describe('MediaService', () => {
     });
 
     it('should return empty array when no results', async () => {
-      vi.mocked(db.select).mockReturnValue(makeSelectChain([]) as any);
+      vi.mocked(db.select).mockReturnValue(mockDrizzleSelectChain([]) as any);
 
       const result = await mediaService.search('nonexistent', 20, 0);
 
@@ -87,7 +87,7 @@ describe('MediaService', () => {
       };
 
       // getById uses db.select().from().where() which resolves array, then destructures [0]
-      const chain = makeSelectChain([mockMedia]);
+      const chain = mockDrizzleSelectChain([mockMedia]);
       vi.mocked(db.select).mockReturnValue(chain as any);
 
       const result = await mediaService.getById('media_001');
@@ -97,7 +97,7 @@ describe('MediaService', () => {
     });
 
     it('should return null for non-existent media', async () => {
-      const chain = makeSelectChain([]);
+      const chain = mockDrizzleSelectChain([]);
       vi.mocked(db.select).mockReturnValue(chain as any);
 
       const result = await mediaService.getById('nonexistent');
@@ -123,7 +123,7 @@ describe('MediaService', () => {
         },
       ];
 
-      vi.mocked(db.select).mockReturnValue(makeSelectChain(mockMedia) as any);
+      vi.mocked(db.select).mockReturnValue(mockDrizzleSelectChain(mockMedia) as any);
 
       const result = await mediaService.getByOwner('0x1234567890123456789012345678901234567890');
 

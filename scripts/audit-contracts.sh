@@ -59,8 +59,11 @@ echo ""
 # ─────────────────────────────────────────────
 echo "▶  Step 3: Generating test coverage report..."
 if command -v forge >/dev/null 2>&1; then
-  forge coverage --report lcov 2>&1 | tee "$AUDIT_DIR/coverage_$TIMESTAMP.log" || true
-  echo "  ✅ Coverage report generated"
+  if forge coverage --report lcov 2>&1 | tee "$AUDIT_DIR/coverage_$TIMESTAMP.log"; then
+    echo "  ✅ Coverage report generated"
+  else
+    echo "  ⚠️  Coverage generation encountered issues — see $AUDIT_DIR/coverage_$TIMESTAMP.log"
+  fi
 else
   echo "  ⚠️  forge not found — skipping coverage"
 fi
