@@ -7,8 +7,8 @@
   "types": "dist/index.d.ts",
   "sideEffects": false,
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
-    "dev": "tsup src/index.ts --watch --dts",
+    "build": "tsup",
+    "dev": "tsup --watch",
     "lint": "eslint src --ext .ts,.tsx"
   },
   "peerDependencies": {

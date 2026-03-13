@@ -11,6 +11,7 @@ vi.mock('../src/lib/db', () => ({
       },
     },
     insert: vi.fn(),
+    update: vi.fn(),
     delete: vi.fn(),
   },
 }));
@@ -49,12 +50,12 @@ describe('WalletService', () => {
         }),
       } as any);
 
-      const result = await walletService.addWallet(
-        'user-123',
-        '0x1234567890123456789012345678901234567890',
-        'eoa',
-        'Main Wallet'
-      );
+      const result = await walletService.addWallet({
+        userId: 'user-123',
+        address: '0x1234567890123456789012345678901234567890',
+        type: 'eoa',
+        label: 'Main Wallet',
+      });
 
       expect(result).toBeDefined();
       expect(result.address).toBe('0x1234567890123456789012345678901234567890');
@@ -67,17 +68,17 @@ describe('WalletService', () => {
       } as any);
 
       await expect(
-        walletService.addWallet(
-          'user-123',
-          '0x1234567890123456789012345678901234567890',
-          'eoa',
-          'Main Wallet'
-        )
-      ).rejects.toThrow('Wallet already exists');
+        walletService.addWallet({
+          userId: 'user-123',
+          address: '0x1234567890123456789012345678901234567890',
+          type: 'eoa',
+          label: 'Main Wallet',
+        })
+      ).rejects.toThrow('Wallet address already registered');
     });
   });
 
-  describe('getUserWallets', () => {
+  describe('getWalletsByUserId', () => {
     it('should return all wallets for a user', async () => {
       const mockWallets = [
         {
@@ -98,10 +99,11 @@ describe('WalletService', () => {
 
       vi.mocked(db.query.wallets.findMany).mockResolvedValue(mockWallets as any);
 
-      const result = await walletService.getUserWallets('user-123');
+      const result = await walletService.getWalletsByUserId('user-123');
 
       expect(result).toHaveLength(2);
       expect(result[0].address).toBe('0x1111111111111111111111111111111111111111');
     });
   });
 });
+
