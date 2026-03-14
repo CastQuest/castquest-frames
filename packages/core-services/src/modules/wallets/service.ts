@@ -6,21 +6,48 @@ import { eq } from 'drizzle-orm';
 export class WalletService {
   /**
    * Add a new wallet for a user
+   * Accepts either positional args (userId, address, type, label?) or an object
    */
-  async addWallet(params: {
-    userId: string;
-    address: string;
-    type: 'eoa' | 'smart_wallet' | 'multisig';
-    label?: string;
-    isPrimary?: boolean;
-  }) {
+  async addWallet(
+    userIdOrParams: string | {
+      userId: string;
+      address: string;
+      type: 'eoa' | 'smart_wallet' | 'multisig';
+      label?: string;
+      isPrimary?: boolean;
+    },
+    address?: string,
+    type?: 'eoa' | 'smart_wallet' | 'multisig',
+    label?: string,
+    isPrimary?: boolean,
+  ) {
+    // Normalise overloaded signature
+    let params: {
+      userId: string;
+      address: string;
+      type: 'eoa' | 'smart_wallet' | 'multisig';
+      label?: string;
+      isPrimary?: boolean;
+    };
+    if (typeof userIdOrParams === 'string') {
+      params = {
+        userId: userIdOrParams,
+        address: address!,
+        type: type!,
+        label,
+        isPrimary,
+      };
+    } else {
+      params = userIdOrParams;
+    }
+
     // Check if wallet already exists
     const existing = await db.query.wallets.findFirst({
       where: eq(wallets.address, params.address.toLowerCase()),
     });
     
     if (existing) {
-      throw new Error('Wallet address already registered');
+      throw new Error('Wallet already exists');
     }
     
     // If setting as primary, unset other primary wallets
@@ -53,6 +80,13 @@ export class WalletService {
       where: eq(wallets.userId, userId),
       orderBy: (wallets, { desc }) => [desc(wallets.isPrimary), desc(wallets.createdAt)],
     });
+  }
+
+  /**
+   * Alias for getWalletsByUserId
+   */
+  async getUserWallets(userId: string) {
+    return this.getWalletsByUserId(userId);
   }
   
   /**

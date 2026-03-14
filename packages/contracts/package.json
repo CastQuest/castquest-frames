@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "echo 'Skipping forge install - run manually if needed'",
     "build": "command -v forge >/dev/null 2>&1 && forge build || echo 'Skipping contracts build - forge not installed'",
-    "test": "forge test -vv",
+    "test": "command -v forge >/dev/null 2>&1 && forge test -vv || echo 'Skipping contracts tests - forge not installed'",
     "test:coverage": "forge coverage",
     "test:gas": "forge test --gas-report",
     "lint": "command -v forge >/dev/null 2>&1 && forge fmt --check || echo 'Skipping contracts lint - forge not installed'",

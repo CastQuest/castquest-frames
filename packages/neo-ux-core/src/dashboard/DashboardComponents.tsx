@@ -23,16 +23,19 @@ export function DashboardGrid({ children, columns = 3 }: DashboardGridProps) {
 interface DashboardStatProps {
   label: string;
   value: string | number;
-  trend?: "up" | "down" | "neutral";
+  trend?: "up" | "down" | "neutral" | "stable";
+  trendValue?: string;
   icon?: ReactNode;
   subtitle?: string;
+  hint?: string;
 }
 
-export function DashboardStat({ label, value, trend, icon, subtitle }: DashboardStatProps) {
+export function DashboardStat({ label, value, trend, trendValue, icon, subtitle, hint }: DashboardStatProps) {
   const trendColors = {
     up: "text-emerald-400",
     down: "text-red-400",
-    neutral: "text-neutral-400"
+    neutral: "text-neutral-400",
+    stable: "text-blue-400"
   };
 
   const trendColor = trend ? trendColors[trend] : "text-neutral-400";
@@ -44,7 +47,8 @@ export function DashboardStat({ label, value, trend, icon, subtitle }: Dashboard
         {icon && <span className="text-neutral-500">{icon}</span>}
       </div>
       <div className={`text-2xl font-bold ${trendColor}`}>{value}</div>
-      {subtitle && <p className="text-xs text-neutral-500 mt-1">{subtitle}</p>}
+      {trendValue && <p className={`text-xs mt-1 ${trendColor}`}>{trendValue}</p>}
+      {(subtitle || hint) && <p className="text-xs text-neutral-500 mt-1">{subtitle ?? hint}</p>}
     </div>
   );
 }

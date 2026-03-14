@@ -23,9 +23,9 @@ import {
 } from "../hooks/useMockData";
 
 export default function WebFrontMega() {
-  const { frames, loading: framesLoading } = useMockFrames();
-  const { quests, loading: questsLoading } = useMockQuests();
-  const { media, loading: mediaLoading } = useMockMedia();
+  const { frames } = useMockFrames();
+  const { quests } = useMockQuests();
+  const { media } = useMockMedia();
   const { stats } = useMockStats();
 
   const [activeTab, setActiveTab] =

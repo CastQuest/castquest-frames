@@ -35,11 +35,6 @@ export * from './oracle/OracleDBService';
 export * from './workers/AutonomousWorkerSystem';
 export * from './contracts';
 
-// Note: ABIs are exported from './abis' after running extract-abis.sh
-// Re-export them if the directory exists (generated during build)
-try {
-  // @ts-ignore - abis directory is generated
-  export * from './abis';
-} catch (e) {
-  // ABIs not yet generated - run extract-abis.sh after contract compilation
-}
+// Note: ABIs are exported from './abis' after running scripts/extract-abis.sh
+// Uncomment after contract compilation:
+// export * from './abis';

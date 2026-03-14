@@ -1,0 +1,22 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "projects": [
+    {
+      "name": "castquest-web",
+      "rootDirectory": "apps/web",
+      "framework": "nextjs",
+      "buildCommand": "cd ../.. && pnpm --filter @castquest/neo-ux-core build && pnpm --filter @castquest/sdk build && pnpm --filter @castquest/core-services build && pnpm --filter @castquest/web build",
+      "installCommand": "pnpm install --frozen-lockfile",
+      "outputDirectory": ".next"
+    },
+    {
+      "name": "castquest-admin",
+      "rootDirectory": "apps/admin",
+      "framework": "nextjs",
+      "buildCommand": "cd ../.. && pnpm --filter @castquest/neo-ux-core build && pnpm --filter @castquest/sdk build && pnpm --filter @castquest/core-services build && pnpm --filter @castquest/admin build",
+      "installCommand": "pnpm install --frozen-lockfile",
+      "outputDirectory": ".next"
+    }
+  ]
+}
