@@ -164,6 +164,7 @@ export class MediaService {
   }
 
   /**
+   * List all media with filters
    */
   async list(filters: {
     status?: TokenStatus;

@@ -30,10 +30,12 @@ export class WalletService {
       isPrimary?: boolean;
     };
     if (typeof userIdOrParams === 'string') {
+      if (!address) throw new Error('address is required');
+      if (!type) throw new Error('type is required');
       params = {
         userId: userIdOrParams,
-        address: address!,
-        type: type!,
+        address,
+        type,
         label,
         isPrimary,
       };

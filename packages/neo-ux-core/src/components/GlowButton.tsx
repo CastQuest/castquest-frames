@@ -5,6 +5,7 @@ interface GlowButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   variant?: "default" | "gradient" | "outline" | "ghost";
   size?: "sm" | "md" | "lg";
+  className?: string;
 }
 
 export function GlowButton({ children, variant = "default", size = "md", className = "", ...props }: GlowButtonProps) {
