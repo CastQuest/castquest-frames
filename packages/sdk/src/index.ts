@@ -34,7 +34,4 @@ export * from './brain/SmartBrainEngine';
 export * from './oracle/OracleDBService';
 export * from './workers/AutonomousWorkerSystem';
 export * from './contracts';
-
-// Note: ABIs are exported from './abis' after running scripts/extract-abis.sh
-// Uncomment after contract compilation:
-// export * from './abis';
+export * from './abis';

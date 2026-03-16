@@ -2,7 +2,7 @@
   "version": 2,
   "framework": "nextjs",
   "buildCommand": "cd ../.. && pnpm --filter @castquest/neo-ux-core build && pnpm --filter @castquest/sdk build && pnpm --filter @castquest/core-services build && pnpm --filter @castquest/web build",
-  "installCommand": "pnpm install --frozen-lockfile",
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
   "outputDirectory": ".next",
   "env": {
     "NEXT_PUBLIC_API_URL": "@next_public_api_url",

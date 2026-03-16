@@ -1,13 +1,33 @@
 import { db } from '@/lib/db';
 import { wallets } from '@/lib/db/schema';
+import type { Wallet } from '@/lib/db/schema';
 import { logger } from '@/lib/logger';
 import { eq } from 'drizzle-orm';
 
 export class WalletService {
   /**
-   * Add a new wallet for a user
-   * Accepts either positional args (userId, address, type, label?) or an object
+   * Add a new wallet for a user.
+   *
+   * Overload 1 – positional args (used by tests and simple callers):
+   *   addWallet(userId, address, type, label?, isPrimary?)
+   *
+   * Overload 2 – options object (preferred for new code):
+   *   addWallet({ userId, address, type, label?, isPrimary? })
    */
+  async addWallet(
+    userId: string,
+    address: string,
+    type: 'eoa' | 'smart_wallet' | 'multisig',
+    label?: string,
+    isPrimary?: boolean,
+  ): Promise<Wallet>;
+  async addWallet(params: {
+    userId: string;
+    address: string;
+    type: 'eoa' | 'smart_wallet' | 'multisig';
+    label?: string;
+    isPrimary?: boolean;
+  }): Promise<Wallet>;
   async addWallet(
     userIdOrParams: string | {
       userId: string;
@@ -20,30 +40,22 @@ export class WalletService {
     type?: 'eoa' | 'smart_wallet' | 'multisig',
     label?: string,
     isPrimary?: boolean,
-  ) {
-    // Normalise overloaded signature
-    let params: {
-      userId: string;
-      address: string;
-      type: 'eoa' | 'smart_wallet' | 'multisig';
-      label?: string;
-      isPrimary?: boolean;
-    };
+  ): Promise<Wallet> {
     if (typeof userIdOrParams === 'string') {
       if (!address) throw new Error('address is required');
       if (!type) throw new Error('type is required');
-      params = {
-        userId: userIdOrParams,
-        address,
-        type,
-        label,
-        isPrimary,
-      };
-    } else {
-      params = userIdOrParams;
+      return this._addWalletImpl({ userId: userIdOrParams, address, type, label, isPrimary });
     }
+    return this._addWalletImpl(userIdOrParams);
+  }
 
-    // Check if wallet already exists
+  private async _addWalletImpl(params: {
+    userId: string;
+    address: string;
+    type: 'eoa' | 'smart_wallet' | 'multisig';
+    label?: string;
+    isPrimary?: boolean;
+  }): Promise<Wallet> {
     const existing = await db.query.wallets.findFirst({
       where: eq(wallets.address, params.address.toLowerCase()),
     });

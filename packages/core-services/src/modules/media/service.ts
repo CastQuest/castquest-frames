@@ -129,14 +129,17 @@ export class MediaService {
   }
 
   /**
-   * Search media with options object (alias matching test API)
+   * Search media with options object.
+   * Returns the current page of results.
+   * `pageCount` reflects the number of results in this page (≤ limit).
+   * To get a true total, run a separate count query.
    */
   async searchMedia(options: {
     search?: string;
     mediaType?: string;
     limit?: number;
     offset?: number;
-  }): Promise<{ media: MediaMetadata[]; total: number }> {
+  }): Promise<{ media: MediaMetadata[]; pageCount: number }> {
     const { search, mediaType, limit = 50, offset = 0 } = options;
 
     const rawRows = await db.query.mediaMetadata.findMany({
@@ -160,7 +163,7 @@ export class MediaService {
       status: media.status as TokenStatus,
     } as MediaMetadata));
 
-    return { media: rows, total: rows.length };
+    return { media: rows, pageCount: rows.length };
   }
 
   /**
