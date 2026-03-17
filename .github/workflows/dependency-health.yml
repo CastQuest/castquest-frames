@@ -143,16 +143,15 @@ jobs:
           script: |
             const title = '🚨 Dependency Health Check Failed';
 
-            // Check for existing open issues with the same title to avoid duplicates
-            const { data: existingIssues } = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              labels: 'health-check',
-              per_page: 100,
+            // Use Search API with the plain-text portion of the title (avoids emoji/special-char
+            // search syntax issues) then exact-match the full title on returned results.
+            const safeSearchText = 'Dependency Health Check Failed';
+            const { data: searchResult } = await github.rest.search.issuesAndPullRequests({
+              q: `repo:${context.repo.owner}/${context.repo.repo} is:issue is:open label:health-check "${safeSearchText}" in:title`,
+              per_page: 10,
             });
 
-            const duplicate = existingIssues.find(issue => issue.title === title);
+            const duplicate = searchResult.items.find(item => item.title === title);
             if (duplicate) {
               core.info(`Skipping duplicate issue creation — open issue #${duplicate.number} already exists.`);
               return;

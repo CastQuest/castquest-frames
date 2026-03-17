@@ -28,6 +28,13 @@ echo " Timestamp: $TIMESTAMP"
 echo "══════════════════════════════════════════════"
 echo ""
 
+if [ ! -d "$CONTRACTS_DIR" ]; then
+  echo "❌ Error: contracts directory not found at $CONTRACTS_DIR"
+  echo "Ensure you are running this script from the repository root"
+  echo "and that packages/contracts exists."
+  exit 1
+fi
+
 cd "$CONTRACTS_DIR"
 
 # ─────────────────────────────────────────────

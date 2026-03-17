@@ -21,18 +21,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        id: install
         run: pnpm install --frozen-lockfile
-        continue-on-error: true
-
-      - name: Repair and retry install
-        if: steps.install.outcome == 'failure'
-        run: |
-          if [ -f scripts/repair-dependencies.sh ]; then
-            bash scripts/repair-dependencies.sh
-          else
-            pnpm install --no-frozen-lockfile
-          fi
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
