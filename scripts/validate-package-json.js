@@ -14,7 +14,7 @@ for (const file of files) {
   try {
     JSON.parse(fs.readFileSync(file, 'utf8'));
   } catch (err) {
-    console.error(`Invalid JSON in ${file}: ${err.message}`);
+    console.error(`Invalid JSON in ${file}: ${err instanceof Error ? err.message : String(err)}`);
     hasError = true;
   }
 }
