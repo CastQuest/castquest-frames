@@ -11,9 +11,19 @@ import {
   sepolia,
 } from "wagmi/chains"
 
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+
+// Warn in development if projectId is missing
+if (!projectId && typeof window !== "undefined") {
+  console.warn(
+    "[CastQuest] NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set. " +
+    "Get one from https://cloud.walletconnect.com/"
+  )
+}
+
 export const web3Config = getDefaultConfig({
   appName: "CastQuest Platform",
-  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "demo-project-id",
+  projectId: projectId || "demo-project-id",
   chains: [
     mainnet,
     base,

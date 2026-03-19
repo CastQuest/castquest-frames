@@ -47,6 +47,14 @@ const store = new Map<string, RateLimitEntry>()
 const CLEANUP_INTERVAL = 60 * 1000 // 1 minute
 let cleanupTimer: NodeJS.Timeout | null = null
 
+// Log warning in production about distributed rate limiting
+if (process.env.NODE_ENV === "production" && typeof globalThis !== "undefined") {
+  console.warn(
+    "[CastQuest Rate Limiter] Using in-memory store. " +
+    "For production with multiple instances, implement Redis-based rate limiting."
+  )
+}
+
 function startCleanup() {
   if (cleanupTimer) return
   

@@ -198,7 +198,11 @@ export default function UsersPage() {
                   <tr key={user.id} className="hover:bg-slate-800/30 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-white font-semibold">
+                        <div 
+                          role="img" 
+                          aria-label={`Avatar for ${user.name || user.email}`}
+                          className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-white font-semibold"
+                        >
                           {user.name?.[0]?.toUpperCase() || user.email[0].toUpperCase()}
                         </div>
                         <div>

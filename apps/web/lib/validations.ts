@@ -66,12 +66,17 @@ export type ToggleFeatureFlagInput = z.infer<typeof toggleFeatureFlagSchema>
 // AGENT SCHEMAS
 // ============================================================================
 
+// Cron expression validation pattern
+// Matches: minute hour day-of-month month day-of-week
+// Each field can be: *, number, */number, or number-number
+const CRON_PATTERN = /^(\*|[0-5]?\d|\*\/[0-5]?\d) (\*|[01]?\d|2[0-3]|\*\/[01]?\d|\*\/2[0-3]) (\*|[1-9]|[12]\d|3[01]|\*\/[1-9]|\*\/[12]\d|\*\/3[01]) (\*|[1-9]|1[0-2]|\*\/[1-9]|\*\/1[0-2]) (\*|[0-6]|\*\/[0-6])$/
+
 export const agentConfigSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(1000).optional(),
   enabled: z.boolean().default(false),
   config: z.record(z.unknown()).optional(),
-  schedule: z.string().regex(/^(\*|([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])|\*\/([0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])) (\*|([0-9]|1[0-9]|2[0-3])|\*\/([0-9]|1[0-9]|2[0-3])) (\*|([1-9]|1[0-9]|2[0-9]|3[0-1])|\*\/([1-9]|1[0-9]|2[0-9]|3[0-1])) (\*|([1-9]|1[0-2])|\*\/([1-9]|1[0-2])) (\*|([0-6])|\*\/([0-6]))$/, "Invalid cron expression").optional().nullable(),
+  schedule: z.string().regex(CRON_PATTERN, "Invalid cron expression (e.g., '0 */6 * * *')").optional().nullable(),
 })
 
 export const runAgentSchema = z.object({

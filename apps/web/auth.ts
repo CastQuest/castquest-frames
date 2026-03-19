@@ -65,10 +65,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           // const isValidPassword = await bcrypt.compare(parsed.data.password, user.password)
           // if (!isValidPassword) return null
           
-          // For demo/development: accept password if it matches or if no password is set
-          // Replace this with proper bcrypt validation in production
+          // For demo/development ONLY - accept password if it matches or if no password is set
+          // This will NOT run in production mode for security
+          if (process.env.NODE_ENV === "production") {
+            // In production, require proper password verification
+            // For now, reject all logins until bcrypt is implemented
+            console.error("Password verification not implemented. Implement bcrypt before production use.")
+            return null
+          }
+          
           if (user.password && user.password !== parsed.data.password) {
-            // In production, this would be bcrypt.compare
+            // In development, this is plain-text comparison
             return null
           }
 

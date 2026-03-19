@@ -194,16 +194,27 @@ export default function ContractsPage() {
         showNotification("error", error.error || "Deployment failed")
       }
     } catch (error) {
-      // Simulate successful deployment for demo
-      const fakeAddress = `0x${Math.random().toString(16).substring(2, 42)}`
-      const fakeTxHash = `0x${Math.random().toString(16).substring(2, 66)}`
-      
-      setDeployments(prev => prev.map(d => 
-        d.id === pendingDeployment.id 
-          ? { ...d, address: fakeAddress, txHash: fakeTxHash, status: "deployed" }
-          : d
-      ))
-      showNotification("success", `Contract deployed to ${fakeAddress} (Demo)`)
+      // Demo mode: simulate deployment when API is not available
+      // In production, this would show a real error
+      if (process.env.NODE_ENV === "development") {
+        const fakeAddress = `0x${Math.random().toString(16).substring(2, 42)}`
+        const fakeTxHash = `0x${Math.random().toString(16).substring(2, 66)}`
+        
+        setDeployments(prev => prev.map(d => 
+          d.id === pendingDeployment.id 
+            ? { ...d, address: fakeAddress, txHash: fakeTxHash, status: "deployed" }
+            : d
+        ))
+        showNotification("success", `[DEMO MODE] Contract deployed to ${fakeAddress}`)
+      } else {
+        // Production: show actual error
+        setDeployments(prev => prev.map(d => 
+          d.id === pendingDeployment.id 
+            ? { ...d, status: "failed", errorMessage: "Network error - deployment failed" }
+            : d
+        ))
+        showNotification("error", "Deployment failed - check network connection")
+      }
     } finally {
       setDeploying(false)
     }
