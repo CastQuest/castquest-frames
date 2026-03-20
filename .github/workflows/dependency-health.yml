@@ -145,13 +145,20 @@ jobs:
 
             // Use Search API with the plain-text portion of the title (avoids emoji/special-char
             // search syntax issues) then exact-match the full title on returned results.
+            // Paginate through all results so deduplication is exhaustive regardless of count.
             const safeSearchText = 'Dependency Health Check Failed';
-            const { data: searchResult } = await github.rest.search.issuesAndPullRequests({
-              q: `repo:${context.repo.owner}/${context.repo.repo} is:issue is:open label:health-check "${safeSearchText}" in:title`,
-              per_page: 100,
-            });
-
-            const duplicate = searchResult.items.find(item => item.title === title);
+            let duplicate = null;
+            let page = 1;
+            while (!duplicate) {
+              const { data: searchResult } = await github.rest.search.issuesAndPullRequests({
+                q: `repo:${context.repo.owner}/${context.repo.repo} is:issue is:open label:health-check "${safeSearchText}" in:title`,
+                per_page: 100,
+                page: page,
+              });
+              duplicate = searchResult.items.find(item => item.title === title) || null;
+              if (duplicate || searchResult.items.length < 100) break;
+              page++;
+            }
             if (duplicate) {
               core.info(`Skipping duplicate issue creation — open issue #${duplicate.number} already exists.`);
               return;

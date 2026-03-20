@@ -21,4 +21,3 @@ jobs:
         with:
           target: packages/contracts/
           slither-args: "--config-file packages/contracts/slither.config.json"
-        continue-on-error: true

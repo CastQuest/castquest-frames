@@ -49,3 +49,7 @@ supabase/.temp
 supabase/.branches
 supabase/.temp
 health-report.json
+
+# Generated contract audit artifacts (timestamped logs/JSON from audit-contracts.sh)
+docs/audits/*.log
+docs/audits/*.json
