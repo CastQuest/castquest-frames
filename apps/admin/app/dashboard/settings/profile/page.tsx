@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+// Auth.js session is used instead of Privy
 import { motion } from 'framer-motion';
 import {
   Wallet,
@@ -25,8 +25,14 @@ import {
 import { neo } from '@castquest/neo-ux-core';
 
 export default function ProfilePage() {
-  const { user, login, logout, authenticated, linkWallet, exportWallet } = usePrivy();
-  const { wallets } = useWallets();
+  // Stub values replacing Privy auth (migrated to Auth.js)
+  const user = null as null | { email?: { address: string } };
+  const wallets = [] as Array<{ address: string; walletClientType: string; chainId: string }>;
+  const authenticated = false;
+  const login = () => {};
+  const logout = () => {};
+  const linkWallet = () => {};
+  const exportWallet = null as null | (() => Promise<void>);
   const [copying, setCopying] = useState<string | null>(null);
   const [showExportModal, setShowExportModal] = useState(false);
   const [showFundModal, setShowFundModal] = useState(false);
@@ -204,7 +210,7 @@ export default function ProfilePage() {
                           </div>
                           <div>
                             <div className={`${neo.colors.text.primary} font-semibold`}>
-                              {wallet.walletClientType === 'privy' ? '🔐 Embedded Smart Wallet' : '💼 External Wallet'}
+                              {wallet.walletClientType === 'embedded' ? '🔐 Embedded Smart Wallet' : '💼 External Wallet'}
                             </div>
                             <div className={`${neo.colors.text.tertiary} text-sm font-mono`}>{wallet.address}</div>
                           </div>
@@ -220,7 +226,7 @@ export default function ProfilePage() {
                               <Copy className="w-4 h-4" />
                             )}
                           </button>
-                          {wallet.walletClientType === 'privy' && (
+                          {wallet.walletClientType === 'embedded' && (
                             <button
                               onClick={() => setShowExportModal(true)}
                               className={`p-2 bg-neutral-800/50 hover:bg-neutral-700/50 rounded-lg ${neo.colors.text.tertiary} hover:${neo.colors.text.primary} transition-all`}

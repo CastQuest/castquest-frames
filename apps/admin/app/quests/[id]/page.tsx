@@ -5,8 +5,9 @@ import { useState } from "react";
 
 type Status = "draft" | "live" | "archived";
 
-export default function QuestDetailPage({ params }: { params: { id: string } }) {
-  const questId = params.id;
+export default async function QuestDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const questId = id;
 
   const [title, setTitle] = useState("Sample Quest");
   const [xp, setXp] = useState(10);

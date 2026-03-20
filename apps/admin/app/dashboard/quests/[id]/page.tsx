@@ -24,20 +24,21 @@ interface Quest {
   updatedAt: string;
 }
 
-export default function QuestDetailPage({ params }: { params: { id: string } }) {
+export default async function QuestDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const [quest, setQuest] = useState<Quest | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchQuest();
-  }, [params.id]);
+  const { id } = await params;
+  }, [id]);
 
   async function fetchQuest() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`/api/quests/${params.id}`);
+      const response = await fetch(`/api/quests/${id}`);
       const data = await response.json();
       
       if (data.success) {

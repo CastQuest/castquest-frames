@@ -3,15 +3,13 @@ const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@castquest/neo-ux-core'],
   
-  // Next.js 15 settings
-  experimental: {
-    serverComponentsExternalPackages: [
-      '@castquest/core-services',
-      'bcrypt',
-      '@mapbox/node-pre-gyp',
-      '@prisma/client',
-    ],
-  },
+  // Next.js 15: serverExternalPackages (moved out of experimental)
+  serverExternalPackages: [
+    '@castquest/core-services',
+    'bcrypt',
+    '@mapbox/node-pre-gyp',
+    '@prisma/client',
+  ],
 
   // Security headers
   async headers() {

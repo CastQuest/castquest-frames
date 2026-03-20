@@ -6,7 +6,8 @@
     "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "prisma generate --schema=../../prisma/schema.prisma"
   },
   "dependencies": {
     "@castquest/core-services": "workspace:*",
@@ -20,7 +21,7 @@
     "clsx": "^2.0.0",
     "date-fns": "^3.6.0",
     "drizzle-orm": "^0.29.3",
-    "framer-motion": "^10.16.0",
+    "framer-motion": "^11.18.2",
     "lucide-react": "^0.562.0",
     "next": "15.2.4",
     "next-auth": "^5.0.0-beta.25",

@@ -28,9 +28,10 @@ function loadTemplates(): FrameTemplate[] {
   return JSON.parse(raw);
 }
 
-export default function FrameTemplateDetailPage({ params }: { params: { id: string } }) {
+export default async function FrameTemplateDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const templates = loadTemplates();
-  const template = templates.find((t) => t.id === params.id);
+  const { id } = await params;
+  const template = templates.find((t) => t.id === id);
 
   if (!template) {
     return (
