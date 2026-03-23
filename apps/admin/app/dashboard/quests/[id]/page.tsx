@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Users, Trophy, Calendar, Target } from 'lucide-react';
 
@@ -24,14 +25,15 @@ interface Quest {
   updatedAt: string;
 }
 
-export default async function QuestDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function QuestDetailPage() {
+  const params = useParams();
+  const id = params.id as string;
   const [quest, setQuest] = useState<Quest | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchQuest();
-  const { id } = await params;
+    if (id) fetchQuest();
   }, [id]);
 
   async function fetchQuest() {
@@ -40,7 +42,6 @@ export default async function QuestDetailPage({ params }: { params: Promise<{ id
       setError(null);
       const response = await fetch(`/api/quests/${id}`);
       const data = await response.json();
-      
       if (data.success) {
         setQuest(data.data);
       } else {
@@ -78,15 +79,11 @@ export default async function QuestDetailPage({ params }: { params: Promise<{ id
   if (loading) {
     return (
       <div className="space-y-6">
-        <Link
-          href="/dashboard/quests"
-          className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors"
-        >
-          <ArrowLeft size={16} />
-          Back to Quests
+        <Link href="/dashboard/quests" className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors">
+          <ArrowLeft size={16} /> Back to Quests
         </Link>
         <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
           <p className="mt-4 text-neutral-400">Loading quest...</p>
         </div>
       </div>
@@ -96,12 +93,8 @@ export default async function QuestDetailPage({ params }: { params: Promise<{ id
   if (error || !quest) {
     return (
       <div className="space-y-6">
-        <Link
-          href="/dashboard/quests"
-          className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors"
-        >
-          <ArrowLeft size={16} />
-          Back to Quests
+        <Link href="/dashboard/quests" className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors">
+          <ArrowLeft size={16} /> Back to Quests
         </Link>
         <div className="bg-red-950 border border-red-800 rounded-lg p-6">
           <p className="text-red-400">{error || 'Quest not found'}</p>
@@ -116,20 +109,14 @@ export default async function QuestDetailPage({ params }: { params: Promise<{ id
 
   return (
     <div className="space-y-6">
-      <Link
-        href="/dashboard/quests"
-        className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors"
-      >
-        <ArrowLeft size={16} />
-        Back to Quests
+      <Link href="/dashboard/quests" className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors">
+        <ArrowLeft size={16} /> Back to Quests
       </Link>
 
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white">{quest.title}</h1>
-          {quest.description && (
-            <p className="mt-2 text-neutral-400">{quest.description}</p>
-          )}
+          {quest.description && <p className="mt-2 text-neutral-400">{quest.description}</p>}
         </div>
         <span className={`px-3 py-1 rounded-lg text-sm border capitalize ${getStatusColor(quest.status)}`}>
           {quest.status}
@@ -138,37 +125,20 @@ export default async function QuestDetailPage({ params }: { params: Promise<{ id
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-neutral-950 border border-neutral-800 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Users size={18} className="text-primary" />
-            <span className="text-sm text-neutral-400">Participants</span>
-          </div>
+          <div className="flex items-center gap-2 mb-2"><Users size={18} className="text-primary" /><span className="text-sm text-neutral-400">Participants</span></div>
           <div className="text-2xl font-bold text-white">{quest.participantCount}</div>
         </div>
-
         <div className="bg-neutral-950 border border-neutral-800 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Trophy size={18} className="text-primary" />
-            <span className="text-sm text-neutral-400">Completed</span>
-          </div>
+          <div className="flex items-center gap-2 mb-2"><Trophy size={18} className="text-primary" /><span className="text-sm text-neutral-400">Completed</span></div>
           <div className="text-2xl font-bold text-white">{quest.completionCount}</div>
         </div>
-
         <div className="bg-neutral-950 border border-neutral-800 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Target size={18} className="text-primary" />
-            <span className="text-sm text-neutral-400">Completion Rate</span>
-          </div>
+          <div className="flex items-center gap-2 mb-2"><Target size={18} className="text-primary" /><span className="text-sm text-neutral-400">Completion Rate</span></div>
           <div className="text-2xl font-bold text-white">{completionRate}%</div>
         </div>
-
         <div className="bg-neutral-950 border border-neutral-800 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Calendar size={18} className="text-primary" />
-            <span className="text-sm text-neutral-400">Difficulty</span>
-          </div>
-          <div className={`text-2xl font-bold capitalize ${getDifficultyColor(quest.difficulty)}`}>
-            {quest.difficulty}
-          </div>
+          <div className="flex items-center gap-2 mb-2"><Calendar size={18} className="text-primary" /><span className="text-sm text-neutral-400">Difficulty</span></div>
+          <div className={`text-2xl font-bold capitalize ${getDifficultyColor(quest.difficulty)}`}>{quest.difficulty}</div>
         </div>
       </div>
 
@@ -176,66 +146,18 @@ export default async function QuestDetailPage({ params }: { params: Promise<{ id
         <div className="bg-neutral-950 border border-neutral-800 rounded-lg p-6">
           <h2 className="text-xl font-bold text-white mb-4">Quest Details</h2>
           <div className="space-y-3">
-            <div>
-              <span className="text-sm text-neutral-400">Category</span>
-              <div className="text-white capitalize">{quest.category}</div>
-            </div>
-            <div>
-              <span className="text-sm text-neutral-400">Requirement Type</span>
-              <div className="text-white capitalize">{quest.requirementType}</div>
-            </div>
-            {quest.startDate && (
-              <div>
-                <span className="text-sm text-neutral-400">Start Date</span>
-                <div className="text-white">{new Date(quest.startDate).toLocaleDateString()}</div>
-              </div>
-            )}
-            {quest.endDate && (
-              <div>
-                <span className="text-sm text-neutral-400">End Date</span>
-                <div className="text-white">{new Date(quest.endDate).toLocaleDateString()}</div>
-              </div>
-            )}
+            <div><span className="text-sm text-neutral-400">Category</span><div className="text-white capitalize">{quest.category}</div></div>
+            <div><span className="text-sm text-neutral-400">Requirement Type</span><div className="text-white capitalize">{quest.requirementType}</div></div>
+            {quest.startDate && <div><span className="text-sm text-neutral-400">Start Date</span><div className="text-white">{new Date(quest.startDate).toLocaleDateString()}</div></div>}
+            {quest.endDate && <div><span className="text-sm text-neutral-400">End Date</span><div className="text-white">{new Date(quest.endDate).toLocaleDateString()}</div></div>}
           </div>
         </div>
-
         <div className="bg-neutral-950 border border-neutral-800 rounded-lg p-6">
           <h2 className="text-xl font-bold text-white mb-4">Reward</h2>
           <div className="space-y-3">
-            <div>
-              <span className="text-sm text-neutral-400">Reward Type</span>
-              <div className="text-white capitalize">{quest.rewardType}</div>
-            </div>
-            {quest.rewardAmount && (
-              <div>
-                <span className="text-sm text-neutral-400">Amount</span>
-                <div className="text-white">{quest.rewardAmount}</div>
-              </div>
-            )}
-            {quest.rewardData && (
-              <div>
-                <span className="text-sm text-neutral-400">Additional Data</span>
-                <div className="text-white text-sm font-mono bg-neutral-900 p-2 rounded overflow-auto max-h-32">
-                  {quest.rewardData}
-                </div>
-              </div>
-            )}
+            <div><span className="text-sm text-neutral-400">Reward Type</span><div className="text-white capitalize">{quest.rewardType}</div></div>
+            {quest.rewardAmount && <div><span className="text-sm text-neutral-400">Amount</span><div className="text-white">{quest.rewardAmount}</div></div>}
           </div>
-        </div>
-      </div>
-
-      <div className="bg-neutral-950 border border-neutral-800 rounded-lg p-6">
-        <h2 className="text-xl font-bold text-white mb-4">Requirements</h2>
-        <div className="bg-neutral-900 p-4 rounded overflow-auto max-h-64">
-          <pre className="text-sm text-neutral-300 whitespace-pre-wrap font-mono">
-            {(() => {
-              try {
-                return JSON.stringify(JSON.parse(quest.requirementData), null, 2);
-              } catch (error) {
-                return quest.requirementData;
-              }
-            })()}
-          </pre>
         </div>
       </div>
     </div>

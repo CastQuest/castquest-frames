@@ -4,39 +4,33 @@ import { useState, useEffect } from "react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { WagmiProvider } from "wagmi"
 import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit"
-import { web3Config } from "../../lib/web3/config"
+import { web3Config, web3Enabled } from "../../lib/web3/config"
 import "@rainbow-me/rainbowkit/styles.css"
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 60 * 1000, // 1 minute
+      staleTime: 60 * 1000,
       retry: 2,
     },
   },
 })
 
-interface Web3ProviderProps {
-  children: React.ReactNode
-}
-
-export function Web3Provider({ children }: Web3ProviderProps) {
+export function Web3Provider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
-  
+
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  const web3Enabled = process.env.NEXT_PUBLIC_WEB3_ENABLED === "true"
-
-  // If Web3 is disabled, just render children
-  if (!web3Enabled) {
+  // Skip Web3 if no valid WalletConnect project ID is configured
+  if (!web3Enabled || !web3Config) {
     return <>{children}</>
   }
 
-  // Prevent hydration mismatch by not rendering until mounted
+  // Prevent SSR hydration mismatch
   if (!mounted) {
-    return null
+    return <>{children}</>
   }
 
   return (
@@ -44,17 +38,14 @@ export function Web3Provider({ children }: Web3ProviderProps) {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider
           theme={darkTheme({
-            accentColor: "#10b981", // emerald-500
+            accentColor: "#10b981",
             accentColorForeground: "white",
             borderRadius: "medium",
             fontStack: "system",
             overlayBlur: "small",
           })}
           modalSize="compact"
-          appInfo={{
-            appName: "CastQuest Platform",
-            learnMoreUrl: "https://castquest.xyz/docs",
-          }}
+          appInfo={{ appName: "CastQuest Platform", learnMoreUrl: "https://castquest.xyz/docs" }}
         >
           {children}
         </RainbowKitProvider>

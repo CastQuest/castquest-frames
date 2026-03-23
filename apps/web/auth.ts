@@ -3,6 +3,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import Credentials from "next-auth/providers/credentials"
 import { prisma } from "./lib/prisma"
 import { z } from "zod"
+import bcrypt from "bcryptjs"
 
 declare module "next-auth" {
   interface User {
@@ -17,9 +18,6 @@ declare module "next-auth" {
       image?: string | null
     }
   }
-}
-
-declare module "next-auth/jwt" {
   interface JWT {
     role?: string
   }
@@ -46,10 +44,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       async authorize(credentials) {
         const parsed = credentialsSchema.safeParse(credentials)
-        
-        if (!parsed.success) {
-          return null
-        }
+        if (!parsed.success) return null
 
         try {
           const user = await prisma.user.findUnique({
@@ -57,27 +52,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             include: { role: true },
           })
 
-          if (!user) {
-            return null
-          }
+          if (!user || !user.password) return null
 
-          // TODO: In production, use bcrypt to verify password
-          // const isValidPassword = await bcrypt.compare(parsed.data.password, user.password)
-          // if (!isValidPassword) return null
-          
-          // For demo/development ONLY - accept password if it matches or if no password is set
-          // This will NOT run in production mode for security
-          if (process.env.NODE_ENV === "production") {
-            // In production, require proper password verification
-            // For now, reject all logins until bcrypt is implemented
-            console.error("Password verification not implemented. Implement bcrypt before production use.")
-            return null
-          }
-          
-          if (user.password && user.password !== parsed.data.password) {
-            // In development, this is plain-text comparison
-            return null
-          }
+          const isValidPassword = await bcrypt.compare(parsed.data.password, user.password)
+          if (!isValidPassword) return null
 
           return {
             id: user.id,
@@ -103,41 +81,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.sub
-        session.user.role = token.role
+        session.user.role = token.role as string | undefined
       }
       return session
     },
-    async authorized({ auth, request }) {
-      const isLoggedIn = !!auth?.user
-      const isOnLoginPage = request.nextUrl.pathname.startsWith("/login")
-      const isOnAdminPage = request.nextUrl.pathname.startsWith("/admin")
-      const isPublicPage = ["/", "/frames", "/quests"].some(path => 
-        request.nextUrl.pathname === path || request.nextUrl.pathname.startsWith(path + "/")
+    async authorized({ auth: authState, request }) {
+      const isLoggedIn = !!authState?.user
+      const { pathname } = request.nextUrl
+      const isOnLoginPage = pathname.startsWith("/login")
+      const isOnAdminPage = pathname.startsWith("/admin")
+      const isPublicPage = ["/", "/frames", "/quests"].some(
+        (p) => pathname === p || pathname.startsWith(p + "/")
       )
-      const isApiRoute = request.nextUrl.pathname.startsWith("/api")
-      const isStaticAsset = request.nextUrl.pathname.includes(".")
+      const isApiRoute = pathname.startsWith("/api")
+      const isStaticAsset = pathname.includes(".")
 
-      // Allow API routes and static assets
-      if (isApiRoute || isStaticAsset) {
-        return true
-      }
-
-      // Redirect logged-in users away from login page
-      if (isLoggedIn && isOnLoginPage) {
-        return Response.redirect(new URL("/dashboard", request.nextUrl))
-      }
-
-      // Allow public pages
-      if (isPublicPage) {
-        return true
-      }
-
-      // Admin pages require ADMIN role
-      if (isOnAdminPage) {
-        return isLoggedIn && auth?.user?.role === "ADMIN"
-      }
-
-      // Protected pages require authentication
+      if (isApiRoute || isStaticAsset) return true
+      if (isLoggedIn && isOnLoginPage) return Response.redirect(new URL("/dashboard", request.nextUrl))
+      if (isPublicPage) return true
+      if (isOnAdminPage) return isLoggedIn && authState?.user?.role === "ADMIN"
       return isLoggedIn
     },
   },

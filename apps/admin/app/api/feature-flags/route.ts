@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
+import { getServerSession } from "next-auth"
 
 // In-memory store for demo (replace with Prisma in production)
 const flagStore = new Map<string, { id: string; key: string; enabled: boolean; description: string }>([
@@ -10,7 +11,17 @@ const flagStore = new Map<string, { id: string; key: string; enabled: boolean; d
   ["ANALYTICS_ENABLED", { id: "6", key: "ANALYTICS_ENABLED", enabled: true, description: "Enable analytics" }],
 ])
 
+async function requireAdmin(): Promise<NextResponse | null> {
+  const session = await getServerSession()
+  if (!session || (session as any)?.user?.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+  return null
+}
+
 export async function GET() {
+  const authError = await requireAdmin()
+  if (authError) return authError
   try {
     const flags = Array.from(flagStore.values())
     return NextResponse.json({ flags })
@@ -20,6 +31,8 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const authError = await requireAdmin()
+  if (authError) return authError
   try {
     const body = await request.json()
     const { key, description, enabled } = body
@@ -32,15 +45,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Flag already exists" }, { status: 409 })
     }
 
-    const flag = {
-      id: `${Date.now()}`,
-      key,
-      description: description || "",
-      enabled: enabled || false,
-    }
-
+    const flag = { id: `${Date.now()}`, key, description: description || "", enabled: enabled || false }
     flagStore.set(key, flag)
-
     return NextResponse.json({ flag })
   } catch (error) {
     return NextResponse.json({ error: "Failed to create flag" }, { status: 500 })
@@ -48,22 +54,19 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
+  const authError = await requireAdmin()
+  if (authError) return authError
   try {
     const body = await request.json()
     const { key, enabled } = body
 
-    if (!key) {
-      return NextResponse.json({ error: "Key is required" }, { status: 400 })
-    }
+    if (!key) return NextResponse.json({ error: "Key is required" }, { status: 400 })
 
     const flag = flagStore.get(key)
-    if (!flag) {
-      return NextResponse.json({ error: "Flag not found" }, { status: 404 })
-    }
+    if (!flag) return NextResponse.json({ error: "Flag not found" }, { status: 404 })
 
     flag.enabled = enabled
     flagStore.set(key, flag)
-
     return NextResponse.json({ flag })
   } catch (error) {
     return NextResponse.json({ error: "Failed to update flag" }, { status: 500 })
@@ -71,20 +74,16 @@ export async function PATCH(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const authError = await requireAdmin()
+  if (authError) return authError
   try {
     const { searchParams } = new URL(request.url)
     const key = searchParams.get("key")
 
-    if (!key) {
-      return NextResponse.json({ error: "Key is required" }, { status: 400 })
-    }
-
-    if (!flagStore.has(key)) {
-      return NextResponse.json({ error: "Flag not found" }, { status: 404 })
-    }
+    if (!key) return NextResponse.json({ error: "Key is required" }, { status: 400 })
+    if (!flagStore.has(key)) return NextResponse.json({ error: "Flag not found" }, { status: 404 })
 
     flagStore.delete(key)
-
     return NextResponse.json({ success: true })
   } catch (error) {
     return NextResponse.json({ error: "Failed to delete flag" }, { status: 500 })

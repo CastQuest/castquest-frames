@@ -1,7 +1,18 @@
 import { NextRequest, NextResponse } from "next/server"
+import { getServerSession } from "next-auth"
 import { deployContract } from "../../../../actions/deploy-contract"
 
+function isAdminSession(session: ReturnType<typeof getServerSession> extends Promise<infer T> ? T : never): boolean {
+  return !!(session && (session as any)?.user?.role === "ADMIN")
+}
+
 export async function POST(request: NextRequest) {
+  // Auth guard: admin only
+  const session = await getServerSession()
+  if (!isAdminSession(session)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
   try {
     const body = await request.json()
     const { name, chainId, sourceCode, bytecode, constructorArgs } = body
@@ -32,8 +43,10 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
-  // Return list of recent deployments (from memory/DB)
-  // For demo, return empty list
+export async function GET(request: NextRequest) {
+  const session = await getServerSession()
+  if (!isAdminSession(session)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
   return NextResponse.json({ deployments: [] })
 }

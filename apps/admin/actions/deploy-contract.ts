@@ -1,6 +1,6 @@
 "use server"
 
-import { createPublicClient, createWalletClient, http, parseAbi, encodeAbiParameters } from "viem"
+import { createPublicClient, createWalletClient, http, encodeAbiParameters } from "viem"
 import { privateKeyToAccount } from "viem/accounts"
 import { mainnet, base, optimism, arbitrum, polygon, baseSepolia, sepolia } from "viem/chains"
 
@@ -108,17 +108,19 @@ export async function deployContract(input: DeployContractInput): Promise<Deploy
       }
     }
 
-    // Estimate gas
+    // Estimate gas and add 20% safety margin
     const gasEstimate = await publicClient.estimateGas({
       account: account.address,
       data: deployData,
     })
+    const gasWithMargin = (gasEstimate * 120n) / 100n
 
     // Deploy contract
     const hash = await walletClient.deployContract({
       abi: DEMO_ERC20_ABI,
       bytecode: deployBytecode as `0x${string}`,
       args: constructorArgs.length > 0 ? [BigInt(constructorArgs[0] as string)] : undefined,
+      gas: gasWithMargin,
     })
 
     // Wait for receipt

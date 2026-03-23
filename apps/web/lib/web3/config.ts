@@ -13,29 +13,25 @@ import {
 
 const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
 
-// Warn in development if projectId is missing
-if (!projectId && typeof window !== "undefined") {
-  console.warn(
+if (!projectId && process.env.NODE_ENV === "development" && typeof window !== "undefined") {
+  console.error(
     "[CastQuest] NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set. " +
-    "Get one from https://cloud.walletconnect.com/"
+    "Web3 features will not work. Get a project ID from https://cloud.walletconnect.com/"
   )
 }
 
-export const web3Config = getDefaultConfig({
-  appName: "CastQuest Platform",
-  projectId: projectId || "demo-project-id",
-  chains: [
-    mainnet,
-    base,
-    optimism,
-    arbitrum,
-    polygon,
-    // Testnets
-    baseSepolia,
-    sepolia,
-  ],
-  ssr: true,
-})
+/** True only when a valid WalletConnect project ID is configured */
+export const web3Enabled = !!projectId
+
+/** RainbowKit config — null when projectId is missing so Web3Provider can skip rendering */
+export const web3Config = projectId
+  ? getDefaultConfig({
+      appName: "CastQuest Platform",
+      projectId,
+      chains: [mainnet, base, optimism, arbitrum, polygon, baseSepolia, sepolia],
+      ssr: true,
+    })
+  : null
 
 // Chain metadata for UI display
 export const chainMetadata: Record<number, { name: string; icon: string; color: string }> = {
@@ -48,10 +44,9 @@ export const chainMetadata: Record<number, { name: string; icon: string; color: 
   11155111: { name: "Sepolia", icon: "S", color: "#CFB5F0" },
 }
 
-// Get RPC URLs based on environment
 export function getRpcUrl(chainId: number): string {
   const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID
-  
+
   const rpcUrls: Record<number, string> = {
     1: alchemyId ? `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}` : "https://eth.llamarpc.com",
     8453: alchemyId ? `https://base-mainnet.g.alchemy.com/v2/${alchemyId}` : "https://mainnet.base.org",
@@ -61,6 +56,6 @@ export function getRpcUrl(chainId: number): string {
     84532: "https://sepolia.base.org",
     11155111: alchemyId ? `https://eth-sepolia.g.alchemy.com/v2/${alchemyId}` : "https://rpc.sepolia.org",
   }
-  
+
   return rpcUrls[chainId] || ""
 }
