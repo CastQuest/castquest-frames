@@ -142,7 +142,7 @@ export default function ContractsPage() {
     setTimeout(() => setCopiedAddress(null), 2000)
   }
 
-  const deployContract = async () => {
+  const handleDeployContract = async () => {
     if (!sourceCode.trim()) {
       showNotification("error", "Please enter contract source code")
       return
