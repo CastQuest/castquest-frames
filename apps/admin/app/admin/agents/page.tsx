@@ -278,15 +278,23 @@ export default function AgentsPage() {
             { label: "Active", value: agents.filter(a => a.enabled).length, icon: Activity, color: "cyan" },
             { label: "Last Hour Runs", value: 24, icon: BarChart3, color: "purple" },
             { label: "Success Rate", value: "94%", icon: CheckCircle2, color: "green" },
-          ].map((stat, i) => (
+          ].map((stat, i) => {
+            const colorClassMap: Record<string, string> = {
+              emerald: "text-emerald-400",
+              cyan: "text-cyan-400",
+              purple: "text-purple-400",
+              green: "text-green-400",
+            }
+            return (
             <div key={i} className="bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4">
               <div className="flex items-center justify-between">
-                <stat.icon className={`w-5 h-5 text-${stat.color}-400`} />
+                <stat.icon className={`w-5 h-5 ${colorClassMap[stat.color] ?? "text-emerald-400"}`} />
                 <span className="text-2xl font-bold text-white">{stat.value}</span>
               </div>
               <p className="text-sm text-slate-400 mt-2">{stat.label}</p>
             </div>
-          ))}
+            )
+          })}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

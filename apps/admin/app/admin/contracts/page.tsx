@@ -17,6 +17,7 @@ import {
   XCircle,
   Loader2
 } from "lucide-react"
+import { deployContract } from "../../../actions/deploy-contract"
 
 interface ContractDeployment {
   id: string
@@ -165,56 +166,35 @@ export default function ContractsPage() {
     setDeployments(prev => [pendingDeployment, ...prev])
 
     try {
-      const res = await fetch("/api/contracts/deploy", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: contractName,
-          chainId: selectedChain,
-          sourceCode,
-          constructorArgs: constructorArgs ? constructorArgs.split(",").map(a => a.trim()) : [],
-        }),
+      const result = await deployContract({
+        name: contractName,
+        chainId: selectedChain,
+        constructorArgs: constructorArgs ? constructorArgs.split(",").map(a => a.trim()) : [],
       })
 
-      if (res.ok) {
-        const data = await res.json()
-        setDeployments(prev => prev.map(d => 
-          d.id === pendingDeployment.id 
-            ? { ...d, ...data.deployment, status: "deployed" }
+      if (result.success && result.deployment) {
+        setDeployments(prev => prev.map(d =>
+          d.id === pendingDeployment.id
+            ? { ...d, ...result.deployment, status: "deployed" }
             : d
         ))
-        showNotification("success", `Contract deployed to ${data.deployment.address}`)
+        showNotification("success", `Contract deployed to ${result.deployment.address}`)
       } else {
-        const error = await res.json()
-        setDeployments(prev => prev.map(d => 
-          d.id === pendingDeployment.id 
-            ? { ...d, status: "failed", errorMessage: error.error }
+        setDeployments(prev => prev.map(d =>
+          d.id === pendingDeployment.id
+            ? { ...d, status: "failed", errorMessage: result.error ?? "Deployment failed" }
             : d
         ))
-        showNotification("error", error.error || "Deployment failed")
+        showNotification("error", result.error || "Deployment failed")
       }
     } catch (error) {
-      // Demo mode: simulate deployment when API is not available
-      // In production, this would show a real error
-      if (process.env.NODE_ENV === "development") {
-        const fakeAddress = `0x${Math.random().toString(16).substring(2, 42)}`
-        const fakeTxHash = `0x${Math.random().toString(16).substring(2, 66)}`
-        
-        setDeployments(prev => prev.map(d => 
-          d.id === pendingDeployment.id 
-            ? { ...d, address: fakeAddress, txHash: fakeTxHash, status: "deployed" }
-            : d
-        ))
-        showNotification("success", `[DEMO MODE] Contract deployed to ${fakeAddress}`)
-      } else {
-        // Production: show actual error
-        setDeployments(prev => prev.map(d => 
-          d.id === pendingDeployment.id 
-            ? { ...d, status: "failed", errorMessage: "Network error - deployment failed" }
-            : d
-        ))
-        showNotification("error", "Deployment failed - check network connection")
-      }
+      const errorMessage = error instanceof Error ? error.message : "Deployment failed"
+      setDeployments(prev => prev.map(d =>
+        d.id === pendingDeployment.id
+          ? { ...d, status: "failed", errorMessage }
+          : d
+      ))
+      showNotification("error", errorMessage)
     } finally {
       setDeploying(false)
     }

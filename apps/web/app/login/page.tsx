@@ -102,12 +102,9 @@ export default function LoginPage() {
                 <label htmlFor="password" className="block text-sm font-medium text-slate-300">
                   Password
                 </label>
-                <Link 
-                  href="/forgot-password" 
-                  className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
-                >
-                  Forgot password?
-                </Link>
+                <span className="text-sm text-slate-500">
+                  Forgot password? Contact your admin.
+                </span>
               </div>
               <input
                 id="password"
@@ -166,28 +163,19 @@ export default function LoginPage() {
             Connect Wallet
           </button>
 
-          {/* Sign Up Link */}
+          {/* Sign Up Link — registration not yet available */}
           <p className="mt-8 text-center text-slate-400 text-sm">
-            Don&apos;t have an account?{" "}
-            <Link 
-              href="/register" 
-              className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
-            >
-              Create one
-            </Link>
+            Need access? Contact your{" "}
+            <span className="text-emerald-400 font-medium">system administrator</span>.
           </p>
         </div>
 
         {/* Footer */}
         <p className="mt-8 text-center text-slate-500 text-xs">
           By signing in, you agree to our{" "}
-          <Link href="/terms" className="text-slate-400 hover:text-slate-300 transition-colors">
-            Terms of Service
-          </Link>{" "}
+          <span className="text-slate-400">Terms of Service</span>{" "}
           and{" "}
-          <Link href="/privacy" className="text-slate-400 hover:text-slate-300 transition-colors">
-            Privacy Policy
-          </Link>
+          <span className="text-slate-400">Privacy Policy</span>.
         </p>
       </div>
     </div>

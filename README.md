@@ -87,7 +87,10 @@ pnpm db:generate
 # Push schema to database
 pnpm db:push
 
-# Run migrations (production)
+# Run migrations (development)
+pnpm db:migrate:dev
+
+# Run migrations (production — applies pending migrations without prompting)
 pnpm db:migrate
 
 # Open Prisma Studio
@@ -235,10 +238,11 @@ pnpm lint         # Run linters
 pnpm typecheck    # Type checking
 
 # Database
-pnpm db:generate  # Generate Prisma client
-pnpm db:push      # Push schema to DB
-pnpm db:migrate   # Run migrations
-pnpm db:studio    # Open Prisma Studio
+pnpm db:generate      # Generate Prisma client
+pnpm db:push          # Push schema to DB
+pnpm db:migrate:dev   # Run migrations (development)
+pnpm db:migrate       # Run migrations (production)
+pnpm db:studio        # Open Prisma Studio
 ```
 
 ## 🤝 Contributing

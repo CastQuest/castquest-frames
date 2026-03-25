@@ -55,7 +55,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
                 <div className="flex items-center gap-3">
                   <a
-                    href="/admin/dashboard"
+                    href="/admin"
                     className="px-4 py-2 text-sm font-semibold rounded-lg border border-neutral-700 text-neutral-300 hover:border-emerald-500/30 hover:text-emerald-400 transition-all"
                   >
                     Operator

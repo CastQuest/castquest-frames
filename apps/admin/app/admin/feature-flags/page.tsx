@@ -13,6 +13,7 @@ import {
   Check,
   Flag
 } from "lucide-react"
+import { getFeatureFlags, toggleFeatureFlag, createFeatureFlag, deleteFeatureFlag } from "../../../actions/feature-flags"
 
 interface FeatureFlag {
   id: string
@@ -55,16 +56,9 @@ export default function FeatureFlagsPage() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch("/api/feature-flags")
-      if (res.ok) {
-        const data = await res.json()
-        setFlags(data.flags)
-      } else {
-        // Use defaults if API fails
-        setFlags(defaultFlags)
-      }
+      const { flags: data } = await getFeatureFlags()
+      setFlags(data)
     } catch {
-      // Use defaults if API fails
       setFlags(defaultFlags)
     } finally {
       setLoading(false)
@@ -78,23 +72,16 @@ export default function FeatureFlagsPage() {
     setFlags(prev => prev.map(f => f.key === key ? { ...f, enabled: !currentEnabled } : f))
     
     try {
-      const res = await fetch("/api/feature-flags", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key, enabled: !currentEnabled }),
-      })
-      
-      if (!res.ok) {
-        // Revert on failure
+      const result = await toggleFeatureFlag(key, !currentEnabled)
+      if (result.error) {
         setFlags(prev => prev.map(f => f.key === key ? { ...f, enabled: currentEnabled } : f))
-        showNotification("error", "Failed to update flag")
+        showNotification("error", result.error)
       } else {
         showNotification("success", `${key} ${!currentEnabled ? "enabled" : "disabled"}`)
       }
     } catch {
-      // Revert on failure
       setFlags(prev => prev.map(f => f.key === key ? { ...f, enabled: currentEnabled } : f))
-      showNotification("error", "Network error")
+      showNotification("error", "Failed to update flag")
     } finally {
       setSavingFlags(prev => {
         const next = new Set(prev)
@@ -106,24 +93,17 @@ export default function FeatureFlagsPage() {
 
   const createFlag = async (data: { key: string; description: string; enabled: boolean }) => {
     try {
-      const res = await fetch("/api/feature-flags", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      })
-      
-      if (res.ok) {
-        const { flag } = await res.json()
-        setFlags(prev => [...prev, flag])
+      const result = await createFeatureFlag(data)
+      if (result.error) {
+        showNotification("error", result.error)
+      } else if (result.flag) {
+        setFlags(prev => [...prev, result.flag!])
         setShowAddForm(false)
         reset()
         showNotification("success", `Flag ${data.key} created`)
-      } else {
-        const error = await res.json()
-        showNotification("error", error.error || "Failed to create flag")
       }
     } catch {
-      showNotification("error", "Network error")
+      showNotification("error", "Failed to create flag")
     }
   }
 
@@ -131,18 +111,15 @@ export default function FeatureFlagsPage() {
     if (!confirm(`Delete flag "${key}"? This action cannot be undone.`)) return
     
     try {
-      const res = await fetch(`/api/feature-flags?key=${encodeURIComponent(key)}`, {
-        method: "DELETE",
-      })
-      
-      if (res.ok) {
+      const result = await deleteFeatureFlag(key)
+      if (result.error) {
+        showNotification("error", result.error)
+      } else {
         setFlags(prev => prev.filter(f => f.key !== key))
         showNotification("success", `Flag ${key} deleted`)
-      } else {
-        showNotification("error", "Failed to delete flag")
       }
     } catch {
-      showNotification("error", "Network error")
+      showNotification("error", "Failed to delete flag")
     }
   }
 

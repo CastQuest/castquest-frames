@@ -136,15 +136,23 @@ export default function UsersPage() {
             { label: "Admins", value: users.filter(u => u.role?.name === "ADMIN").length, icon: Shield, color: "red" },
             { label: "Operators", value: users.filter(u => u.role?.name === "OPERATOR").length, icon: Users, color: "purple" },
             { label: "Creators", value: users.filter(u => u.role?.name === "CREATOR").length, icon: Users, color: "cyan" },
-          ].map((stat, i) => (
+          ].map((stat, i) => {
+            const colorClassMap: Record<string, string> = {
+              emerald: "text-emerald-400",
+              red: "text-red-400",
+              purple: "text-purple-400",
+              cyan: "text-cyan-400",
+            }
+            return (
             <div key={i} className="bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4">
               <div className="flex items-center justify-between">
-                <stat.icon className={`w-5 h-5 text-${stat.color}-400`} />
+                <stat.icon className={`w-5 h-5 ${colorClassMap[stat.color] ?? "text-emerald-400"}`} />
                 <span className="text-2xl font-bold text-white">{stat.value}</span>
               </div>
               <p className="text-sm text-slate-400 mt-2">{stat.label}</p>
             </div>
-          ))}
+            )
+          })}
         </div>
 
         {/* Filters */}

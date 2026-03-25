@@ -105,10 +105,10 @@ const nextConfig = {
     return config;
   },
 
-  // Logging configuration
+  // Logging configuration — only log full fetch URLs in non-production to avoid leaking tokens/PII
   logging: {
     fetches: {
-      fullUrl: true,
+      fullUrl: process.env.NODE_ENV !== "production",
     },
   },
 };

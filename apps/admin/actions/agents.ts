@@ -179,32 +179,30 @@ export async function runAgent(
 
   executionStore.unshift(execution)
 
-  // Simulate async execution
-  setTimeout(async () => {
-    try {
-      // Simulate agent logic based on type
-      const startTime = Date.now()
-      const result = await executeAgentLogic(agent, input)
-      const duration = Date.now() - startTime
+  // Execute synchronously within the request lifecycle to avoid dropped work
+  // in serverless environments where the process may be frozen after the response.
+  try {
+    const startTime = Date.now()
+    const result = await executeAgentLogic(agent, input)
+    const duration = Date.now() - startTime
 
-      execution.status = "completed"
-      execution.output = result
-      execution.duration = duration
-      execution.completedAt = new Date()
+    execution.status = "completed"
+    execution.output = result
+    execution.duration = duration
+    execution.completedAt = new Date()
 
-      agent.lastRun = new Date()
-      agent.lastResult = { status: "success", ...result }
-      agentStore.set(agentId, agent)
-    } catch (error) {
-      execution.status = "failed"
-      execution.error = error instanceof Error ? error.message : "Unknown error"
-      execution.completedAt = new Date()
+    agent.lastRun = new Date()
+    agent.lastResult = { status: "success", ...result }
+    agentStore.set(agentId, agent)
+  } catch (error) {
+    execution.status = "failed"
+    execution.error = error instanceof Error ? error.message : "Unknown error"
+    execution.completedAt = new Date()
 
-      agent.lastRun = new Date()
-      agent.lastResult = { status: "failed", error: execution.error }
-      agentStore.set(agentId, agent)
-    }
-  }, 1000 + Math.random() * 3000)
+    agent.lastRun = new Date()
+    agent.lastResult = { status: "failed", error: execution.error }
+    agentStore.set(agentId, agent)
+  }
 
   return { success: true, executionId: execution.id }
 }

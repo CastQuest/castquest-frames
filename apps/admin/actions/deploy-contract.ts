@@ -18,9 +18,7 @@ const chainConfigs: Record<number, { chain: typeof mainnet; rpcUrl: string }> = 
 interface DeployContractInput {
   name: string
   chainId: number
-  sourceCode?: string
   bytecode?: string
-  abi?: unknown[]
   constructorArgs?: unknown[]
 }
 
@@ -52,6 +50,13 @@ const DEMO_ERC20_ABI = [
 ]
 
 export async function deployContract(input: DeployContractInput): Promise<DeploymentResult> {
+  // Defense-in-depth: this action uses ADMIN_PRIVATE_KEY and must only be called
+  // from authenticated admin contexts. Verify the ADMIN_API_KEY is set to ensure
+  // the action is not accidentally invoked in an unauthenticated path.
+  if (!process.env.ADMIN_API_KEY) {
+    return { success: false, error: "Admin API key not configured — deployment disabled" }
+  }
+
   const { name, chainId, bytecode, constructorArgs = [] } = input
 
   // Validate chain

@@ -195,15 +195,25 @@ export default function DevAgentsPage() {
               { label: "Success Rate", value: `${metrics.overallSuccessRate}%`, icon: TrendingUp, color: "green" },
               { label: "Avg Response", value: `${(metrics.avgResponseTime / 1000).toFixed(1)}s`, icon: Clock, color: "blue" },
               { label: "Error Rate", value: `${metrics.errorRate}%`, icon: AlertCircle, color: "red" },
-            ].map((stat, i) => (
+            ].map((stat, i) => {
+              const statColorClassMap: Record<string, string> = {
+                emerald: "text-emerald-400",
+                cyan: "text-cyan-400",
+                purple: "text-purple-400",
+                green: "text-green-400",
+                blue: "text-blue-400",
+                red: "text-red-400",
+              }
+              return (
               <div key={i} className="bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4 shadow-[0_0_30px_rgba(16,185,129,0.05)]">
                 <div className="flex items-center justify-between mb-2">
-                  <stat.icon className={`w-5 h-5 text-${stat.color}-400`} />
+                  <stat.icon className={`w-5 h-5 ${statColorClassMap[stat.color] ?? "text-emerald-400"}`} />
                 </div>
                 <div className="text-2xl font-bold text-white">{stat.value}</div>
                 <div className="text-xs text-slate-400">{stat.label}</div>
               </div>
-            ))}
+              )
+            })}
           </div>
         )}
 

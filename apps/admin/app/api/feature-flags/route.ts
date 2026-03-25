@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
 
 // In-memory store for demo (replace with Prisma in production)
 const flagStore = new Map<string, { id: string; key: string; enabled: boolean; description: string }>([
@@ -11,16 +10,20 @@ const flagStore = new Map<string, { id: string; key: string; enabled: boolean; d
   ["ANALYTICS_ENABLED", { id: "6", key: "ANALYTICS_ENABLED", enabled: true, description: "Enable analytics" }],
 ])
 
-async function requireAdmin(): Promise<NextResponse | null> {
-  const session = await getServerSession()
-  if (!session || (session as any)?.user?.role !== "ADMIN") {
+function requireAdminKey(request: NextRequest): NextResponse | null {
+  const adminKey = process.env.ADMIN_API_KEY
+  if (!adminKey) {
+    return NextResponse.json({ error: "Admin API not configured" }, { status: 503 })
+  }
+  const authHeader = request.headers.get("authorization")
+  if (authHeader !== `Bearer ${adminKey}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
   return null
 }
 
-export async function GET() {
-  const authError = await requireAdmin()
+export async function GET(request: NextRequest) {
+  const authError = requireAdminKey(request)
   if (authError) return authError
   try {
     const flags = Array.from(flagStore.values())
@@ -31,7 +34,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const authError = await requireAdmin()
+  const authError = requireAdminKey(request)
   if (authError) return authError
   try {
     const body = await request.json()
@@ -54,7 +57,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  const authError = await requireAdmin()
+  const authError = requireAdminKey(request)
   if (authError) return authError
   try {
     const body = await request.json()
@@ -74,7 +77,7 @@ export async function PATCH(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const authError = await requireAdmin()
+  const authError = requireAdminKey(request)
   if (authError) return authError
   try {
     const { searchParams } = new URL(request.url)
