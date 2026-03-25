@@ -17,7 +17,6 @@ import {
   XCircle,
   Loader2
 } from "lucide-react"
-import { deployContract } from "../../../actions/deploy-contract"
 
 interface ContractDeployment {
   id: string
