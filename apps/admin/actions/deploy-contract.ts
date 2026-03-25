@@ -57,7 +57,7 @@ export async function deployContract(input: DeployContractInput): Promise<Deploy
     return { success: false, error: "Admin API key not configured — deployment disabled" }
   }
 
-  const { name, chainId, bytecode, constructorArgs = [] } = input
+  const { chainId, bytecode, constructorArgs = [] } = input
 
   // Validate chain
   const chainConfig = chainConfigs[chainId]
