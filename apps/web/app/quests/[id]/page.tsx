@@ -21,12 +21,13 @@ function loadJson(file: string) {
   return JSON.parse(raw);
 }
 
-export default function QuestDetailPage({ params }: { params: { id: string } }) {
+export default async function QuestDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const quests: Quest[] = loadJson("quests.json");
   const steps: Step[] = loadJson("quest-steps.json");
 
-  const quest = quests.find((q) => q.id === params.id);
-  const questSteps = steps.filter((s) => s.questId === params.id);
+  const quest = quests.find((q) => q.id === id);
+  const questSteps = steps.filter((s) => s.questId === id);
 
   if (!quest) {
     return (

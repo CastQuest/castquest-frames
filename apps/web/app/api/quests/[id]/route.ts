@@ -16,11 +16,12 @@ function getQuestsService(): QuestsService {
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Validate quest ID
-    if (!params.id) {
+    if (!id) {
       return NextResponse.json(
         {
           success: false,
@@ -30,7 +31,7 @@ export async function GET(
       );
     }
 
-    const quest = await getQuestsService().getQuestById(params.id);
+    const quest = await getQuestsService().getQuestById(id);
 
     if (!quest) {
       return NextResponse.json(

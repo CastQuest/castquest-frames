@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { useSession, signOut } from 'next-auth/react';
 import { motion } from 'framer-motion';
 import {
   Wallet,
@@ -25,8 +25,16 @@ import {
 import { neo } from '@castquest/neo-ux-core';
 
 export default function ProfilePage() {
-  const { user, login, logout, authenticated, linkWallet, exportWallet } = usePrivy();
-  const { wallets } = useWallets();
+  const { data: session, status } = useSession();
+  const authenticated = status === 'authenticated';
+  const sessionUser = session?.user as { id?: string; name?: string | null; email?: string | null; role?: string } | undefined;
+  // Wallet management is handled by the connected wallet provider (e.g. RainbowKit).
+  // These stubs keep the UI functional until a wallet connector is wired up.
+  const wallets = [] as Array<{ address: string; walletClientType: string; chainId: string }>;
+  const login = () => { window.location.href = '/login'; };
+  const logout = () => signOut({ callbackUrl: '/login' });
+  const linkWallet = () => {};
+  const exportWallet = null as null | (() => Promise<void>);
   const [copying, setCopying] = useState<string | null>(null);
   const [showExportModal, setShowExportModal] = useState(false);
   const [showFundModal, setShowFundModal] = useState(false);
@@ -49,7 +57,7 @@ export default function ProfilePage() {
   // Mock social connections
   const socialConnections = [
     { platform: 'Farcaster', username: '@castmaster', connected: true, icon: '🎭', color: 'purple' },
-    { platform: 'Google', username: user?.email?.address || 'Not connected', connected: !!user?.email, icon: '🌐', color: 'blue' },
+    { platform: 'Google', username: sessionUser?.email || 'Not connected', connected: !!sessionUser?.email, icon: '🌐', color: 'blue' },
     { platform: 'Twitter', username: 'Not connected', connected: false, icon: '🐦', color: 'cyan' },
   ];
 
@@ -147,21 +155,21 @@ export default function ProfilePage() {
               </h2>
               <div className="flex items-center gap-6">
                 <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-3xl font-bold text-white">
-                  {user?.email?.address?.charAt(0).toUpperCase() || 'U'}
+                  {(sessionUser?.name || sessionUser?.email || 'U').charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <span className={`text-2xl font-bold ${neo.colors.text.primary}`}>
-                      {user?.id ? `User ${user.id.slice(0, 8)}...` : 'Anonymous User'}
+                      {sessionUser?.name || (sessionUser?.id ? `User ${sessionUser.id.slice(0, 8)}...` : 'Anonymous User')}
                     </span>
-                    {user?.email && (
+                    {sessionUser?.email && (
                       <CheckCircle className={`w-5 h-5 ${neo.colors.text.success}`} />
                     )}
                   </div>
                   <div className="flex items-center gap-2 mb-2">
                     <Mail className={`w-4 h-4 ${neo.colors.text.tertiary}`} />
                     <p className={neo.colors.text.secondary}>
-                      {user?.email?.address || 'No email connected'}
+                      {sessionUser?.email || 'No email connected'}
                     </p>
                   </div>
                 </div>
@@ -204,7 +212,7 @@ export default function ProfilePage() {
                           </div>
                           <div>
                             <div className={`${neo.colors.text.primary} font-semibold`}>
-                              {wallet.walletClientType === 'privy' ? '🔐 Embedded Smart Wallet' : '💼 External Wallet'}
+                              {wallet.walletClientType === 'embedded' ? '🔐 Embedded Smart Wallet' : '💼 External Wallet'}
                             </div>
                             <div className={`${neo.colors.text.tertiary} text-sm font-mono`}>{wallet.address}</div>
                           </div>
@@ -220,7 +228,7 @@ export default function ProfilePage() {
                               <Copy className="w-4 h-4" />
                             )}
                           </button>
-                          {wallet.walletClientType === 'privy' && (
+                          {wallet.walletClientType === 'embedded' && (
                             <button
                               onClick={() => setShowExportModal(true)}
                               className={`p-2 bg-neutral-800/50 hover:bg-neutral-700/50 rounded-lg ${neo.colors.text.tertiary} hover:${neo.colors.text.primary} transition-all`}
