@@ -5,10 +5,10 @@ export default defineConfig({
   format: ['esm', 'cjs'],
   dts: true,
   clean: true,
-  outExtension({ format }) {
-    return { js: format === 'esm' ? '.mjs' : '.js' };
-  },
   banner: {
     js: '"use client";',
+  },
+  outExtension({ format }) {
+    return { js: format === 'esm' ? '.mjs' : '.js' };
   },
 });

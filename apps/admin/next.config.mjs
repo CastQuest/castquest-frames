@@ -10,9 +10,8 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    serverComponentsExternalPackages: ['@castquest/core-services', 'bcrypt', '@mapbox/node-pre-gyp'],
-  },
+  // Next.js 15: serverExternalPackages (moved out of experimental)
+  serverExternalPackages: ['@castquest/core-services', 'bcrypt', '@mapbox/node-pre-gyp', '@prisma/client'],
   webpack: (config, { isServer }) => {
     // Externalize bcrypt and node-gyp packages for server
     if (isServer) {

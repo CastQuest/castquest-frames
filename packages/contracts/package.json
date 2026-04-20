@@ -4,8 +4,8 @@
   "description": "CastQuest Protocol Smart Contracts",
   "scripts": {
     "postinstall": "echo 'Skipping forge install - run manually if needed'",
-    "build": "if command -v forge >/dev/null 2>&1; then forge build; else echo 'Skipping contracts build - forge not installed'; fi",
-    "test": "if command -v forge >/dev/null 2>&1; then forge test -vv; else echo 'Skipping contracts tests - forge not installed'; fi",
+    "build": "command -v forge >/dev/null 2>&1 && forge build || echo 'Skipping contracts build - forge not installed'",
+    "test": "command -v forge >/dev/null 2>&1 && forge test -vv || echo 'Skipping contracts tests - forge not installed'",
     "test:coverage": "forge coverage",
     "test:gas": "forge test --gas-report",
     "lint": "if command -v forge >/dev/null 2>&1; then forge fmt --check; else echo 'Skipping contracts lint - forge not installed'; fi",

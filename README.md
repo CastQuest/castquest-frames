@@ -14,44 +14,14 @@ CAST QUEST Frames is a Web3-native social photo protocol that feels like Instagr
 - Builder-first: Frames, SDK, and a Remix-style module builder
 - AI-native: Smart Brain agents for pricing, previews, tagging, and system optimization
 
-## 🧱 Monorepo Structure
+## 🚀 Quick Start
 
-apps/
-  web/         - Next.js app (feed, profiles, frames)
-  admin/       - Next.js admin app (fees, templates, AI settings)
-  mobile/      - React Native / Expo app
-
-packages/
-  contracts/   - Solidity contracts (Base + EVM)
-  sdk/         - CAST QUEST SDK integration (used here)
-  ai-brain/    - Multi-agent Smart Brain orchestration
-  ui-kit/      - Shared UI components & design system
-
-infra/
-  api-gateway/ - API entrypoint (frames, mint, collect)
-  indexer/     - Onchain event indexer
-  workers/     - Background jobs (AI, notifications, analytics)
-  k8s/         - Kubernetes manifests
-
-docs/
-  whitepaper/  - Vision & protocol
-  architecture/- Diagrams & technical design
-  sdk/         - Dev docs & examples
-  product/     - User & admin guides
-
-.github/       - CI/CD, issue templates, PR templates
-scripts/       - Dev, deploy, Smart Brain operator
-examples/frames/ - Example frame definitions
-
-## 🤝 Contributing
-
-See CONTRIBUTING.md.
-
-## � Prerequisites
+### Prerequisites
 
 **Required:**
 - **Node.js 20+** (to prevent ERR_INVALID_THIS errors)
 - **pnpm 9+** (package manager)
+- **PostgreSQL 14+** (for database)
 
 **Install with nvm:**
 ```bash
@@ -60,79 +30,188 @@ nvm use 20
 npm install -g pnpm@9
 ```
 
-**Or use the .nvmrc file:**
+### Installation
+
 ```bash
-nvm use  # Automatically uses Node 20.19.6
+# Clone the repository
+git clone https://github.com/CastQuest/castquest-frames.git
+cd castquest-frames
+
+# Install dependencies
+pnpm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your values
+
+# Initialize database
+pnpm db:push
+
+# Start development
+pnpm dev
+```
+
+### Environment Variables
+
+Copy `.env.example` to `.env.local` and configure:
+
+```bash
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/castquest"
+
+# Auth.js
+NEXTAUTH_SECRET="your-secret-key"  # Generate: openssl rand -base64 32
+NEXTAUTH_URL="http://localhost:3000"
+
+# Web3
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID="your-project-id"
+NEXT_PUBLIC_ALCHEMY_ID="your-alchemy-key"
+
+# Contract Deployment (Admin only)
+ADMIN_PRIVATE_KEY="your-deployer-private-key"
+
+# AI Agents
+OPENAI_API_KEY="sk-your-api-key"
+
+# Feature Flags
+NEXT_PUBLIC_WEB3_ENABLED="true"
+NEXT_PUBLIC_AGENTS_ENABLED="true"
+```
+
+### Database Setup
+
+```bash
+# Generate Prisma client
+pnpm db:generate
+
+# Push schema to database
+pnpm db:push
+
+# Run migrations (development)
+pnpm db:migrate:dev
+
+# Run migrations (production — applies pending migrations without prompting)
+pnpm db:migrate
+
+# Open Prisma Studio
+pnpm db:studio
+```
+
+## 🧱 Monorepo Structure
+
+```
+apps/
+  web/         - Next.js 15 user app (feed, profiles, frames)
+  admin/       - Next.js 15 admin app (fees, templates, AI settings)
+  mobile/      - React Native / Expo app (future)
+
+packages/
+  contracts/   - Solidity contracts (Base + EVM, Foundry)
+  sdk/         - CAST QUEST SDK integration
+  neo-ux-core/ - Shared UI components & Neon Glass design system
+  ai-brain/    - Multi-agent Smart Brain orchestration
+  core-services/- Backend services and database layer
+  frames/      - Farcaster Frame protocol support
+  strategy-worker/ - Background job processing
+
+prisma/
+  schema.prisma - Database schema (Users, Roles, Permissions, Feature Flags, Agents, Contracts)
+
+scripts/       - Development and deployment automation
+docs/          - Documentation, whitepapers, technical guides
+examples/      - Example frame definitions and usage
 ```
 
 ## 🎨 Dashboards
 
-CastQuest Frames includes two production-ready dashboards with **neo-glow theme** for creators and administrators.
-
-### 👤 User Dashboard
-**Port:** 3000 | **URL:** http://localhost:3000/dashboard
-
-A creator-focused dashboard with AI tools and community features:
-- ✨ **AI Frame Builder** - Generate frames with natural language
-- 📊 **Analytics** - Track views, engagement, and revenue
-- 🏪 **Marketplace** - Browse and purchase frame templates
-- 💬 **Community Hub** - Social feed with interactions
-- 🎯 **Frame Management** - Create and monitor frames
-- 🏆 **Leaderboard** - Global rankings and achievements
-- ⚡ **Quest System** - Daily/weekly challenges
-- 💎 **NFT Mints** - Manage collectible mints
+### 👤 User Dashboard (Port 3000)
 
 ```bash
-# Start user dashboard
 cd apps/web && pnpm dev
-# Access: http://localhost:3000/dashboard
+# Access: http://localhost:3000
 ```
 
-### 👑 Admin Dashboard
-**Port:** 3001 | **URL:** http://localhost:3001/dashboard
+Features:
+- ✨ AI Frame Builder
+- 📊 Analytics & Metrics
+- 🏪 Frame Marketplace
+- 💬 Community Hub
+- 🎯 Frame Management
+- ⚡ Quest System
+- 💎 NFT Mints
 
-A protocol management console with comprehensive monitoring:
-- 💎 **Token Management** - Monitor $CAST, $PIC, $VID, $AUDIO
-- 🔐 **Permission System** - Role-based access control
-- 💰 **Fee Controls** - Adjustable protocol fees
-- 🛡️ **Risk Management** - AI-powered detection (98% accuracy)
-- 📊 **Protocol Metrics** - TVL, volume, active users
-- 📡 **System Health** - Real-time monitoring
-- 🖼️ **Frame Monitoring** - Track all frame activity
-- 📋 **Activity Logs** - Complete audit trail
+### 👑 Admin Dashboard (Port 3001)
 
 ```bash
-# Start admin dashboard
 cd apps/admin && pnpm dev
-# Access: http://localhost:3001/dashboard
+# Access: http://localhost:3001
 ```
 
-### 🚀 Quick Start - Both Dashboards
+Features:
+- 🔐 User & Role Management
+- 🚩 Feature Flags Control
+- 📜 Contract Deployment
+- 🤖 Agent Configuration
+- 📊 System Monitoring
+- 🛡️ RBAC Permissions
 
-```bash
-# 1. Install dependencies
-pnpm install
+## 🔐 Authentication
 
-# 2. Set up environment variables
-bash scripts/setup-env.sh
-# Then edit .env.local, apps/web/.env.local, apps/admin/.env.local with real values
+CastQuest uses **Auth.js (NextAuth v5)** for authentication:
 
-# 3. Run both dashboards in separate terminals:
-# Terminal 1: User Dashboard (http://localhost:3000)
-cd apps/web && pnpm dev
+- Credentials-based login (email/password)
+- JWT session strategy
+- Role-based access control (RBAC)
+- Protected routes via middleware
 
-# Terminal 2: Admin Dashboard (http://localhost:3001)
-cd apps/admin && pnpm dev
-```
+### User Roles
 
-📖 **Full Documentation:** See [docs/DASHBOARDS.md](./docs/DASHBOARDS.md) for complete setup, configuration, deployment, and troubleshooting guides.
-See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) for production deployment instructions.
+| Role | Access |
+|------|--------|
+| ADMIN | Full system access, user management, deployments |
+| OPERATOR | Manage quests, frames, run agents |
+| CREATOR | Create content, manage own frames |
+| VIEWER | Read-only access |
 
-## 🏥 Repository Health
+## 🌐 Web3 Integration
 
-The CastQuest Frames repository includes a comprehensive dependency health monitoring system to ensure consistency, security, and reliability.
+- **RainbowKit** for wallet connection
+- **Wagmi** for Ethereum interactions
+- **viem** for low-level blockchain operations
 
-### Health Check Commands
+### Supported Chains
+
+- Ethereum Mainnet (1)
+- Base (8453) ← Primary
+- Optimism (10)
+- Arbitrum (42161)
+- Polygon (137)
+- Base Sepolia (84532) ← Testnet
+- Sepolia (11155111) ← Testnet
+
+## 🤖 Smart Brain Agents
+
+AI-powered automation agents:
+
+| Agent | Function |
+|-------|----------|
+| FramePricingAgent | Market analysis, pricing recommendations |
+| ContentModerationAgent | Content scanning, policy enforcement |
+| QuestCompletionAgent | Quest validation, reward distribution |
+| SmartBrainOrchestrator | Agent coordination, workflow optimization |
+
+## 📜 Smart Contract Deployment
+
+Deploy contracts directly from the Admin dashboard:
+
+1. Navigate to `/admin/contracts`
+2. Enter Solidity source code or paste pre-compiled bytecode
+3. Select target chain
+4. Deploy with one click
+
+Supports verification on Etherscan/Basescan.
+
+## 🏥 Health Monitoring
 
 ```bash
 # Run comprehensive health check
@@ -141,38 +220,47 @@ bash scripts/master.sh health
 # Run automated repair
 bash scripts/repair-dependencies.sh
 
-# Get AI-powered insights
+# AI-powered insights
 .smartbrain/oracle.sh analyze
-
-# Get upgrade recommendations
-.smartbrain/oracle.sh recommend-upgrades
-
-# Security vulnerability scan
-.smartbrain/oracle.sh security-scan
 ```
 
-### Automated Monitoring
+## 📝 Available Scripts
 
-- **CI/CD Health Checks**: Automated health checks run on every push, PR, and daily at 6 AM UTC
-- **Pre-commit Hooks**: Validate changes before they reach the repository
-- **Smart Brain Oracle**: AI-powered dependency intelligence and predictive maintenance
+```bash
+# Development
+pnpm dev          # Start web app
+pnpm dev:admin    # Start admin app
+pnpm dev:all      # Start both apps
 
-### Key Features
+# Building
+pnpm build        # Build all packages
+pnpm lint         # Run linters
+pnpm typecheck    # Type checking
 
-- ✅ **Version Harmonization**: TypeScript 5.3.3, @types/node 20.10.6, Next.js 14.2.35 (secure)
-- 🔒 **Security Scanning**: Automated vulnerability detection with pnpm audit
-- 📊 **Health Scoring**: Real-time repository health metrics
-- 🤖 **AI Insights**: Smart Brain Oracle for predictive maintenance
-- 🛠️ **Auto-Repair**: One-command dependency repair script
-- 📝 **Comprehensive Reports**: JSON output for CI/CD integration
+# Database
+pnpm db:generate      # Generate Prisma client
+pnpm db:push          # Push schema to DB
+pnpm db:migrate:dev   # Run migrations (development)
+pnpm db:migrate       # Run migrations (production)
+pnpm db:studio        # Open Prisma Studio
+```
 
-📖 **Full Documentation:** See [docs/DEPENDENCY-HEALTH.md](./docs/DEPENDENCY-HEALTH.md) for detailed health monitoring guide.
+## 🤝 Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidelines.
+
+## 📖 Documentation
+
+- [Architecture Overview](./docs/architecture/)
+- [SDK Documentation](./docs/sdk/)
+- [API Reference](./docs/api/)
+- [Dashboard Guide](./docs/DASHBOARDS.md)
+- [Dependency Health](./docs/DEPENDENCY-HEALTH.md)
 
 ## 💸 Sponsors & Partners
 
-Site: https://castquest.xyz (placeholder)
-Docs: https://docs.castquest.xyz (placeholder)
-Sponsors: GitHub Sponsors / custom page
+- Site: https://castquest.xyz
+- Docs: https://docs.castquest.xyz
 
 ## 🌌 Vision
 
@@ -181,59 +269,6 @@ Creators will own their rails.
 Builders will extend everything through Frames and SDKs.
 AI will act as the invisible Smart Brain across the entire stack.
 
-
-# CastQuest Protocol — Operator Console
-
-A sovereign, media‑first automation protocol combining:
-
-- Frame Template Engine (Module 6 MEGA)
-- Quest Engine (Module 5B MEGA)
-- Mint Engine + Renderer + Automation (Module 7 MEGA)
-- BASE Mock Onchain Layer (Module 4 MEGA)
-- Mobile‑Optimized Admin Console
-- Strategy Worker + Logs Dashboard
-
-## Contributors
-
-- **Yosef (Founder / Protocol Architect)**  
-  Vision, architecture, automation engine, operator console design.
-
-- **SMSDAO (Core Contributor)**  
-  Execution, module integration, system orchestration.
-
-- **AI Automation Partner**  
-  Script generation, module scaffolding, error‑resilient workflows.
-
-## Modules Installed
-
-### Module 4 — BASE API + Mobile Admin + Strategy Dashboard
-- `/api/base/*`
-- `/strategy`
-- ShellLayout mobile UI
-
-### Module 5B — Quest Engine MEGA
-- `/quests`
-- `/api/quests/*`
-- `data/quests.json`, `quest-steps.json`, `quest-progress.json`, `quest-rewards.json`
-
-### Module 6 — Frame Template Engine MEGA
-- `/frame-templates`
-- `/api/frame-templates/*`
-- `data/frame-templates.json`
-
-### Module 7 — Mint + Render + Automation MEGA
-- `/mints`
-- `/api/mints/*`
-- `/api/frames/render`
-- `/api/strategy/worker/*`
-- `data/mints.json`, `mint-events.json`, `frames.json`, `worker-events.json`
-
-## Vision
-
-CastQuest is a sovereign automation protocol that turns:
-
 **Media → Templates → Frames → Mints → Quests → Strategy → Onchain**
-
-into a single expressive pipeline.
 
 You are early.

@@ -2,11 +2,13 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
 
 type Status = "draft" | "live" | "archived";
 
-export default function QuestDetailPage({ params }: { params: { id: string } }) {
-  const questId = params.id;
+export default function QuestDetailPage() {
+  const params = useParams();
+  const questId = params.id as string;
 
   const [title, setTitle] = useState("Sample Quest");
   const [xp, setXp] = useState(10);

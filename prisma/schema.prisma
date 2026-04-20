@@ -1,0 +1,269 @@
+// CastQuest Frames - Prisma Schema
+// Production-ready schema with Auth.js, RBAC, Feature Flags, Agents, and Contract Deployments
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// AUTH.JS MODELS
+// ============================================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  password      String?   // Hashed password for credentials auth
+  roleId        String?
+  role          Role?     @relation(fields: [roleId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+
+  // Application relations
+  contractDeployments ContractDeployment[]
+  agentExecutions     AgentExecution[]
+
+  @@index([email])
+  @@index([roleId])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================================================
+// RBAC MODELS (Role-Based Access Control)
+// ============================================================================
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users           User[]
+  rolePermissions RolePermission[]
+
+  @@index([name])
+}
+
+model Permission {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  action      String   // e.g., "create", "read", "update", "delete", "execute"
+  resource    String   // e.g., "users", "contracts", "agents", "feature_flags"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  rolePermissions RolePermission[]
+
+  @@unique([action, resource])
+  @@index([resource])
+  @@index([action])
+}
+
+model RolePermission {
+  id           String   @id @default(cuid())
+  roleId       String
+  permissionId String
+  createdAt    DateTime @default(now())
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
+}
+
+// ============================================================================
+// FEATURE FLAGS
+// ============================================================================
+
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  enabled     Boolean  @default(false)
+  description String?
+  metadata    Json?    // Additional configuration
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([key])
+  @@index([enabled])
+}
+
+// ============================================================================
+// AGENT CONFIGURATION & EXECUTION
+// ============================================================================
+
+model AgentConfig {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  enabled     Boolean  @default(false)
+  config      Json     // Agent-specific configuration
+  schedule    String?  // Cron expression for scheduled runs
+  lastRun     DateTime?
+  lastResult  Json?    // Result of last execution
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  executions AgentExecution[]
+
+  @@index([name])
+  @@index([enabled])
+}
+
+model AgentExecution {
+  id          String   @id @default(cuid())
+  agentId     String
+  status      String   // "pending", "running", "completed", "failed"
+  input       Json?
+  output      Json?
+  error       String?  @db.Text
+  duration    Int?     // Execution duration in milliseconds
+  triggeredBy String?  // "manual", "schedule", "webhook"
+  userId      String?  // User who triggered (if manual)
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+
+  agent AgentConfig @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  user  User?       @relation(fields: [userId], references: [id])
+
+  @@index([agentId])
+  @@index([status])
+  @@index([startedAt])
+}
+
+// ============================================================================
+// CONTRACT DEPLOYMENT
+// ============================================================================
+
+model ContractDeployment {
+  id              String   @id @default(cuid())
+  name            String?
+  chainId         Int
+  address         String?
+  txHash          String?
+  compilerVersion String?
+  sourceCode      String?  @db.Text
+  abi             Json?
+  bytecode        String?  @db.Text
+  constructorArgs Json?
+  deployerId      String
+  status          String   @default("pending") // "pending", "deploying", "deployed", "failed"
+  errorMessage    String?  @db.Text
+  gasUsed         String?
+  blockNumber     Int?
+  verified        Boolean  @default(false)
+  verifiedAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  deployer User @relation(fields: [deployerId], references: [id])
+
+  @@unique([chainId, address])
+  @@index([chainId])
+  @@index([status])
+  @@index([deployerId])
+  @@index([createdAt])
+}
+
+// ============================================================================
+// APPLICATION DATA (Extend as needed)
+// ============================================================================
+
+model Frame {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  imageUrl    String?
+  metadata    Json?
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([published])
+  @@index([createdAt])
+}
+
+model Quest {
+  id          String   @id @default(cuid())
+  title       String
+  description String?  @db.Text
+  points      Int      @default(0)
+  active      Boolean  @default(true)
+  startDate   DateTime?
+  endDate     DateTime?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([active])
+  @@index([startDate, endDate])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  resource  String
+  resourceId String?
+  userId    String?
+  userEmail String?
+  metadata  Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([action])
+  @@index([resource])
+  @@index([userId])
+  @@index([createdAt])
+}

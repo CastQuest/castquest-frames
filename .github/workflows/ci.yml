@@ -26,6 +26,9 @@ jobs:
         with:
           version: nightly
 
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
       - name: Lint
         run: pnpm lint
 

@@ -59,10 +59,9 @@ export class MediaService {
    * Get media by ID
    */
   async getById(mediaId: string): Promise<MediaMetadata | null> {
-    const [media] = await db
-      .select()
-      .from(mediaMetadata)
-      .where(eq(mediaMetadata.mediaId, mediaId));
+    const media = await db.query.mediaMetadata.findFirst({
+      where: eq(mediaMetadata.mediaId, mediaId),
+    });
 
     if (!media) return null;
 
@@ -78,13 +77,12 @@ export class MediaService {
    * Get media by owner
    */
   async getByOwner(ownerAddress: string, limit = 50, offset = 0): Promise<MediaMetadata[]> {
-    const rows = await db
-      .select()
-      .from(mediaMetadata)
-      .where(eq(mediaMetadata.ownerAddress, ownerAddress.toLowerCase()))
-      .orderBy(desc(mediaMetadata.createdAt))
-      .limit(limit)
-      .offset(offset);
+    const rows = await db.query.mediaMetadata.findMany({
+      where: eq(mediaMetadata.ownerAddress, ownerAddress.toLowerCase()),
+      limit,
+      offset,
+      orderBy: (m, { desc }) => [desc(m.createdAt)],
+    });
 
     return rows.map(media => ({
       ...media,
@@ -98,20 +96,15 @@ export class MediaService {
    * Search media by ticker or name
    */
   async search(query: string, limit = 50, offset = 0): Promise<MediaMetadata[]> {
-    const searchPattern = `%${query}%`;
-    
-    const rows = await db
-      .select()
-      .from(mediaMetadata)
-      .where(
-        or(
-          ilike(mediaMetadata.ticker, searchPattern),
-          ilike(mediaMetadata.name, searchPattern)
-        )
-      )
-      .orderBy(desc(mediaMetadata.createdAt))
-      .limit(limit)
-      .offset(offset);
+    const rows = await db.query.mediaMetadata.findMany({
+      where: or(
+        ilike(mediaMetadata.ticker, `%${query}%`),
+        ilike(mediaMetadata.name, `%${query}%`),
+      ),
+      limit,
+      offset,
+      orderBy: (m, { desc }) => [desc(m.createdAt)],
+    });
 
     return rows.map(media => ({
       ...media,
@@ -119,6 +112,58 @@ export class MediaService {
       mediaType: media.mediaType as MediaType,
       status: media.status as TokenStatus,
     } as MediaMetadata));
+  }
+
+  /**
+   * Get media by ID (alias matching test API)
+   */
+  async getMediaById(mediaId: string): Promise<MediaMetadata | null> {
+    return this.getById(mediaId);
+  }
+
+  /**
+   * Get media by owner address (alias matching test API)
+   */
+  async getMediaByOwner(ownerAddress: string): Promise<MediaMetadata[]> {
+    return this.getByOwner(ownerAddress);
+  }
+
+  /**
+   * Search media with options object.
+   * Returns the current page of results.
+   * `pageCount` reflects the number of results in this page (≤ limit).
+   * To get a true total, run a separate count query.
+   */
+  async searchMedia(options: {
+    search?: string;
+    mediaType?: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<{ media: MediaMetadata[]; pageCount: number }> {
+    const { search, mediaType, limit = 50, offset = 0 } = options;
+
+    const rawRows = await db.query.mediaMetadata.findMany({
+      where: search
+        ? or(
+            ilike(mediaMetadata.ticker, `%${search}%`),
+            ilike(mediaMetadata.name, `%${search}%`),
+          )
+        : mediaType
+          ? eq(mediaMetadata.mediaType, mediaType)
+          : undefined,
+      limit,
+      offset,
+      orderBy: (m, { desc }) => [desc(m.createdAt)],
+    });
+
+    const rows = rawRows.map(media => ({
+      ...media,
+      creatorUserId: media.creatorUserId ?? undefined,
+      mediaType: media.mediaType as MediaType,
+      status: media.status as TokenStatus,
+    } as MediaMetadata));
+
+    return { media: rows, pageCount: rows.length };
   }
 
   /**

@@ -17,11 +17,12 @@ function getFramesService(): FramesService {
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Validate frame ID
-    if (!params.id || typeof params.id !== 'string') {
+    if (!id || typeof id !== 'string') {
       return NextResponse.json(
         {
           success: false,
@@ -31,7 +32,7 @@ export async function GET(
       );
     }
 
-    const template = await getFramesService().getTemplateById(params.id);
+    const template = await getFramesService().getTemplateById(id);
 
     if (!template) {
       return NextResponse.json(
@@ -64,11 +65,12 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Validate frame ID
-    if (!params.id || typeof params.id !== 'string') {
+    if (!id || typeof id !== 'string') {
       return NextResponse.json(
         {
           success: false,
@@ -82,7 +84,7 @@ export async function PUT(
     const userId = requireUserId(request);
     
     // Verify ownership
-    const template = await getFramesService().getTemplateById(params.id);
+    const template = await getFramesService().getTemplateById(id);
     
     if (!template) {
       return NextResponse.json(
@@ -118,7 +120,7 @@ export async function PUT(
     if (body.status !== undefined) updateData.status = body.status;
     if (body.featured !== undefined) updateData.featured = body.featured;
 
-    const updated = await getFramesService().updateTemplate(params.id, updateData);
+    const updated = await getFramesService().updateTemplate(id, updateData);
 
     return NextResponse.json({
       success: true,
@@ -147,11 +149,12 @@ export async function PUT(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Validate frame ID
-    if (!params.id || typeof params.id !== 'string') {
+    if (!id || typeof id !== 'string') {
       return NextResponse.json(
         {
           success: false,
@@ -165,7 +168,7 @@ export async function DELETE(
     const userId = requireUserId(request);
     
     // Verify ownership
-    const template = await getFramesService().getTemplateById(params.id);
+    const template = await getFramesService().getTemplateById(id);
     
     if (!template) {
       return NextResponse.json(
@@ -187,7 +190,7 @@ export async function DELETE(
       );
     }
     
-    await getFramesService().deleteTemplate(params.id);
+    await getFramesService().deleteTemplate(id);
 
     return NextResponse.json({
       success: true,

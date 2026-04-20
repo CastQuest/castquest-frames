@@ -71,7 +71,9 @@ export async function POST(request: NextRequest) {
       resourceId: body.resourceId,
       metadata: body.metadata ? JSON.stringify(body.metadata) : undefined,
       sessionId: body.sessionId,
-      ipAddress: request.ip || undefined,
+      ipAddress: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+        request.headers.get('x-real-ip') ||
+        undefined,
       userAgent: request.headers.get('user-agent') || undefined,
       referrer: request.headers.get('referer') || undefined,
     });

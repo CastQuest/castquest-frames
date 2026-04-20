@@ -34,8 +34,4 @@ export * from './brain/SmartBrainEngine';
 export * from './oracle/OracleDBService';
 export * from './workers/AutonomousWorkerSystem';
 export * from './contracts';
-
-// ABI exports: populated by running `bash packages/contracts/scripts/extract-abis.sh`
-// after compiling the Solidity contracts. The stub always exists; generated content
-// replaces the empty export {} with actual contract ABI exports.
 export * from './abis';

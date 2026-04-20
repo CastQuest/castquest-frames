@@ -1,17 +1,13 @@
 /**
  * CastQuest Protocol ABIs
  *
- * This file is a placeholder stub. Run `extract-abis.sh` after compiling the
- * Solidity contracts to populate this directory with the generated ABI exports.
+ * This file is a stub. Run `scripts/extract-abis.sh` after contract compilation
+ * to overwrite this file with the real ABI exports generated from Foundry artifacts.
  *
- * Usage:
- *   bash packages/contracts/scripts/extract-abis.sh
- *
- * The generated file will export each contract's ABI and typed interfaces so
- * that consumers of `@castquest/sdk` can import them directly:
- *
- *   import { CASTTokenABI, MediaTokenFactoryABI } from '@castquest/sdk';
+ * Example generated content:
+ *   export { default as CASTTokenABI } from './CASTToken.json';
+ *   export { default as MediaRegistryABI } from './MediaRegistry.json';
  */
 
-// Stub exports — replaced by extract-abis.sh output
-export {};
+// Placeholder exports — overwritten by scripts/extract-abis.sh
+export const ABIS_GENERATED = false;

@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "buildCommand": "cd ../.. && pnpm --filter @castquest/neo-ux-core build && pnpm --filter @castquest/sdk build && pnpm --filter @castquest/core-services build && pnpm --filter @castquest/admin build",
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "outputDirectory": ".next",
+  "env": {
+    "NEXT_PUBLIC_API_URL": "@next_public_api_url",
+    "NEXT_PUBLIC_PRIVY_APP_ID": "@next_public_privy_app_id",
+    "DATABASE_URL": "@database_url"
+  }
+}
