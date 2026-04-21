@@ -16,7 +16,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONTRACTS_DIR="$REPO_ROOT/packages/contracts"
 AUDIT_DIR="$REPO_ROOT/docs/audits"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
-audit_failed=0
+declare -i audit_failed=0
 
 mkdir -p "$AUDIT_DIR"
 
