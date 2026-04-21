@@ -143,7 +143,7 @@ jobs:
           script: |
             const title = '🚨 Dependency Health Check Failed';
 
-            // Use Search API with the plain-text portion of the title (avoids emoji/special-char
+            // Use Search API with the plain-text portion of the title (avoids emoji/special-character
             // search syntax issues) then exact-match the full title on returned results.
             // Paginate through all results so deduplication is exhaustive regardless of count.
             const safeSearchText = 'Dependency Health Check Failed';

@@ -16,6 +16,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONTRACTS_DIR="$REPO_ROOT/packages/contracts"
 AUDIT_DIR="$REPO_ROOT/docs/audits"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
+audit_failed=0
 
 mkdir -p "$AUDIT_DIR"
 
@@ -89,6 +90,7 @@ if command -v slither >/dev/null 2>&1; then
     echo "  ✅ Slither analysis complete — see $AUDIT_DIR/slither_$TIMESTAMP.json"
   else
     echo "  ⚠️  Slither exited with code $slither_exit — review $AUDIT_DIR/slither_$TIMESTAMP.log for details"
+    audit_failed=1
   fi
 else
   echo "  ⚠️  slither not found — install with: pip install slither-analyzer"
@@ -101,8 +103,14 @@ echo ""
 # ─────────────────────────────────────────────
 echo "▶  Step 5: Generating gas usage report..."
 if command -v forge >/dev/null 2>&1; then
-  forge test --gas-report 2>&1 | tee "$AUDIT_DIR/gas_$TIMESTAMP.log" || true
-  echo "  ✅ Gas report generated"
+  gas_exit=0
+  forge test --gas-report 2>&1 | tee "$AUDIT_DIR/gas_$TIMESTAMP.log" || gas_exit=$?
+  if [ "$gas_exit" -eq 0 ]; then
+    echo "  ✅ Gas report generated"
+  else
+    echo "  ⚠️  Gas report exited with code $gas_exit — see $AUDIT_DIR/gas_$TIMESTAMP.log"
+    audit_failed=1
+  fi
 else
   echo "  ⚠️  forge not found — skipping gas report"
 fi
@@ -117,3 +125,8 @@ echo "  1. Review Slither findings in $AUDIT_DIR/slither_$TIMESTAMP.json"
 echo "  2. Fill in docs/AUDIT-REPORT-TEMPLATE.md with findings"
 echo "  3. Fix any HIGH or CRITICAL findings before deployment"
 echo ""
+
+if [ "$audit_failed" -ne 0 ]; then
+  echo "❌ One or more audit steps failed — see logs above."
+  exit 1
+fi

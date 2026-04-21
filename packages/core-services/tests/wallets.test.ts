@@ -74,7 +74,7 @@ describe('WalletService', () => {
           type: 'eoa',
           label: 'Main Wallet',
         })
-      ).rejects.toThrow('Wallet address already registered');
+      ).rejects.toThrow('Wallet already exists');
     });
   });
 
