@@ -3,6 +3,7 @@ dist
 .env
 .env.*
 .env.local
+!.env.example
 .DS_Store
 coverage
 
@@ -48,3 +49,7 @@ supabase/.temp
 supabase/.branches
 supabase/.temp
 health-report.json
+
+# Generated contract audit artifacts (timestamped logs/JSON from audit-contracts.sh)
+docs/audits/*.log
+docs/audits/*.json

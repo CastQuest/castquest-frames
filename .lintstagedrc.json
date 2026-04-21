@@ -2,6 +2,7 @@
   "*.{ts,tsx}": [],
   "*.{json,md}": [],
   "package.json": [
+    "node scripts/validate-package-json.js",
     "npx npm-package-json-lint"
   ]
 }

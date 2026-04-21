@@ -497,3 +497,39 @@ Total build time: ~4 minutes (-50%)
 **Last Updated:** January 5, 2025  
 **Prepared By:** Copilot Agent  
 **Review Status:** Awaiting @SMSDAO approval
+
+---
+
+## Update: CI Repair (March 2026)
+
+**PR:** Fix broken CI/CD, repair dependencies, audit contracts, update docs  
+**Date:** March 13, 2026  
+**Status:** ✅ RESOLVED
+
+### Root Causes Identified and Fixed
+
+1. **Missing `.npmrc`** — pnpm dev tool binaries (`tsup`, `tsc-alias`) were not accessible because `shamefully-hoist` was not set. Added `.npmrc` with `shamefully-hoist=true`. **FIXED**
+
+2. **Missing `tsconfig.base.json`** — `packages/neo-ux-core/tsconfig.json` extended `../../tsconfig.base.json` which didn't exist at root. **FIXED**
+
+3. **Invalid SDK syntax** — `packages/sdk/src/index.ts` had `export * from './abis'` inside a `try-catch` block (invalid ES module syntax). **FIXED**
+
+4. **Missing `"use client"` in compiled output** — `@castquest/neo-ux-core` dist didn't preserve `"use client"` directives, causing React hook errors during SSR. Added `"use client"` banner to `tsup.config.ts`. **FIXED**
+
+5. **Type errors in admin app** — `GlowButton` missing `variant`/`size` props, `GlowCard` missing `className`, `DashboardStat` missing `"stable"` trend. **FIXED**
+
+6. **Test method name mismatches** — Unit tests in `core-services` were calling methods that don't exist (e.g., `searchMedia` instead of `search`, `getUserWallets` instead of `getWalletsByUserId`). **FIXED**
+
+7. **Duplicate health-check issues** — `dependency-health.yml` was creating a new issue on every failure without checking for existing open issues. After 50+ days of daily failures, 32+ duplicate issues accumulated. **FIXED**
+
+8. **Duplicate CI workflow content** — `ci.yml` had its content duplicated. **FIXED**
+
+### Current Status (Post-Fix)
+- `pnpm install --frozen-lockfile` ✅ Passes
+- `pnpm -r build` ✅ All workspaces pass
+- `pnpm lint` ✅ Passes (warnings only)
+- `pnpm typecheck` ✅ Passes
+- `pnpm test` ✅ All 19 tests pass (contracts/mobile skip gracefully)
+- `ci.yml` ✅ Expected to pass in CI
+- `dependency-health.yml` ✅ No more spam issues
+

@@ -142,6 +142,28 @@ jobs:
         with:
           script: |
             const title = '🚨 Dependency Health Check Failed';
+
+            // Use Search API with the plain-text portion of the title (avoids emoji/special-character
+            // search syntax issues) then exact-match the full title on returned results.
+            // Paginate through all results so deduplication is exhaustive regardless of count.
+            const safeSearchText = 'Dependency Health Check Failed';
+            let duplicate = null;
+            let page = 1;
+            while (!duplicate) {
+              const { data: searchResult } = await github.rest.search.issuesAndPullRequests({
+                q: `repo:${context.repo.owner}/${context.repo.repo} is:issue is:open label:health-check "${safeSearchText}" in:title`,
+                per_page: 100,
+                page: page,
+              });
+              duplicate = searchResult.items.find(item => item.title === title) || null;
+              if (duplicate || searchResult.items.length < 100) break;
+              page++;
+            }
+            if (duplicate) {
+              core.info(`Skipping duplicate issue creation — open issue #${duplicate.number} already exists.`);
+              return;
+            }
+
             const body = `## Automated Health Check Failure
             
             A scheduled dependency health check has detected issues in the repository.
@@ -159,7 +181,7 @@ jobs:
             This issue was automatically created by the Dependency Health Check workflow.
             `;
             
-            github.rest.issues.create({
+            await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: title,

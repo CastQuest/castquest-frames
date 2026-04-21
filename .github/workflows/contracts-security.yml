@@ -1,0 +1,23 @@
+name: Contract Security
+
+on:
+  pull_request:
+    paths:
+      - "packages/contracts/**"
+      - "contracts/**"
+
+jobs:
+  slither:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Slither
+        uses: crytic/slither-action@v0.3.0
+        with:
+          target: packages/contracts/
+          slither-args: "--config-file packages/contracts/slither.config.json"

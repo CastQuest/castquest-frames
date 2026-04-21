@@ -1,3 +1,4 @@
+"use client";
 import React, { ReactNode, useEffect } from "react"
 import { neoColors, neoRadii, neoShadow, neoSpacing, neoTypography } from "./tokens"
 

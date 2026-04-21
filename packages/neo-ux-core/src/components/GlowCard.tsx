@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
+import { HTMLAttributes, ReactNode } from "react";
 import { neo } from "../theme";
 
-interface GlowCardProps {
+export interface GlowCardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   className?: string;
 }
