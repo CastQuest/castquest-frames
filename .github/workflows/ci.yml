@@ -44,7 +44,7 @@ jobs:
           fi
 
       - name: Upload Trivy results
-        if: always() && steps.trivy_sarif.outputs.ready == 'true'
+        if: (success() || failure()) && steps.trivy_sarif.outputs.ready == 'true'
         uses: github/codeql-action/upload-sarif@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
         with:
           sarif_file: 'trivy-results.sarif'

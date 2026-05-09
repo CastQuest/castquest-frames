@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' }}
     env:
-      MERGE_CHECK_TIMEOUT: 15m
+      MERGE_CHECK_TIMEOUT: '15m'
     steps:
       - name: Fetch metadata
         id: metadata
