@@ -18,6 +18,9 @@ updates:
       major-updates:
         dependency-type: "production"
         update-types: ["major"]
+      major-development-updates:
+        dependency-type: "development"
+        update-types: ["major"]
     labels:
       - "dependencies"
       - "dependabot"
