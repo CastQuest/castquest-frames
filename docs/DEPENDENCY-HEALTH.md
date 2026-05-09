@@ -146,8 +146,8 @@ The repository maintains consistent versions across all packages:
 |------------|---------|--------|
 | TypeScript | 5.3.3 | Stable, widely supported |
 | @types/node | ^20.17.12 | Matches Node.js 20.x LTS range used in apps |
-| Next.js | 15.2.4 | Current app baseline across admin/web |
-| React | ^19.0.0 | Current app baseline across admin/web |
+| Next.js | 14.2.35 / 15.2.4 | Dual baseline (`frames` on 14.x, admin/web on 15.x) |
+| React | 18.2.0 / ^19.0.0 | Dual baseline aligned with package compatibility |
 | Node.js | 20.19.6 | LTS version (see .nvmrc) |
 | pnpm | 9.0.0 | Latest with improved workspace support |
 
