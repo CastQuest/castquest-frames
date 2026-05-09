@@ -101,14 +101,23 @@ Automated health checks run on:
 
 **Actions Performed:**
 - Full health check execution
-- Smart Brain oracle analysis
 - Security audit with pnpm audit
 - Version consistency validation
 - PR comments with health status
 - Auto-create issues on critical failures
 - Generate and upload health reports
 
-### 5. Pre-commit Hooks (`.husky/pre-commit`)
+### 5. Dependabot Automation (`.github/dependabot.yml` + `.github/workflows/dependabot-automerge.yml`)
+
+Automated dependency update management is configured with safety gates:
+
+- Daily Dependabot checks for npm workspace dependencies
+- Grouped patch/minor and major update streams
+- Auto-approval and auto-merge only for patch/minor updates
+- Required-check green gate before merge activation (`gh pr checks --required --watch`)
+- Major updates are labeled for manual review
+
+### 6. Pre-commit Hooks (`.husky/pre-commit`)
 
 Prevents problematic commits before they reach the repository:
 
@@ -136,9 +145,9 @@ The repository maintains consistent versions across all packages:
 | Dependency | Version | Reason |
 |------------|---------|--------|
 | TypeScript | 5.3.3 | Stable, widely supported |
-| @types/node | 20.10.6 | Matches Node.js 20.x LTS |
-| Next.js | 14.2.18 | Latest stable 14.x with security patches |
-| React | 18.2.0 | Stable, production-ready |
+| @types/node | ^20.17.12 | Matches Node.js 20.x LTS range used in apps |
+| Next.js | 15.2.4 | Current app baseline across admin/web |
+| React | ^19.0.0 | Current app baseline across admin/web |
 | Node.js | 20.19.6 | LTS version (see .nvmrc) |
 | pnpm | 9.0.0 | Latest with improved workspace support |
 
@@ -148,6 +157,7 @@ The repository maintains consistent versions across all packages:
 2. **Caret ranges (^)** for tools and utilities to allow patch updates
 3. **Workspace protocol (workspace:*)** for internal packages
 4. **Aligned versions** across all apps and packages for shared dependencies
+5. **Lockfile parity is required**: CI uses `pnpm install --frozen-lockfile`, so `package.json` and `pnpm-lock.yaml` must be committed together
 
 ## Upgrade Procedures
 
