@@ -1,7 +1,7 @@
 name: Dependabot Auto-Merge & Self-Heal
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
 
 permissions:
@@ -14,10 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Fetch metadata
         id: metadata
         uses: dependabot/fetch-metadata@v2
@@ -25,14 +21,14 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Auto-approve safe updates
-        if: (steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor') && github.event.pull_request.mergeable_state == 'clean'
+        if: steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor'
         run: gh pr review --approve "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Auto-merge patch & minor
-        if: (steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor') && github.event.pull_request.mergeable_state == 'clean'
+        if: steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor'
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
@@ -40,7 +36,7 @@ jobs:
 
       - name: Flag major updates for review
         if: steps.metadata.outputs.update-type == 'version-update:semver-major'
-        run: gh pr edit "$PR_URL" --add-label "major-update,needs-review"
+        run: gh pr edit "$PR_URL" --add-label "major-update" --add-label "needs-review"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
