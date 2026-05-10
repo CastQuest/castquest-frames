@@ -33,9 +33,19 @@ jobs:
           format: 'sarif'
           output: 'trivy-results.sarif'
 
+      - name: Check Trivy SARIF output
+        id: trivy_sarif
+        if: always()
+        run: |
+          if [ -s trivy-results.sarif ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Upload Trivy results
-        if: success() || failure()
-        uses: github/codeql-action/upload-sarif@7fd177fa680c9881b53cdab4d346d32574c9f7f4 # v3
+        if: (success() || failure()) && steps.trivy_sarif.outputs.ready == 'true'
+        uses: github/codeql-action/upload-sarif@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
         with:
           sarif_file: 'trivy-results.sarif'
 
